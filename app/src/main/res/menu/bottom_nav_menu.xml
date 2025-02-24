@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/baseline_map_24"
+        android:title="Bản đồ" />
+    <item
+        android:id="@+id/nav_list"
+        android:icon="@drawable/baseline_view_list_24"
+        android:title="Danh sách" />
+    <item
+        android:id="@+id/nav_booked"
+        android:icon="@drawable/baseline_calendar_month_24"
+        android:title="Đặt sân" />
+    <item
+        android:id="@+id/nav_post"
+        android:icon="@drawable/baseline_ballot_24"
+        android:title="Nổi bật" />
+</menu>

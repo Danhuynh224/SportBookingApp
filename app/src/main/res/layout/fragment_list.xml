@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="12dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -24,22 +24,40 @@
             android:layout_marginBottom="30dp"
             android:drawableStart="@drawable/left_arrow_icon" />
 
-        <EditText
-            android:id="@+id/search_bar"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Tìm kiếm sân..."
-            android:padding="10dp"
-            android:background="@drawable/search_box"
-            android:drawableStart="@drawable/search_icon"
-            android:drawablePadding="8dp"/>
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+
+            <EditText
+                android:id="@+id/search_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Tìm kiếm sân..."
+                android:padding="8dp"
+                android:background="@drawable/search_box"
+                android:drawableStart="@drawable/search_icon"
+                android:drawablePadding="8dp"
+                android:layout_weight="8"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/filter_icon"
+                android:background="@android:color/transparent"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:alpha="0.8"/>
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_sportFacility"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:padding="8dp"/>
+            android:layout_weight="1"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

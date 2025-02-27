@@ -108,10 +108,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         // Tạo danh sách sân cầu lông
         fields = new ArrayList<>();
         fields.add(new Field("Sân Cầu Lông Victory", 10.836353204826953, 106.75468618989, "victory"));
-        fields.add(new Field("B-ZONE 11", 10.845262150165938, 106.75309551547117, "bzone11"));
-        fields.add(new Field("Galaxy Badminton", 10.835203000371632, 106.76410441220679, "galaxy"));
-        fields.add(new Field("CLB Cầu Lông An Bình 2", 10.86956571204941, 106.75141013135945, "anbinh2"));
-        fields.add(new Field("Sân Cầu Lông Cây Keo", 10.862485200863597, 106.73990881890155, "caykeo"));
+        fields.add(new Field("B-ZONE 11", 10.84469880757791, 106.75306846670372, "bzone11"));
+        fields.add(new Field("Galaxy Badminton", 10.835030475299105, 106.76412455448373, "galaxy"));
+        fields.add(new Field("CLB Cầu Lông An Bình 2", 10.867798100203814, 106.75132328893021, "anbinh2"));
+        fields.add(new Field("Sân Cầu Lông Cây Keo", 10.860572472016461, 106.74007410046538, "caykeo"));
 
         btnRight.setOnClickListener(v -> {
             vitri = (vitri + 1) % fields.size();

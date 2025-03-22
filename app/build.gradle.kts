@@ -51,4 +51,5 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter)
     implementation(libs.gson)
+    implementation(libs.viewpager2)
 }

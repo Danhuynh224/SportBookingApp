@@ -57,11 +57,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             itemView.setOnClickListener(v -> {
                 int position = getBindingAdapterPosition();
-                if (position != RecyclerView.NO_POSITION){
+                if (position != RecyclerView.NO_POSITION && position < mPosts.size()) {
                     PostModel post = mPosts.get(position);
                     Toast.makeText(mContext, post.getTitle(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, "Invalid item clicked!", Toast.LENGTH_SHORT).show();
                 }
             });
+
         }
     }
 }

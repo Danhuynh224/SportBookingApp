@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Địa chỉ: 873 đường số 47, phường Bình Trưng Đông, Thủ Đức"
+        android:textSize="16sp"
+        android:paddingTop="8dp" />
+
+    <!-- Working Hours -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Giờ hoạt động: 5h00 - 24h00"
+        android:textSize="16sp"
+        android:paddingTop="8dp" />
+
+    <!-- Sports Categories -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bộ môn: Cầu lông, Bóng đá"
+        android:textSize="16sp"
+        android:paddingTop="8dp" />
+
+    <!-- Services -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dịch vụ: Quấn vợt, Redbull, Trái cầu, Thuê vợt, Hộp cầu lông, ..."
+        android:textSize="16sp"
+        android:paddingTop="8dp" />
+
+    <!-- Description -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mô tả: Cụm CLB thể thao Cầu Lông và Bóng Đá"
+        android:textSize="16sp"
+        android:paddingTop="8dp" />
+
+    <!-- Rating Section -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Đánh giá"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:paddingTop="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chưa có bình luận nào"
+        android:textSize="16sp"
+        android:paddingTop="4dp" />
+
+
+</LinearLayout>

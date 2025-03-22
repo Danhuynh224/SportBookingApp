@@ -2,13 +2,29 @@ package com.example.pjbookingsport.frag;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.pjbookingsport.R;
+import com.example.pjbookingsport.adapter.PostAdapter;
+import com.example.pjbookingsport.model.PostModel;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,6 +64,10 @@ public class PostFragment extends Fragment {
         return fragment;
     }
 
+    private RecyclerView rvPosts;
+    private PostAdapter mPostAdapter;
+    private List<PostModel> mPosts;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +81,25 @@ public class PostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_post, container, false);
+        View view = inflater.inflate(R.layout.fragment_post, container, false);
+
+        rvPosts = view.findViewById(R.id.rv_postList);
+        mPosts = new ArrayList<>();
+        mPosts.add(new PostModel(R.drawable.pickleball_lon_nhat, "Giải pickleball lớn nhất thế giới tại Việt Nam"));
+        mPosts.add(new PostModel(R.drawable.pickleball_lon_nhat, "Giải pickleball lớn nhất thế giới tại Việt Nam"));
+        mPosts.add(new PostModel(R.drawable.pickleball_lon_nhat, "Giải pickleball lớn nhất thế giới tại Việt Nam"));
+
+        mPostAdapter = new PostAdapter(getContext(), mPosts);
+        rvPosts.setAdapter(mPostAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
+                LinearLayoutManager.VERTICAL, false);
+        rvPosts.setLayoutManager(linearLayoutManager);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rvPosts.getContext(),
+                linearLayoutManager.getOrientation());
+        dividerItemDecoration.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(getContext(), R.drawable.custom_divider)));
+        rvPosts.addItemDecoration(dividerItemDecoration);
+
+        return view;
     }
 }

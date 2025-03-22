@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Field;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -130,9 +131,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         mMap.addMarker(new MarkerOptions().position(location).title(field.getName()));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
 
-        @SuppressLint("DiscouragedApi")
-        int imageId = getResources().getIdentifier(field.getImg(), "drawable", getActivity().getPackageName());
-        imgMain.setImageResource(imageId);
+//        @SuppressLint("DiscouragedApi")
+//        int imageId = getResources().getIdentifier(field.getImg(), "drawable", getActivity().getPackageName());
+//        imgMain.setImageResource(imageId);
+        Glide.with(this)
+                .load("https://lh5.googleusercontent.com/p/AF1QipOhQMcHgqrS1D9kxE73gyhxK2ZyqyPKwG_NOSe1=w426-h240-k-no")
+                .into(imgMain);
         txtName.setText(field.getName());
     }
 

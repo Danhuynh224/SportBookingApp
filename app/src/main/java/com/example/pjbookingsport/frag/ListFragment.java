@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.adapter.SportFacilityFieldAdapter;
-import com.example.pjbookingsport.model.SportFacilityField;
+import com.example.pjbookingsport.model.SportFacility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ public class ListFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private SportFacilityFieldAdapter adapter;
-    private List<SportFacilityField> sportFieldList;
+    private List<SportFacility> sportFieldList;
 
     /**
      * Use this factory method to create a new instance of
@@ -77,28 +77,28 @@ public class ListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.rv_sportFacility);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Khởi tạo danh sách sân thể thao
-        sportFieldList = new ArrayList<>();
-        sportFieldList.add(new SportFacilityField(R.drawable.caykeo,"Tennis Cây Lọc Vùng Thủ Đức",
-                "1110 Phạm Văn Đồng, Linh Đông, Thủ Đức",
-                4));
-        sportFieldList.add(new SportFacilityField(R.drawable.galaxy,"Sân Cầu Lông Galaxy",
-                "456 Điện Biên Phủ, Bình Thạnh", 3));
-        sportFieldList.add(new SportFacilityField(R.drawable.caykeo,"Tennis Cây Lọc Vùng Thủ Đức",
-                "1110 Phạm Văn Đồng, Linh Đông, Thủ Đức",
-                4));
-        sportFieldList.add(new SportFacilityField(R.drawable.galaxy,"Sân Cầu Lông Galaxy",
-                "456 Điện Biên Phủ, Bình Thạnh", 3));
-        sportFieldList.add(new SportFacilityField(R.drawable.caykeo,"Tennis Cây Lọc Vùng Thủ Đức",
-                "1110 Phạm Văn Đồng, Linh Đông, Thủ Đức",
-                4));
-        sportFieldList.add(new SportFacilityField(R.drawable.galaxy,"Sân Cầu Lông Galaxy",
-                "456 Điện Biên Phủ, Bình Thạnh", 3));
-        sportFieldList.add(new SportFacilityField(R.drawable.caykeo,"Tennis Cây Lọc Vùng Thủ Đức",
-                "1110 Phạm Văn Đồng, Linh Đông, Thủ Đức",
-                4));
-        sportFieldList.add(new SportFacilityField(R.drawable.galaxy,"Sân Cầu Lông Galaxy",
-                "456 Điện Biên Phủ, Bình Thạnh", 3));
+//        // Khởi tạo danh sách sân thể thao
+//        sportFieldList = new ArrayList<>();
+//        sportFieldList.add(new SportFacility(R.drawable.caykeo,"Tennis Cây Lọc Vùng Thủ Đức",
+//                "1110 Phạm Văn Đồng, Linh Đông, Thủ Đức",
+//                4));
+//        sportFieldList.add(new SportFacility(R.drawable.galaxy,"Sân Cầu Lông Galaxy",
+//                "456 Điện Biên Phủ, Bình Thạnh", 3));
+//        sportFieldList.add(new SportFacility(R.drawable.caykeo,"Tennis Cây Lọc Vùng Thủ Đức",
+//                "1110 Phạm Văn Đồng, Linh Đông, Thủ Đức",
+//                4));
+//        sportFieldList.add(new SportFacility(R.drawable.galaxy,"Sân Cầu Lông Galaxy",
+//                "456 Điện Biên Phủ, Bình Thạnh", 3));
+//        sportFieldList.add(new SportFacility(R.drawable.caykeo,"Tennis Cây Lọc Vùng Thủ Đức",
+//                "1110 Phạm Văn Đồng, Linh Đông, Thủ Đức",
+//                4));
+//        sportFieldList.add(new SportFacility(R.drawable.galaxy,"Sân Cầu Lông Galaxy",
+//                "456 Điện Biên Phủ, Bình Thạnh", 3));
+//        sportFieldList.add(new SportFacility(R.drawable.caykeo,"Tennis Cây Lọc Vùng Thủ Đức",
+//                "1110 Phạm Văn Đồng, Linh Đông, Thủ Đức",
+//                4));
+//        sportFieldList.add(new SportFacility(R.drawable.galaxy,"Sân Cầu Lông Galaxy",
+//                "456 Điện Biên Phủ, Bình Thạnh", 3));
 
         // Thiết lập adapter
         adapter = new SportFacilityFieldAdapter(getContext(), sportFieldList);

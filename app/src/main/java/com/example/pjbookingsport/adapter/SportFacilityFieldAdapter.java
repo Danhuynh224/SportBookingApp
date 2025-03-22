@@ -13,15 +13,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pjbookingsport.R;
-import com.example.pjbookingsport.model.SportFacilityField;
+import com.example.pjbookingsport.model.SportFacility;
 
 import java.util.List;
 
 public class SportFacilityFieldAdapter extends RecyclerView.Adapter<SportFacilityFieldAdapter.ViewHolder> {
     private Context context;
-    private List<SportFacilityField> sportFieldList;
+    private List<SportFacility> sportFieldList;
 
-    public SportFacilityFieldAdapter(Context context, List<SportFacilityField> sportFieldList) {
+    public SportFacilityFieldAdapter(Context context, List<SportFacility> sportFieldList) {
         this.context = context;
         this.sportFieldList = sportFieldList;
     }
@@ -36,16 +36,16 @@ public class SportFacilityFieldAdapter extends RecyclerView.Adapter<SportFacilit
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        SportFacilityField sportField = sportFieldList.get(position);
+        SportFacility sportField = sportFieldList.get(position);
 
-        holder.image.setImageResource(sportField.getImg());
-        holder.title.setText(sportField.getTitle());
-        holder.address.setText(sportField.getAddress());
-        holder.ratingValue.setText(sportField.getRating() + "/5");
-
-        holder.bookButton.setOnClickListener(v -> {
-            // Xử lý khi nhấn nút Đặt Lịch
-        });
+//        holder.image.setImageResource(sportField.getImg());
+//        holder.title.setText(sportField.getTitle());
+//        holder.address.setText(sportField.getAddress());
+//        holder.ratingValue.setText(sportField.getRating() + "/5");
+//
+//        holder.bookButton.setOnClickListener(v -> {
+//            // Xử lý khi nhấn nút Đặt Lịch
+//        });
     }
 
     @Override

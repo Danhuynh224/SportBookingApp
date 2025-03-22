@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.pjbookingsport.API.RetrofitClient;
+import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Field;
+import com.example.pjbookingsport.model.SportFacility;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -26,7 +30,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.net.ServerSocket;
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,10 +61,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private ImageButton btnLeft;
     private ImageButton btnRight;
     private ImageView imgMain;
-
     private TextView txtName;
     private int vitri=0;
-    private ArrayList<Field> fields;
+    private ServiceAPI apiService;
+    private List<SportFacility> sportFacilities;
+    String imgUrl;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -80,6 +91,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        imgUrl = getString(R.string.img_url);
     }
 
     @Override
@@ -94,7 +106,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             mapFragment.getMapAsync(this);
         }
 
-
         return view;
     }
 
@@ -106,45 +117,63 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         btnRight = view.findViewById(R.id.btnRight);
         imgMain = view.findViewById(R.id.imgMain);
         txtName = view.findViewById(R.id.txtName);
-        // Tạo danh sách sân cầu lông
-        fields = new ArrayList<>();
-        fields.add(new Field("Sân Cầu Lông Victory", 10.836353204826953, 106.75468618989, "victory"));
-        fields.add(new Field("B-ZONE 11", 10.84469880757791, 106.75306846670372, "bzone11"));
-        fields.add(new Field("Galaxy Badminton", 10.835030475299105, 106.76412455448373, "galaxy"));
-        fields.add(new Field("CLB Cầu Lông An Bình 2", 10.867798100203814, 106.75132328893021, "anbinh2"));
-        fields.add(new Field("Sân Cầu Lông Cây Keo", 10.860572472016461, 106.74007410046538, "caykeo"));
-
+        GetAllSportFa();
         btnRight.setOnClickListener(v -> {
-            vitri = (vitri + 1) % fields.size();
+            vitri = (vitri + 1) % sportFacilities.size();
             LoadingMap(vitri);
         });
 
         btnLeft.setOnClickListener(v -> {
-            vitri = (vitri == 0) ? fields.size() - 1 : vitri - 1;
+            vitri = (vitri == 0) ? sportFacilities.size() - 1 : vitri - 1;
             LoadingMap(vitri);
         });
     }
-    private void LoadingMap(int vitri) {
-        Field field = fields.get(vitri);
-        LatLng location = new LatLng(field.getLatitude(), field.getLongitude());
-        mMap.clear();
-        mMap.addMarker(new MarkerOptions().position(location).title(field.getName()));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
 
-//        @SuppressLint("DiscouragedApi")
-//        int imageId = getResources().getIdentifier(field.getImg(), "drawable", getActivity().getPackageName());
-//        imgMain.setImageResource(imageId);
-        Glide.with(this)
-                .load("https://lh5.googleusercontent.com/p/AF1QipOhQMcHgqrS1D9kxE73gyhxK2ZyqyPKwG_NOSe1=w426-h240-k-no")
-                .into(imgMain);
-        txtName.setText(field.getName());
+    private void GetAllSportFa() {
+        apiService = RetrofitClient.getClient().create(ServiceAPI.class);
+        apiService.getAllSportFacility().enqueue(new Callback<List<SportFacility>>() {
+            @Override
+            public void onResponse(Call<List<SportFacility>> call, Response<List<SportFacility>> response) {
+                if(response.isSuccessful()){
+                    sportFacilities=response.body();
+                    if (!sportFacilities.isEmpty()) {
+                        LoadingMap(0);
+                    }
+                }
+                else {
+                    Log.d("API ERROR", "Không thể lấy danh sách");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SportFacility>> call, Throwable t) {
+                Log.d("API ERROR", "Không thể lấy danh mục" + t.getMessage());
+            }
+        });
     }
+
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style));
-        LoadingMap(0);  // Load vị trí đầu tiên khi mở Fragment
+        // Kiểm tra sportFacilities đã có dữ liệu chưa
+        if (sportFacilities != null && !sportFacilities.isEmpty()) {
+            LoadingMap(0);
+        }
     }
 
+
+    private void LoadingMap(int vitri) {
+        SportFacility sportFacility = sportFacilities.get(vitri);
+        LatLng location = new LatLng(sportFacility.getLatitude(), sportFacility.getLongitude());
+        mMap.clear();
+        mMap.addMarker(new MarkerOptions().position(location).title(sportFacility.getName()));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+        Glide.with(this)
+                .load(imgUrl+sportFacility.getSportsFacilityId())
+                .placeholder(R.drawable.ic_launcher_foreground) // Hình ảnh mặc định nếu không có ảnh
+                .into(imgMain);
+        txtName.setText(sportFacility.getName());
+    }
 }

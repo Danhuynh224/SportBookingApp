@@ -11,6 +11,9 @@ googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
 playServicesMaps = "19.1.0"
 recyclerview = "1.4.0"
 glide = "4.16.0"
+converter="2.9.0"
+gson = "2.10"
+retrofit = "2.9.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -22,7 +25,10 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+converter = {group = "com.squareup.retrofit2", name ="converter-gson", version.ref="converter"}
+glide = {group="com.github.bumptech.glide", name ="glide", version.ref="glide"}
+gson ={group="com.google.code.gson", name ="gson", version.ref="gson"}
+retrofit = {group = "com.squareup.retrofit2", name= "retrofit", version.ref="retrofit"}
 glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 
 [plugins]

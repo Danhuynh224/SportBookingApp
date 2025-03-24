@@ -7,6 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
+import com.example.pjbookingsport.adapter.PhotoAdapter;
 import com.example.pjbookingsport.model.Field;
 import com.example.pjbookingsport.model.SportFacility;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -60,6 +64,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
     private ImageButton btnLeft;
     private ImageButton btnRight;
+    private ViewPager2 viewPager2;
     private ImageView imgMain;
     private TextView txtName;
     private int vitri=0;
@@ -113,20 +118,49 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Ánh xạ view
-        btnLeft = view.findViewById(R.id.btnLeft);
-        btnRight = view.findViewById(R.id.btnRight);
-        imgMain = view.findViewById(R.id.imgMain);
-        txtName = view.findViewById(R.id.txtName);
-        GetAllSportFa();
-        btnRight.setOnClickListener(v -> {
-            vitri = (vitri + 1) % sportFacilities.size();
-            LoadingMap(vitri);
+//        btnLeft = view.findViewById(R.id.btnLeft);
+//        btnRight = view.findViewById(R.id.btnRight);
+//        imgMain = view.findViewById(R.id.imgMain);
+        viewPager2 = view.findViewById(R.id.view_pager_2);
+//        txtName = view.findViewById(R.id.txtName);
+
+        //Setting viewpager2
+        viewPager2.setOffscreenPageLimit(3);
+        viewPager2.setClipToPadding(false);
+        viewPager2.setClipChildren(false);
+
+        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+        compositePageTransformer.addTransformer(new MarginPageTransformer(40));
+        compositePageTransformer.addTransformer(new ViewPager2.PageTransformer() {
+            @Override
+            public void transformPage(@NonNull View page, float position) {
+                float r =1 - Math.abs(position);
+                page.setScaleY(0.85f + r * 0.15f);
+            }
+        });
+        viewPager2.setPageTransformer(compositePageTransformer);
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                vitri = position;  // Cập nhật vị trí mới khi kéo
+                LoadingMap(vitri); // Load lại map tương ứng với vị trí mới
+            }
         });
 
-        btnLeft.setOnClickListener(v -> {
-            vitri = (vitri == 0) ? sportFacilities.size() - 1 : vitri - 1;
-            LoadingMap(vitri);
-        });
+        GetAllSportFa();
+
+//        PhotoAdapter photoAdapter = new PhotoAdapter(this, sportFacilities);
+//        viewPager2.setAdapter(photoAdapter);
+//        btnRight.setOnClickListener(v -> {
+//            vitri = (vitri + 1) % sportFacilities.size();
+//            LoadingMap(vitri);
+//        });
+//
+//        btnLeft.setOnClickListener(v -> {
+//            vitri = (vitri == 0) ? sportFacilities.size() - 1 : vitri - 1;
+//            LoadingMap(vitri);
+//        });
     }
 
     private void GetAllSportFa() {
@@ -139,6 +173,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     if (!sportFacilities.isEmpty()) {
                         LoadingMap(0);
                     }
+                    PhotoAdapter photoAdapter = new PhotoAdapter(HomeFragment.this, sportFacilities, new PhotoAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(int position) {
+                            Log.d("HomeFragment", "Clicked position: " + vitri);
+                        }
+                    });
+                    viewPager2.setAdapter(photoAdapter);
                 }
                 else {
                     Log.d("API ERROR", "Không thể lấy danh sách");
@@ -170,10 +211,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         mMap.clear();
         mMap.addMarker(new MarkerOptions().position(location).title(sportFacility.getName()));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
-        Glide.with(this)
-                .load(imgUrl+sportFacility.getSportsFacilityId())
-                .placeholder(R.drawable.ic_launcher_foreground) // Hình ảnh mặc định nếu không có ảnh
-                .into(imgMain);
-        txtName.setText(sportFacility.getName());
+//        txtName.setText(sportFacility.getName());
     }
 }

@@ -10,8 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.SportFacility;
 
@@ -19,11 +21,14 @@ import java.util.List;
 
 public class SportFacilityFieldAdapter extends RecyclerView.Adapter<SportFacilityFieldAdapter.ViewHolder> {
     private Context context;
-    private List<SportFacility> sportFieldList;
+    private List<SportFacility> sportFacilityList;
 
-    public SportFacilityFieldAdapter(Context context, List<SportFacility> sportFieldList) {
+    private String imgUrl;
+
+    public SportFacilityFieldAdapter(Context context, List<SportFacility> sportFacilityList, String imgUrl) {
         this.context = context;
-        this.sportFieldList = sportFieldList;
+        this.sportFacilityList = sportFacilityList;
+        this.imgUrl = imgUrl;
     }
 
     @NonNull
@@ -36,26 +41,25 @@ public class SportFacilityFieldAdapter extends RecyclerView.Adapter<SportFacilit
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        SportFacility sportField = sportFieldList.get(position);
+        SportFacility sportFacility = sportFacilityList.get(position);
+        holder.title.setText(sportFacility.getName());
+        holder.address.setText(sportFacility.getAddress());
 
-//        holder.image.setImageResource(sportField.getImg());
-//        holder.title.setText(sportField.getTitle());
-//        holder.address.setText(sportField.getAddress());
-//        holder.ratingValue.setText(sportField.getRating() + "/5");
-//
-//        holder.bookButton.setOnClickListener(v -> {
-//            // Xử lý khi nhấn nút Đặt Lịch
-//        });
+
+        Glide.with(context)
+                .load(imgUrl + sportFacility.getSportsFacilityId()) // Load ảnh từ URL
+                .error(R.drawable.ic_launcher_foreground) // Ảnh lỗi nếu không tải được
+                .into(holder.image);
     }
 
     @Override
     public int getItemCount() {
-        return sportFieldList.size();
+        return sportFacilityList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
-        TextView title, address, ratingValue;
+        TextView title, address;
         Button bookButton;
 
         public ViewHolder(@NonNull View itemView) {
@@ -63,8 +67,37 @@ public class SportFacilityFieldAdapter extends RecyclerView.Adapter<SportFacilit
             image = itemView.findViewById(R.id.image);
             title = itemView.findViewById(R.id.title);
             address = itemView.findViewById(R.id.address);
-            ratingValue = itemView.findViewById(R.id.rating_value);
             bookButton = itemView.findViewById(R.id.book_button);
         }
+    }
+
+    public void updateList(List<SportFacility> newList) {
+        DiffUtil.Callback diffCallback = new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return sportFacilityList.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return newList.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return sportFacilityList.get(oldItemPosition).getSportsFacilityId() ==
+                        newList.get(newItemPosition).getSportsFacilityId();
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                return sportFacilityList.get(oldItemPosition).equals(newList.get(newItemPosition));
+            }
+        };
+
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+        sportFacilityList.clear();
+        sportFacilityList.addAll(newList);
+        diffResult.dispatchUpdatesTo(this);
     }
 }

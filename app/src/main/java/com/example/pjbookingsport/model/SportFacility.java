@@ -1,6 +1,8 @@
 package com.example.pjbookingsport.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class SportFacility {
     private int sportsFacilityId;
@@ -10,15 +12,25 @@ public class SportFacility {
     private double longitude;
     private String img;
     private Date createdAt;
+    private List<Price> prices = new ArrayList<>();
 
-    public SportFacility(int sportsFacilityId, String name, String address, double latitude, String img, double longitude, Date createdAt) {
+    public List<Price> getPrices() {
+        return prices;
+    }
+
+    public void setPrices(List<Price> prices) {
+        this.prices = prices;
+    }
+
+    public SportFacility(int sportsFacilityId, String name, String address, double latitude, double longitude, String img, Date createdAt, List<Price> prices) {
         this.sportsFacilityId = sportsFacilityId;
         this.name = name;
         this.address = address;
         this.latitude = latitude;
-        this.img = img;
         this.longitude = longitude;
+        this.img = img;
         this.createdAt = createdAt;
+        this.prices = prices;
     }
 
     public SportFacility() {
@@ -79,4 +91,6 @@ public class SportFacility {
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+
+
 }

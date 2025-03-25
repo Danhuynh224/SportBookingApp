@@ -4,83 +4,85 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".frag.ListFragment">
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Danh sách cụm sân"
-        android:textAlignment="center"
-        android:textSize="28sp"
-        android:fontFamily="sans-serif-medium"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:drawableStart="@drawable/left_arrow_icon"
-        app:layout_constraintTop_toTopOf="parent"
+        android:fontFamily="sans-serif-medium"
+        android:text="Danh sách cụm sân"
+        android:textAlignment="center"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearTop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingHorizontal="12dp"
         android:layout_marginTop="12dp"
         android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@id/title"
+        android:orientation="horizontal"
+        android:paddingHorizontal="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/title">
 
         <EditText
             android:id="@+id/search_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Tìm kiếm sân..."
-            android:padding="10dp"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:inputType="text"
+            android:layout_weight="1"
             android:background="@drawable/search_box"
             android:drawableStart="@drawable/search_icon"
             android:drawablePadding="8dp"
-            android:layout_weight="1"/>
+            android:hint="Tìm kiếm sân..."
+            android:inputType="text"
+            android:maxLines="1"
+            android:padding="10dp"
+            android:singleLine="true" />
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/filter_icon"
-            android:background="@android:color/transparent"
             android:layout_marginStart="8dp"
-            android:alpha="0.8"/>
+            android:alpha="0.8"
+            android:background="@android:color/transparent"
+            android:src="@drawable/filter_icon" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_sportFacility"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:background="#2194B9F0"
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
-        android:background="#2194B9F0"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/linearTop"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearTop" />
+
     <TextView
         android:id="@+id/tv_no_result"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Không tìm thấy sân nào"
-        android:textSize="18sp"
         android:background="#2194B9F0"
-        android:textColor="@android:color/darker_gray"
         android:gravity="center"
+        android:text="Không tìm thấy sân nào"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="18sp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/linearTop"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/linearTop" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

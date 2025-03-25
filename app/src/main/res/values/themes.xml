@@ -9,4 +9,21 @@
         <item name="android:textColor">#0056BD</item>
     </style>
     <style name="Theme.PjBookingSport" parent="Base.Theme.PjBookingSport" />
+    <style name="CustomActiveIndicatorStyle" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <!-- Màu nền của indicator -->
+        <item name="android:color">@color/background</item>
+
+        <!-- Độ bo góc -->
+        <item name="shapeAppearance">@style/ShapeAppearance.CustomIndicator</item>
+
+        <!-- Kích thước của indicator -->
+        <item name="android:width">56dp</item>
+        <item name="android:height">32dp</item>
+    </style>
+
+    <!-- Tạo bo góc cho indicator -->
+    <style name="ShapeAppearance.CustomIndicator" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">16dp</item>
+    </style>
+
 </resources>

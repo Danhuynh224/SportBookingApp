@@ -11,12 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.adapter.SportFacilityFieldAdapter;
 import com.example.pjbookingsport.model.SportFacility;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -31,6 +35,7 @@ public class ListFragment extends Fragment {
     private ServiceAPI apiService;
     private TextView tvNoResult;
     private EditText searchBar;
+    private ImageButton btnFilter;;
 
     public ListFragment() {
         // Required empty public constructor
@@ -41,13 +46,24 @@ public class ListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
+        btnFilter = view.findViewById(R.id.filter_btn);
         tvNoResult = view.findViewById(R.id.tv_no_result);
         recyclerView = view.findViewById(R.id.rv_sportFacility);
         searchBar = view.findViewById(R.id.search_bar);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         String imgUrl = getString(R.string.img_url);
-        sportFacilityAdapter = new SportFacilityFieldAdapter(getContext(), sportFacilityList, imgUrl);
+        sportFacilityAdapter = new SportFacilityFieldAdapter(getContext(), sportFacilityList, imgUrl, new SportFacilityFieldAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(SportFacility facility) {
+                FacilityDetailFragment detailFragment = FacilityDetailFragment.newInstance(facility);
+
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, detailFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
         recyclerView.setAdapter(sportFacilityAdapter);
 
         GetSportFacilities(); // gọi API lấy danh sách sân
@@ -63,6 +79,11 @@ public class ListFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {}
+        });
+
+        btnFilter.setOnClickListener(v -> {
+            FilterFragment filterFragment = new FilterFragment();
+            filterFragment.show(getParentFragmentManager(), "filterFragment");
         });
 
         return view;

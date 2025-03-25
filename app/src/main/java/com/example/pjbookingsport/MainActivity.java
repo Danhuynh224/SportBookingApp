@@ -18,7 +18,7 @@ import com.example.pjbookingsport.frag.*;
 public class MainActivity extends AppCompatActivity {
 
 
-    private ActivityMainBinding binding;
+    public ActivityMainBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +57,20 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void loadFragment(Fragment fragment) {
+//    public void loadHomeFragment() {
+//        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragMain);
+//
+//        if (!(currentFragment instanceof HomeFragment)) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.fragMain, new HomeFragment())
+//                    .commit();
+//        }
+//
+//        // Cập nhật trạng thái của BottomNavigationView
+//        binding.bottomNavigationView.setSelectedItemId(R.id.nav_home);
+//    }
+
+    public void loadFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragMain, fragment)
                 .commit();

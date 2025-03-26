@@ -14,6 +14,30 @@ public class SportFacility implements Serializable {
     private String img;
     private Date createdAt;
     private List<Price> prices = new ArrayList<>();
+    private String detail;
+
+    public SportFacility() {
+    }
+
+    public SportFacility(int sportsFacilityId, String name, String address, double latitude, double longitude, String img, Date createdAt, List<Price> prices, String detail) {
+        this.sportsFacilityId = sportsFacilityId;
+        this.name = name;
+        this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.img = img;
+        this.createdAt = createdAt;
+        this.prices = prices;
+        this.detail = detail;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
 
     public List<Price> getPrices() {
         return prices;
@@ -23,19 +47,6 @@ public class SportFacility implements Serializable {
         this.prices = prices;
     }
 
-    public SportFacility(int sportsFacilityId, String name, String address, double latitude, double longitude, String img, Date createdAt, List<Price> prices) {
-        this.sportsFacilityId = sportsFacilityId;
-        this.name = name;
-        this.address = address;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.img = img;
-        this.createdAt = createdAt;
-        this.prices = prices;
-    }
-
-    public SportFacility() {
-    }
 
     public int getSportsFacilityId() {
         return sportsFacilityId;

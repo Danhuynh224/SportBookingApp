@@ -4,14 +4,17 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.pjbookingsport.R;
+import com.example.pjbookingsport.model.Price;
 import com.example.pjbookingsport.model.SportFacility;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,13 +45,17 @@ public class FacilityInfoFragment extends Fragment {
         if (getArguments() != null) {
             facility = (SportFacility) getArguments().getSerializable(ARG_FACILITY);
             if (facility != null) {
-                //tvDescription.setText(facility.getDescription());
+                tvDescription.setText(facility.getDetail());
                 tvAddress.setText(facility.getAddress());
 
-//                List<String> types = facility.getTypes();
-//                if (types != null && !types.isEmpty()) {
-//                    tvTypes.setText(TextUtils.join(", ", types));
-//                }
+                List<Price> prices = facility.getPrices();
+                List<String> types= new ArrayList<>();
+                if (prices != null && !prices.isEmpty()) {
+                    for(Price price : prices){
+                        types.add(price.getFacilityType().getName());
+                    }
+                }
+                tvTypes.setText(TextUtils.join(", ", types));
             }
         }
 

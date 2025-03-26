@@ -47,6 +47,13 @@ public class FacilityDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_facility_detail, container, false);
 
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         imgUrl = getString(R.string.img_url);
         imgFacility = view.findViewById(R.id.img_facility);
         tvName = view.findViewById(R.id.tv_name);
@@ -80,10 +87,7 @@ public class FacilityDetailFragment extends Fragment {
         btnBook.setOnClickListener(v -> {
 
         });
-
-        return view;
     }
-
     private void displayFacilityDetails(SportFacility facility) {
         tvName.setText(facility.getName());
 

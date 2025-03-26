@@ -31,7 +31,7 @@
             android:layout_alignParentTop="true"
             android:scaleType="centerInside"
             android:elevation="4dp"
-            android:alpha="0.9"
+            android:alpha="0.8"
             android:background="@drawable/bg_rounded" />
 
         <!-- Overlay Texts -->
@@ -101,7 +101,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0.0/5"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/textPrimary"
                         android:textSize="16sp"
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>
@@ -120,8 +120,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        app:tabTextColor="@android:color/black"
-        app:tabSelectedTextColor="@color/black">
+        app:tabTextColor="@color/textPrimary"
+        app:tabSelectedTextColor="@color/primary">
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

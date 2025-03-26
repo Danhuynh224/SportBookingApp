@@ -15,5 +15,5 @@ public interface ServiceAPI {
     @GET("/sportsfacilities")
     Call<List<SportFacility>> getAllSportFacility();
     @GET("/sportsfacilities/search")
-    Call<List<SportFacility>> getSportsFacilities(@Query("search") String query);
+    Call<List<SportFacility>> getSportsFacilities(@Query("keyword") String keyword);
 }

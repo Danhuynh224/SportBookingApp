@@ -24,7 +24,6 @@ import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.adapter.PhotoAdapter;
-import com.example.pjbookingsport.model.Field;
 import com.example.pjbookingsport.model.SportFacility;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,8 +33,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.net.ServerSocket;
-import java.util.ArrayList;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -62,11 +60,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         // Required empty public constructor
     }
     private GoogleMap mMap;
-    private ImageButton btnLeft;
-    private ImageButton btnRight;
     private ViewPager2 viewPager2;
-    private ImageView imgMain;
-    private TextView txtName;
     private int vitri=0;
     private ServiceAPI apiService;
     private List<SportFacility> sportFacilities;
@@ -118,11 +112,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Ánh xạ view
-//        btnLeft = view.findViewById(R.id.btnLeft);
-//        btnRight = view.findViewById(R.id.btnRight);
-//        imgMain = view.findViewById(R.id.imgMain);
+
         viewPager2 = view.findViewById(R.id.view_pager_2);
-//        txtName = view.findViewById(R.id.txtName);
 
         //Setting viewpager2
         viewPager2.setOffscreenPageLimit(3);
@@ -150,17 +141,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         GetAllSportFa();
 
-//        PhotoAdapter photoAdapter = new PhotoAdapter(this, sportFacilities);
-//        viewPager2.setAdapter(photoAdapter);
-//        btnRight.setOnClickListener(v -> {
-//            vitri = (vitri + 1) % sportFacilities.size();
-//            LoadingMap(vitri);
-//        });
 //
-//        btnLeft.setOnClickListener(v -> {
-//            vitri = (vitri == 0) ? sportFacilities.size() - 1 : vitri - 1;
-//            LoadingMap(vitri);
-//        });
     }
 
     private void GetAllSportFa() {
@@ -210,7 +191,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         LatLng location = new LatLng(sportFacility.getLatitude(), sportFacility.getLongitude());
         mMap.clear();
         mMap.addMarker(new MarkerOptions().position(location).title(sportFacility.getName()));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
-//        txtName.setText(sportFacility.getName());
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15), 500, null);
+//
     }
 }

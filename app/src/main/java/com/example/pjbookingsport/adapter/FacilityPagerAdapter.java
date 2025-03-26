@@ -24,7 +24,7 @@ public class FacilityPagerAdapter extends FragmentStateAdapter {
         if (position == 0) {
             return FacilityInfoFragment.newInstance(facility);
         } else {
-            return new FacilityPriceFragment();
+            return FacilityPriceFragment.newInstance(facility);
         }
     }
 

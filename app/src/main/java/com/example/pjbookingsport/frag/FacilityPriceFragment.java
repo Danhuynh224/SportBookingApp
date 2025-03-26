@@ -5,13 +5,17 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.pjbookingsport.R;
+import com.example.pjbookingsport.adapter.PriceAdapter;
 import com.example.pjbookingsport.model.SportFacility;
 
 /**
@@ -23,7 +27,7 @@ public class FacilityPriceFragment extends Fragment {
 
     private static final String ARG_FACILITY = "FACILITY";
     private SportFacility facility;
-    private TextView tvPriceList;
+    private RecyclerView recyclerView;
     public static FacilityPriceFragment newInstance(SportFacility facility) {
         FacilityPriceFragment fragment = new FacilityPriceFragment();
         Bundle args = new Bundle();
@@ -47,5 +51,21 @@ public class FacilityPriceFragment extends Fragment {
 //        }
 
         return view;
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+        recyclerView = view.findViewById(R.id.rv_priceList);
+        if (getArguments() != null) {
+            facility = (SportFacility) getArguments().getSerializable(ARG_FACILITY);
+            if (facility != null && facility.getPrices() != null) {
+                Log.d("FacilityPriceFragment", "Price list size: " + facility.getPrices().size());
+            }
+
+        }
+        assert facility != null;
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        PriceAdapter priceAdapter = new PriceAdapter(getContext(), facility.getPrices());
+        recyclerView.setAdapter(priceAdapter);
+
     }
 }

@@ -83,7 +83,10 @@ public class ListFragment extends Fragment {
 
         btnFilter.setOnClickListener(v -> {
             FilterFragment filterFragment = new FilterFragment();
-            filterFragment.show(getParentFragmentManager(), "filterFragment");
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, filterFragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
         return view;

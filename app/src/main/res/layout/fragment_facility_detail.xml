@@ -29,74 +29,87 @@
             android:layout_margin="16dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+            android:scaleType="centerInside"
+            android:elevation="4dp"
+            android:alpha="0.9"
+            android:background="@drawable/bg_rounded" />
 
         <!-- Overlay Texts -->
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/img_facility"
-            android:padding="16dp"
-            android:orientation="vertical"
-            android:background="@android:color/transparent">
+            app:cardCornerRadius="12dp"
+            app:cardBackgroundColor="#98CECECE"
+            app:cardElevation="4dp">
 
-            <!-- Name -->
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CLB Thể Thao Đông Phương"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <!-- Phone Number -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingTop="4dp">
+                android:padding="16dp"
+                android:orientation="vertical"
+                android:background="@android:color/transparent">
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_phone"/>
-
+                <!-- Name -->
                 <TextView
-                    android:id="@+id/tvPhoneNumber"
+                    android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="+84903030406"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:layout_marginStart="8dp"/>
-            </LinearLayout>
+                    android:text="CLB Thể Thao Đông Phương"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-            <!-- Rating -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingTop="4dp">
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/star_icon" />
-
-                <TextView
-                    android:id="@+id/tvRating"
+                <!-- Phone Number -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0.0/5"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:layout_marginStart="8dp"/>
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingTop="4dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_phone"/>
+
+                    <TextView
+                        android:id="@+id/tvPhoneNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+84903030406"
+                        android:textColor="@color/textPrimary"
+                        android:textSize="16sp"
+                        android:layout_marginStart="8dp"/>
+                </LinearLayout>
+
+                <!-- Rating -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingTop="4dp">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/star_icon" />
+
+                    <TextView
+                        android:id="@+id/tvRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.0/5"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:layout_marginStart="8dp"/>
+                </LinearLayout>
+
             </LinearLayout>
 
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
 
     </RelativeLayout>
 

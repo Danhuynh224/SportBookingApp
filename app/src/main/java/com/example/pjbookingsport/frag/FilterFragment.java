@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.example.pjbookingsport.R;
@@ -18,7 +19,7 @@ import com.example.pjbookingsport.R;
  * Use the {@link FilterFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FilterFragment extends DialogFragment {
+public class FilterFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,20 +30,7 @@ public class FilterFragment extends DialogFragment {
     private String mParam1;
     private String mParam2;
 
-    public FilterFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FilterFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-
+    private ImageButton btnBack;
 
     public static FilterFragment newInstance(String param1, String param2) {
         FilterFragment fragment = new FilterFragment();
@@ -70,19 +58,11 @@ public class FilterFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_filter, container, false);
 
+        btnBack = view.findViewById(R.id.btn_back);
 
+        btnBack.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
 
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (getDialog() != null && getDialog().getWindow() != null) {
-            // Đặt kích thước dialog rộng 90% màn hình và cao tự động theo nội dung
-            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.9);
-            getDialog().getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
-            getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        }
-    }
 }

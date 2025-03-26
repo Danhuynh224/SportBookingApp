@@ -1,10 +1,11 @@
 package com.example.pjbookingsport.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class SportFacility {
+public class SportFacility implements Serializable {
     private int sportsFacilityId;
     private String name;
     private String address;

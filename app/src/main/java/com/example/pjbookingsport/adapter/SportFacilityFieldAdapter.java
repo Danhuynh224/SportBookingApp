@@ -22,13 +22,14 @@ import java.util.List;
 public class SportFacilityFieldAdapter extends RecyclerView.Adapter<SportFacilityFieldAdapter.ViewHolder> {
     private Context context;
     private List<SportFacility> sportFacilityList;
-
     private String imgUrl;
+    private OnItemClickListener listener;
 
-    public SportFacilityFieldAdapter(Context context, List<SportFacility> sportFacilityList, String imgUrl) {
+    public SportFacilityFieldAdapter(Context context, List<SportFacility> sportFacilityList, String imgUrl, OnItemClickListener listener) {
         this.context = context;
         this.sportFacilityList = sportFacilityList;
         this.imgUrl = imgUrl;
+        this.listener = listener;
     }
 
     @NonNull
@@ -45,11 +46,17 @@ public class SportFacilityFieldAdapter extends RecyclerView.Adapter<SportFacilit
         holder.title.setText(sportFacility.getName());
         holder.address.setText(sportFacility.getAddress());
 
-
         Glide.with(context)
-                .load(imgUrl + sportFacility.getSportsFacilityId()) // Load ảnh từ URL
-                .error(R.drawable.ic_launcher_foreground) // Ảnh lỗi nếu không tải được
+                .load(imgUrl + sportFacility.getSportsFacilityId())
+                .error(R.drawable.ic_launcher_foreground)
                 .into(holder.image);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(sportFacility);
+            }
+        });
+
     }
 
     @Override
@@ -99,5 +106,9 @@ public class SportFacilityFieldAdapter extends RecyclerView.Adapter<SportFacilit
         sportFacilityList.clear();
         sportFacilityList.addAll(newList);
         diffResult.dispatchUpdatesTo(this);
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(SportFacility facility);
     }
 }

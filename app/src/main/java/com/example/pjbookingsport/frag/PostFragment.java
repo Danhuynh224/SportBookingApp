@@ -102,4 +102,5 @@ public class PostFragment extends Fragment {
 
         return view;
     }
+
 }

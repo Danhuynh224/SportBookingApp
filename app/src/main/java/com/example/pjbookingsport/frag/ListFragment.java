@@ -92,39 +92,55 @@ public class ListFragment extends Fragment {
 
         btnFilter.setOnClickListener(v -> {
             FilterFragment filterFragment = new FilterFragment();
-            filterFragment.show(getParentFragmentManager(), "filterFragment");
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, filterFragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
         return view;
     }
 
     private void filterList(String query) {
-        List<SportFacility> filteredList = new ArrayList<>();
-
         if (query.isEmpty()) {
-            // Nếu EditText trống, hiển thị lại danh sách gốc
             sportFacilityAdapter.updateList(new ArrayList<>(originalList));
             tvNoResult.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             return;
         }
 
-        for (SportFacility facility : originalList) {
-            if (facility.getName().toLowerCase().contains(query.toLowerCase())) {
-                filteredList.add(facility);
+        apiService.getSportsFacilities(query).enqueue(new Callback<List<SportFacility>>() {
+            @Override
+            public void onResponse(Call<List<SportFacility>> call, Response<List<SportFacility>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<SportFacility> filteredList = response.body();
+                    sportFacilityAdapter.updateList(filteredList);
+
+                    if (filteredList.isEmpty()) {
+                        tvNoResult.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    } else {
+                        tvNoResult.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    showNoResults();
+                    Log.e("API ERROR", "Không thể tìm kiếm sân thể thao");
+                }
             }
-        }
 
-        sportFacilityAdapter.updateList(filteredList);
+            @Override
+            public void onFailure(Call<List<SportFacility>> call, Throwable t) {
+                showNoResults();
+                Log.e("API ERROR", "Lỗi khi tìm kiếm: " + t.getMessage());
+            }
+        });
+    }
 
-        // Hiển thị thông báo nếu không có kết quả
-        if (filteredList.isEmpty()) {
-            tvNoResult.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-        } else {
-            tvNoResult.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-        }
+    private void showNoResults() {
+        tvNoResult.setText("Không có sân nào");
+        tvNoResult.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
     }
 
     private void GetSportFacilities() {

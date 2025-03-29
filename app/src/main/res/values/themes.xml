@@ -8,6 +8,7 @@
         <item name="android:backgroundTint">@android:color/white</item>
         <item name="android:textColor">#0056BD</item>
     </style>
+
     <style name="Theme.PjBookingSport" parent="Base.Theme.PjBookingSport" />
     <style name="CustomActiveIndicatorStyle" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
         <!-- Màu nền của indicator -->

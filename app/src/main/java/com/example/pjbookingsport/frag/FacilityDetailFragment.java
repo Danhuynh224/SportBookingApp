@@ -42,11 +42,11 @@ public class FacilityDetailFragment extends Fragment {
         return fragment;
     }
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_facility_detail, container, false);
-
 
         return view;
     }
@@ -85,7 +85,12 @@ public class FacilityDetailFragment extends Fragment {
         }
 
         btnBook.setOnClickListener(v -> {
+            BookFragment bookFragment = BookFragment.newInstance(facility);
 
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragMain, bookFragment)
+                    .addToBackStack(null)
+                    .commit();
         });
     }
     private void displayFacilityDetails(SportFacility facility) {

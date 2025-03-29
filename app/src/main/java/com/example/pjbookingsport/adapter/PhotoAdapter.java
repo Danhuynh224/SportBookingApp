@@ -1,11 +1,9 @@
 package com.example.pjbookingsport.adapter;
 
-
-
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,14 +18,15 @@ import com.example.pjbookingsport.model.SportFacility;
 import java.util.List;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
-
-    String imgUrl ;
+    private String imgUrl;
     private List<SportFacility> mListFacility;
     private HomeFragment context;
-    public interface OnItemClickListener {
-        void onItemClick(int position);
-    }
     private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(SportFacility facility);
+        void onBookClick(SportFacility facility);
+    }
 
     public PhotoAdapter(HomeFragment context, List<SportFacility> mListPhoto, OnItemClickListener listener) {
         this.mListFacility = mListPhoto;
@@ -39,28 +38,18 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
     @NonNull
     @Override
     public PhotoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_photo, parent,false);
-        return  new PhotoViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_photo, parent, false);
+        return new PhotoViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
         SportFacility sportFacility = mListFacility.get(position);
-        if(sportFacility == null){
+        if (sportFacility == null) {
             return;
         }
-        holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onItemClick(position);
-            }
-        });
-        Glide.with(holder.itemView.getContext())
-                .load(imgUrl+sportFacility.getSportsFacilityId())
-                .placeholder(R.drawable.ic_launcher_foreground) // Hình ảnh mặc định nếu không có ảnh
-                .into(holder.imgPhoto);
-        holder.txtName.setText(sportFacility.getName());
-        holder.txtAddress.setText(sportFacility.getAddress());
+
+        holder.bind(sportFacility, listener, imgUrl);
     }
 
     @Override
@@ -68,19 +57,40 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         return mListFacility != null ? mListFacility.size() : 0;
     }
 
-    public class PhotoViewHolder extends RecyclerView.ViewHolder{
-
+    public static class PhotoViewHolder extends RecyclerView.ViewHolder {
         private ImageView imgPhoto;
         private TextView txtName;
         private TextView txtAddress;
+        private Button btnBook;
 
         public PhotoViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgPhoto=itemView.findViewById(R.id.img_photo);
-            txtName=itemView.findViewById(R.id.name);
-            txtAddress= itemView.findViewById(R.id.address);
+            imgPhoto = itemView.findViewById(R.id.img_photo);
+            txtName = itemView.findViewById(R.id.name);
+            txtAddress = itemView.findViewById(R.id.address);
+            btnBook = itemView.findViewById(R.id.book_button);
+        }
+
+        public void bind(SportFacility facility, OnItemClickListener listener, String imgUrl) {
+            txtName.setText(facility.getName());
+            txtAddress.setText(facility.getAddress());
+
+            Glide.with(itemView.getContext())
+                    .load(imgUrl + facility.getSportsFacilityId())
+                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .into(imgPhoto);
+
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onItemClick(facility);
+                }
+            });
+
+            btnBook.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onBookClick(facility);
+                }
+            });
         }
     }
-
-
 }

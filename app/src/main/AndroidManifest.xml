@@ -19,11 +19,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PjBookingSport"
         tools:targetApi="31">
-        <activity
-            android:name=".FacilityDetailActivity"
-            android:exported="false">
+<!--        <activity-->
+<!--            android:name=".FacilityDetailActivity"-->
+<!--            android:exported="false">-->
 
-        </activity>
+<!--        </activity>-->
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

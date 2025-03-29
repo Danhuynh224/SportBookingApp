@@ -156,8 +156,23 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     }
                     PhotoAdapter photoAdapter = new PhotoAdapter(HomeFragment.this, sportFacilities, new PhotoAdapter.OnItemClickListener() {
                         @Override
-                        public void onItemClick(int position) {
-                            Log.d("HomeFragment", "Clicked position: " + vitri);
+                        public void onItemClick(SportFacility facility) {
+                            FacilityDetailFragment detailFragment = FacilityDetailFragment.newInstance(facility);
+
+                            requireActivity().getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.fragMain, detailFragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                        }
+
+                        @Override
+                        public void onBookClick(SportFacility facility) {
+                            BookFragment bookFragment = BookFragment.newInstance(facility);
+
+                            requireActivity().getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.fragMain, bookFragment)
+                                    .addToBackStack(null)
+                                    .commit();
                         }
                     });
                     viewPager2.setAdapter(photoAdapter);

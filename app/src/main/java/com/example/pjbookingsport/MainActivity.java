@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
             int idItem= item.getItemId();
             if(idItem==R.id.nav_home)
                 fragmentSelected =new HomeFragment();
+//                fragmentSelected =new BookFragment();
             else if (idItem==R.id.nav_list) {
                 fragmentSelected =new ListFragment();
             }

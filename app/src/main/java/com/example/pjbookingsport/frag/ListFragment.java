@@ -63,6 +63,15 @@ public class ListFragment extends Fragment {
                         .addToBackStack(null)
                         .commit();
             }
+            @Override
+            public void onBookClick(SportFacility facility) {
+                BookFragment bookFragment = BookFragment.newInstance(facility);
+
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragMain, bookFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
         recyclerView.setAdapter(sportFacilityAdapter);
 

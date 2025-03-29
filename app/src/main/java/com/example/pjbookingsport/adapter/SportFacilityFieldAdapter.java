@@ -56,6 +56,12 @@ public class SportFacilityFieldAdapter extends RecyclerView.Adapter<SportFacilit
                 listener.onItemClick(sportFacility);
             }
         });
+        holder.bookButton.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onBookClick(sportFacility);
+            }
+        });
+
 
     }
 
@@ -110,5 +116,7 @@ public class SportFacilityFieldAdapter extends RecyclerView.Adapter<SportFacilit
 
     public interface OnItemClickListener {
         void onItemClick(SportFacility facility);
+        void onBookClick(SportFacility facility);
+
     }
 }

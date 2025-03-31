@@ -112,18 +112,22 @@
                 android:id="@+id/date_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lọc theo ngày, giờ đang trống sân"
+                android:text="Lọc theo ngày trống sân"
                 android:textStyle="bold"
                 android:layout_marginTop="16dp"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/datetime_picker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Chọn ngày"
-                android:inputType="date"
-                android:focusable="false"
-                android:layout_marginTop="8dp"/>
+                android:textSize="16sp"
+                android:padding="12dp"
+                android:background="@android:drawable/editbox_background"
+                android:focusable="true"
+                android:clickable="true"
+                android:layout_marginTop="8dp"
+                android:drawableEnd="@drawable/ic_datetime_24"/>
 
             <!-- Lọc theo địa điểm -->
             <TextView
@@ -132,14 +136,20 @@
                 android:layout_height="wrap_content"
                 android:text="Lọc theo địa điểm"
                 android:textStyle="bold"
+                android:focusable="true"
+                android:clickable="true"
                 android:layout_marginTop="16dp"/>
 
-            <Spinner
-                android:id="@+id/location_spinner"
+            <TextView
+                android:id="@+id/city_picker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:popupBackground="@android:color/white"
-                android:layout_marginTop="8dp"/>
+                android:hint="Chọn tỉnh/thành phố"
+                android:padding="12dp"
+                android:background="@android:drawable/editbox_background"
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:drawableEnd="@drawable/ic_arrow_drop_down_24"/>
 
             <!-- Lọc theo mức giá -->
             <TextView

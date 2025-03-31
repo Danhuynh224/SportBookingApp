@@ -1,5 +1,6 @@
 package com.example.pjbookingsport.frag;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
@@ -10,47 +11,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.pjbookingsport.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FilterFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FilterFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private ImageButton btnBack;
-
-    public static FilterFragment newInstance(String param1, String param2) {
-        FilterFragment fragment = new FilterFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private TextView datetimepicker, cityPicker;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,7 +37,29 @@ public class FilterFragment extends Fragment {
 
         btnBack.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
 
+        datetimepicker = view.findViewById(R.id.datetime_picker);
+        datetimepicker.setOnClickListener(v -> {
+            DialogFragment newFragment = new DateTimePickerFragment(datetimepicker);
+            newFragment.show(getParentFragmentManager(), "dateTimePicker");
+        });
+
+        cityPicker = view.findViewById(R.id.city_picker);
+        cityPicker.setOnClickListener(v -> {
+            showCityPickerDialog();
+        });
+
         return view;
+    }
+
+    private void showCityPickerDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Chọn tỉnh/thành phố");
+
+        // Lấy danh sách tỉnh/thành phố từ resources
+        String[] provinces = getResources().getStringArray(R.array.vietnam_provinces);
+
+        builder.setItems(provinces, (dialog, which) -> cityPicker.setText(provinces[which]));
+        builder.show();
     }
 
 }

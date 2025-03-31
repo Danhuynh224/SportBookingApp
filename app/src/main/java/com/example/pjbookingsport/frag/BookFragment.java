@@ -112,7 +112,7 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
         String dateString = date.format(formatter);
         tvDayMonthYear.setText(dateString);
-        tvThu.setText(date.getDayOfWeek().getDisplayName(TextStyle.SHORT, new Locale("vi")));
+        tvThu.setText(date.getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("vi")));
     }
 
 }

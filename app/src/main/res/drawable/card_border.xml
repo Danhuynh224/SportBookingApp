@@ -1,5 +1,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@android:color/white"/> <!-- Màu nền -->
-    <corners android:radius="16dp"/> <!-- Bo góc -->
-    <stroke android:width="5dp" android:color="@android:color/black"/> <!-- Viền -->
+    <solid android:color="@android:color/white"/> <!-- Màu nền của CardView -->
+    <corners android:radius="16dp"/> <!-- Độ bo góc của CardView -->
+    <stroke
+        android:color="@color/black"
+    android:width="2dp"/>
 </shape>

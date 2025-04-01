@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 public class SportFacility implements Serializable {
-    private int sportsFacilityId;
+    private Long sportsFacilityId;
     private String name;
     private String address;
     private double latitude;
@@ -19,7 +19,7 @@ public class SportFacility implements Serializable {
     public SportFacility() {
     }
 
-    public SportFacility(int sportsFacilityId, String name, String address, double latitude, double longitude, String img, Date createdAt, List<Price> prices, String detail) {
+    public SportFacility(Long sportsFacilityId, String name, String address, double latitude, double longitude, String img, Date createdAt, List<Price> prices, String detail) {
         this.sportsFacilityId = sportsFacilityId;
         this.name = name;
         this.address = address;
@@ -48,11 +48,11 @@ public class SportFacility implements Serializable {
     }
 
 
-    public int getSportsFacilityId() {
+    public Long getSportsFacilityId() {
         return sportsFacilityId;
     }
 
-    public void setSportsFacilityId(int sportsFacilityId) {
+    public void setSportsFacilityId(Long sportsFacilityId) {
         this.sportsFacilityId = sportsFacilityId;
     }
 

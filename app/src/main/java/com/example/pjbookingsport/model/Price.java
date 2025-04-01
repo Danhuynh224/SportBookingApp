@@ -66,4 +66,5 @@ public class Price {
     public void setFacilityType(FacilityType facilityType) {
         this.facilityType = facilityType;
     }
+
 }

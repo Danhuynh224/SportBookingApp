@@ -3,6 +3,7 @@ package com.example.pjbookingsport.API;
 
 
 import com.example.pjbookingsport.model.SportFacility;
+import com.example.pjbookingsport.model.SubFacility;
 
 import java.util.List;
 
@@ -16,4 +17,7 @@ public interface ServiceAPI {
     Call<List<SportFacility>> getAllSportFacility();
     @GET("/sportsfacilities/search")
     Call<List<SportFacility>> getSportsFacilities(@Query("keyword") String keyword);
+
+    @GET("/subfacilities")
+    Call<List<SubFacility>> getSubFaByFaId(@Query("faId") Long faid);
 }

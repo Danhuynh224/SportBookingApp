@@ -69,86 +69,63 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lọc theo bộ môn"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"/>
 
-            <LinearLayout
-                android:id="@+id/sport_group"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvBoMon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <CheckBox
-                    android:id="@+id/sport1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cầu lông"
-                    android:layout_marginTop="8dp"/>
-
-                <CheckBox
-                    android:id="@+id/sport2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Pickleball"
-                    android:layout_marginTop="8dp"/>
-
-                <CheckBox
-                    android:id="@+id/sport3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tennis"
-                    android:layout_marginTop="8dp"/>
-
-                <CheckBox
-                    android:id="@+id/sport4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Bóng đá"
-                    android:layout_marginTop="8dp"/>
-            </LinearLayout>
+                android:clipToPadding="false"
+                android:clipChildren="false"
+                android:background="@android:color/transparent"/>
 
             <!-- Lọc theo ngày giờ -->
-            <TextView
-                android:id="@+id/date_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Lọc theo ngày trống sân"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp"/>
+<!--            <TextView-->
+<!--                android:id="@+id/date_label"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Lọc theo ngày trống sân"-->
+<!--                android:textStyle="bold"-->
+<!--                android:layout_marginTop="16dp"/>-->
 
-            <TextView
-                android:id="@+id/datetime_picker"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Chọn ngày"
-                android:textSize="16sp"
-                android:padding="12dp"
-                android:background="@android:drawable/editbox_background"
-                android:focusable="true"
-                android:clickable="true"
-                android:layout_marginTop="8dp"
-                android:drawableEnd="@drawable/ic_datetime_24"/>
+<!--            <TextView-->
+<!--                android:id="@+id/datetime_picker"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="Chọn ngày"-->
+<!--                android:textSize="16sp"-->
+<!--                android:padding="12dp"-->
+<!--                android:background="@android:drawable/editbox_background"-->
+<!--                android:focusable="true"-->
+<!--                android:clickable="true"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:drawableEnd="@drawable/ic_datetime_24"/>-->
 
             <!-- Lọc theo địa điểm -->
             <TextView
                 android:id="@+id/location_label"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Lọc theo địa điểm"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:focusable="true"
                 android:clickable="true"
-                android:layout_marginTop="16dp"/>
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"/>
 
             <TextView
                 android:id="@+id/city_picker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Chọn tỉnh/thành phố"
-                android:padding="12dp"
+                android:padding="14dp"
                 android:background="@android:drawable/editbox_background"
                 android:gravity="center_vertical"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:drawableEnd="@drawable/ic_arrow_drop_down_24"/>
 
             <!-- Lọc theo mức giá -->
@@ -157,35 +134,100 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lọc theo mức giá"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginTop="16dp"/>
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="24dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-                <CheckBox
-                    android:id="@+id/price1"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_price_below_500"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Dưới 500K"
-                    android:layout_marginTop="8dp"/>
+                    android:layout_weight="1"
+                    android:layout_marginEnd="12dp"
+                    app:contentPaddingLeft="12dp"
+                    app:contentPaddingTop="8dp"
+                    app:contentPaddingRight="12dp"
+                    app:contentPaddingBottom="8dp"
+                    app:cardCornerRadius="8dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/textDisabled"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:backgroundTint="@color/white">
 
-                <CheckBox
-                    android:id="@+id/price2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="500K - 1 triệu"
-                    android:layout_marginTop="8dp"/>
+                    <TextView
+                        android:id="@+id/text_price_below_500"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dưới 500K"
+                        android:textSize="13sp"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center"/>
+                </com.google.android.material.card.MaterialCardView>
 
-                <CheckBox
-                    android:id="@+id/price3"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_price_500_1m"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Trên 1 triệu"
-                    android:layout_marginTop="8dp"/>
+                    android:layout_weight="1"
+                    android:layout_marginEnd="12dp"
+                    app:contentPaddingLeft="12dp"
+                    app:contentPaddingTop="8dp"
+                    app:contentPaddingRight="12dp"
+                    app:contentPaddingBottom="8dp"
+                    app:cardCornerRadius="8dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/textDisabled"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:backgroundTint="@color/white">
+
+                    <TextView
+                        android:id="@+id/text_price_500_1m"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="500K - 1 triệu"
+                        android:textSize="13sp"
+                        android:maxLines="1"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center"/>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_price_above_1m"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:contentPaddingLeft="12dp"
+                    app:contentPaddingTop="8dp"
+                    app:contentPaddingRight="12dp"
+                    app:contentPaddingBottom="8dp"
+                    app:cardCornerRadius="8dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/textDisabled"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:backgroundTint="@color/white">
+
+                    <TextView
+                        android:id="@+id/text_price_above_1m"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Trên 1 triệu"
+                        android:textSize="13sp"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center"/>
+                </com.google.android.material.card.MaterialCardView>
+
             </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 
@@ -201,21 +243,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scrollview">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/reset_button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
+            android:layout_marginEnd="20dp"
             android:layout_weight="1"
-            android:backgroundTint="@android:color/darker_gray"
+            android:textSize="18sp"
+            android:background="@drawable/btn_frame"
+            android:backgroundTint="@color/textDisabled"
             android:text="Xóa bộ lọc"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"/>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/apply_button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
             android:layout_weight="1"
+            android:textSize="18sp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/btn_frame"
+            android:backgroundTint="@color/primary"
             android:text="Áp Dụng"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,6 +15,7 @@ converter="2.9.0"
 gson = "2.10"
 retrofit = "2.9.0"
 viewpager2 = "1.0.0"
+flexbox = "3.0.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -32,6 +33,7 @@ gson ={group="com.google.code.gson", name ="gson", version.ref="gson"}
 retrofit = {group = "com.squareup.retrofit2", name= "retrofit", version.ref="retrofit"}
 glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 viewpager2 = { module = "androidx.viewpager2:viewpager2", name= "viewpager2", version.ref = "viewpager2" }
+flexbox = { group = "com.google.android.flexbox", name= "flexbox", version.ref = "flexbox" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

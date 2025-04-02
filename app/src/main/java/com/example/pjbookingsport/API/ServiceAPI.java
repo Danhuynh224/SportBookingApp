@@ -4,6 +4,7 @@ package com.example.pjbookingsport.API;
 
 import com.example.pjbookingsport.model.SportFacility;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import retrofit2.Call;
@@ -16,4 +17,12 @@ public interface ServiceAPI {
     Call<List<SportFacility>> getAllSportFacility();
     @GET("/sportsfacilities/search")
     Call<List<SportFacility>> getSportsFacilities(@Query("keyword") String keyword);
+
+    @GET("/sportsfacilities/filter")
+    Call<List<SportFacility>> filterSportsFacilities(
+            @Query("types") List<String> types,
+            @Query("addresses") String addresses,
+            @Query("minPrice") BigDecimal minPrice,
+            @Query("maxPrice") BigDecimal maxPrice
+    );
 }

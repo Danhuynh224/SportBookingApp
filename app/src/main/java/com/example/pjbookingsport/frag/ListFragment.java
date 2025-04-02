@@ -21,7 +21,9 @@ import com.example.pjbookingsport.adapter.SportFacilityFieldAdapter;
 import com.example.pjbookingsport.model.SportFacility;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -98,7 +100,59 @@ public class ListFragment extends Fragment {
                     .commit();
         });
 
+        // Nhận dữ liệu lọc từ Bundle nếu có
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            List<String> selectedTypes = bundle.getStringArrayList("selectedTypes");
+            String selectedCity = bundle.getString("selectedCity");
+            BigDecimal minPrice = (BigDecimal) bundle.getSerializable("minPrice");
+            BigDecimal maxPrice = (BigDecimal) bundle.getSerializable("maxPrice");
+
+            // Gọi API với bộ lọc
+            applyFilters(selectedTypes, selectedCity, minPrice, maxPrice);
+        } else {
+            GetSportFacilities(); // Nếu không có bộ lọc, lấy danh sách đầy đủ
+        }
+
+
         return view;
+    }
+
+    private void applyFilters(List<String> selectedTypes, String selectedCity, BigDecimal minPrice, BigDecimal maxPrice) {
+        // Gọi API
+        Call<List<SportFacility>> call = apiService.filterSportsFacilities(
+                selectedTypes == null || selectedTypes.isEmpty() ? null : selectedTypes,
+                selectedCity == null || selectedCity.isEmpty() ? null : selectedCity,
+                minPrice,
+                maxPrice
+        );
+
+        call.enqueue(new Callback<List<SportFacility>>() {
+            @Override
+            public void onResponse(Call<List<SportFacility>> call, Response<List<SportFacility>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<SportFacility> filteredFacilities = response.body();
+                    sportFacilityAdapter.updateList(filteredFacilities);
+
+                    if (filteredFacilities.isEmpty()) {
+                        tvNoResult.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    } else {
+                        tvNoResult.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    showNoResults();
+                    Log.e("API ERROR", "Không có kết quả phù hợp");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SportFacility>> call, Throwable t) {
+                showNoResults();
+                Log.e("API ERROR", "Lỗi khi gọi API: " + t.getMessage());
+            }
+        });
     }
 
     private void filterList(String query) {
@@ -143,7 +197,7 @@ public class ListFragment extends Fragment {
         recyclerView.setVisibility(View.GONE);
     }
 
-    private void GetSportFacilities() {
+    void GetSportFacilities() {
         apiService = RetrofitClient.getClient().create(ServiceAPI.class);
         apiService.getAllSportFacility().enqueue(new Callback<List<SportFacility>>() {
             @Override

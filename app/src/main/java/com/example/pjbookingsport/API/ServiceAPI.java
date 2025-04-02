@@ -3,6 +3,7 @@ package com.example.pjbookingsport.API;
 
 
 import com.example.pjbookingsport.model.SportFacility;
+import com.example.pjbookingsport.model.SubFacility;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -25,4 +26,7 @@ public interface ServiceAPI {
             @Query("minPrice") BigDecimal minPrice,
             @Query("maxPrice") BigDecimal maxPrice
     );
+
+    @GET("/subfacilities")
+    Call<List<SubFacility>> getSubFaByFaId(@Query("faId") Long faid);
 }

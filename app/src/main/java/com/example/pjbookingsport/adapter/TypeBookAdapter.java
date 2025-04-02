@@ -23,10 +23,10 @@ import java.util.Locale;
 
 public class TypeBookAdapter extends RecyclerView.Adapter<TypeBookAdapter.TypeBookViewHolder> {
     private List<Price> prices;
-    private OnDayClickListener listener;
+    private OnTypeClickListener listener;
     private int selectedPosition =0;
 
-    public TypeBookAdapter(List<Price> prices, OnDayClickListener listener) {
+    public TypeBookAdapter(List<Price> prices, OnTypeClickListener listener) {
         this.prices = prices;
         this.listener = listener;
     }
@@ -87,7 +87,7 @@ public class TypeBookAdapter extends RecyclerView.Adapter<TypeBookAdapter.TypeBo
                 notifyItemChanged(previousPosition);
             }
             notifyItemChanged(selectedPosition);
-            listener.onDayClick(price.getFacilityType(), selectedPosition);
+            listener.onTypeClick(price.getFacilityType(), selectedPosition);
         });
     }
 
@@ -110,7 +110,7 @@ public class TypeBookAdapter extends RecyclerView.Adapter<TypeBookAdapter.TypeBo
         }
     }
 
-    public interface OnDayClickListener {
-        void onDayClick(FacilityType type, int position);
+    public interface OnTypeClickListener {
+        void onTypeClick(FacilityType type, int position);
     }
 }

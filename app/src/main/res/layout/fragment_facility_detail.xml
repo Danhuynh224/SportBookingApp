@@ -77,7 +77,7 @@
                         android:id="@+id/tvPhoneNumber"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="+84903030406"
+                        android:text="0903030406"
                         android:textColor="@color/textPrimary"
                         android:textSize="16sp"
                         android:layout_marginStart="8dp"/>
@@ -92,8 +92,8 @@
                     android:paddingTop="4dp">
 
                     <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:src="@drawable/star_icon" />
 
                     <TextView
@@ -104,6 +104,15 @@
                         android:textColor="@color/textPrimary"
                         android:textSize="16sp"
                         android:layout_marginStart="8dp"/>
+
+                    <TextView
+                        android:id="@+id/tvTotalRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="(20)"
+                        android:textColor="@color/textPrimary"
+                        android:textSize="16sp"
+                        android:layout_marginStart="4dp"/>
                 </LinearLayout>
 
             </LinearLayout>

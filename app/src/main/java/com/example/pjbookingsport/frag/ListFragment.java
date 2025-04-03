@@ -12,18 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
-import com.example.pjbookingsport.adapter.SportFacilityFieldAdapter;
+import com.example.pjbookingsport.adapter.SportFacilityAdapter;
 import com.example.pjbookingsport.model.SportFacility;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,7 +28,7 @@ import retrofit2.Response;
 
 public class ListFragment extends Fragment {
     private RecyclerView recyclerView;
-    private SportFacilityFieldAdapter sportFacilityAdapter;
+    private SportFacilityAdapter sportFacilityAdapter;
     private List<SportFacility> sportFacilityList = new ArrayList<>();
     private List<SportFacility> originalList = new ArrayList<>(); // Danh sách gốc
     private ServiceAPI apiService;
@@ -55,7 +52,7 @@ public class ListFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         String imgUrl = getString(R.string.img_url);
-        sportFacilityAdapter = new SportFacilityFieldAdapter(getContext(), sportFacilityList, imgUrl, new SportFacilityFieldAdapter.OnItemClickListener() {
+        sportFacilityAdapter = new SportFacilityAdapter(getContext(), sportFacilityList, imgUrl, new SportFacilityAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(SportFacility facility) {
                 FacilityDetailFragment detailFragment = FacilityDetailFragment.newInstance(facility);

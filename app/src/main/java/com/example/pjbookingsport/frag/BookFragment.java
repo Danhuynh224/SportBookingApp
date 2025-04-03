@@ -1,11 +1,13 @@
 package com.example.pjbookingsport.frag;
 
+import android.annotation.SuppressLint;
 import android.icu.util.LocaleData;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,21 +21,29 @@ import android.widget.Toast;
 import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
+import com.example.pjbookingsport.adapter.BookInForAdapter;
 import com.example.pjbookingsport.adapter.DayAdapter;
 import com.example.pjbookingsport.adapter.HourAdapter;
 import com.example.pjbookingsport.adapter.SlotAdapter;
 import com.example.pjbookingsport.adapter.SubFaAdapter;
 import com.example.pjbookingsport.adapter.TypeBookAdapter;
+import com.example.pjbookingsport.model.Booking;
+import com.example.pjbookingsport.model.BookingInfo;
 import com.example.pjbookingsport.model.FacilityType;
+import com.example.pjbookingsport.model.Price;
 import com.example.pjbookingsport.model.SportFacility;
 import com.example.pjbookingsport.model.SubFacility;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -54,19 +64,25 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
     private RecyclerView rvTypes ;
     private RecyclerView rvHours ;
     private RecyclerView rvSubFa;
+    private RecyclerView rvBookInfo;
     private TextView tvThu;
     private TextView tvDayMonthYear;
+    private TextView tvTotalHour;
+    private TextView tvTotalPrice;
     private DayAdapter dayAdapter;
     private TypeBookAdapter typeBookAdapter;
     private HourAdapter hourAdapter;
     private SubFaAdapter subFaAdapter;
+    private BookInForAdapter bookInForAdapter;
     List<LocalDate> days;
     List<LocalTime> hours;
     List<SubFacility> subFacilities;
     List<SubFacility> subFacilitiesByType;
+    List<BookingInfo> bookingInfos = new ArrayList<>();
     LocalDate dateBook;
-    LocalTime startHours;
-    LocalTime endHours;
+    Price price;
+    Booking booking = new Booking();
+    FacilityType prefacilityType;
 
     private ServiceAPI serviceAPI;
     private static final String ARG_FACILITY = "FACILITY";
@@ -131,40 +147,58 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
         rvHours.setAdapter(hourAdapter);
 
         rvSubFa=view.findViewById(R.id.rvSubFa);
+        rvBookInfo=view.findViewById(R.id.inforRv);
+
+        tvTotalHour = view.findViewById(R.id.tvTotalHour);
+        tvTotalPrice = view.findViewById(R.id.tvTotalPrice);
 
     }
     @Override
     public void onDayClick(LocalDate date, int position) {
         setDayView(days.get(position));
-        setTypeView(facility.getPrices().get(0).getFacilityType());
+        if(prefacilityType!=null){
+            setTypeView(prefacilityType);
+        }
+        else {
+            setTypeView(facility.getPrices().get(0).getFacilityType());
+        }
     }
     @Override
     public void onTypeClick(FacilityType facilityType, int position) {
-        Log.d("Type by click", facilityType.getName());
+        this.prefacilityType = facilityType;
         setTypeView(facilityType);
     }
 
     private void setTypeView(FacilityType facilityType) {
-
+        List<Price> prices = facility.getPrices();
+        for (Price tempPrice : prices){
+            if(tempPrice.getFacilityType()==facilityType)
+            {
+                price =tempPrice;
+                break;
+            }
+        }
+        bookingInfos = new ArrayList<>();
         subFacilitiesByType = new ArrayList<>();
         for(SubFacility subFacility : subFacilities){
 
             if(subFacility.getFacilityType().getFacilityTypeId()==facilityType.getFacilityTypeId()){
                 subFacilitiesByType.add(subFacility);
-                Log.d("Type", subFacility.getFacilityType().getName());
             }
         }
         rvSubFa.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         subFaAdapter = new SubFaAdapter(subFacilitiesByType, hours, dateBook, new SlotAdapter.OnSlotClickListener() {
             @Override
-            public void onSlotClick(LocalTime hourSlot, SubFacility subFacility) {
-                Log.d("Type", subFacility.getName() + " "+hourSlot.toString());
+            public void onSlotClick(LocalTime startHour, LocalTime endHour, SubFacility subFacility) {
+                setBookingInfos(startHour,endHour,subFacility);
             }
         });
         rvSubFa.setAdapter(subFaAdapter);
+
     }
 
     public void setDayView(LocalDate date){
+        booking.setBookingDate(date);
         dateBook=date;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
         String dateString = date.format(formatter);
@@ -199,6 +233,42 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
                 Log.d("API ERROR", "Không thể lấy danh mục" + t.getMessage());
             }
         });
+    }
+    @SuppressLint("SetTextI18n")
+    public void setBookingInfos(LocalTime startHour, LocalTime endHour, SubFacility subFacility){
+        int index = bookingInfos.stream()
+                .filter(bookingInfo -> bookingInfo.getSubFacility().equals(subFacility))
+                .map(bookingInfos::indexOf)
+                .findFirst()
+                .orElse(-1);
+        if(index==-1){
+            bookingInfos.add(new BookingInfo(subFacility,startHour,endHour,booking));
+        } else if (startHour==null) {
+            bookingInfos.remove(index);
+        } else {
+            bookingInfos.get(index).setStartTime(startHour);
+            bookingInfos.get(index).setEndTime(endHour);
+        }
+        booking.setBookingInfos(bookingInfos);
+
+        booking.Caculate(price);
+
+
+        bookInForAdapter = new BookInForAdapter(bookingInfos);
+        rvBookInfo.setLayoutManager(new LinearLayoutManager(getContext()));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        rvBookInfo.addItemDecoration(dividerItemDecoration);
+        rvBookInfo.setAdapter(bookInForAdapter);
+
+        tvTotalHour.setText(String.valueOf(booking.getTotalHour())+" giờ");
+
+        // Định dạng số với dấu chấm phân cách hàng nghìn
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+        symbols.setGroupingSeparator('.'); // Dùng dấu chấm (.) để phân tách hàng nghìn
+
+        DecimalFormat decimalFormat = new DecimalFormat("#,###", symbols);
+        tvTotalPrice.setText(decimalFormat.format(booking.getTotalPrice())+" VND");
+
 
     }
 

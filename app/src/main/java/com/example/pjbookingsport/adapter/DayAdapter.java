@@ -39,6 +39,7 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
     public void onBindViewHolder(@NonNull DayViewHolder holder, int position) {
         LocalDate date = days.get(position);
         holder.tvDay.setText(date.getDayOfWeek().getDisplayName(TextStyle.SHORT, new Locale("vi")));
+        holder.tvMoth.setText(date.getMonth().getDisplayName(TextStyle.SHORT, new Locale("vi")));
         holder.tvDate.setText(String.valueOf(date.getDayOfMonth()));
 
         // Kiểm tra nếu là vị trí đang được chọn
@@ -46,10 +47,12 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
             holder.cardDay.setCardBackgroundColor(Color.parseColor("#308EFF")); // Màu xanh khi được chọn
             holder.tvDay.setTextColor(Color.WHITE);
             holder.tvDate.setTextColor(Color.WHITE);
+            holder.tvMoth.setTextColor(Color.WHITE);
         } else {
             holder.cardDay.setCardBackgroundColor(Color.parseColor("#DBECFF")); // Màu trắng mặc định
             holder.tvDay.setTextColor(Color.BLACK);
             holder.tvDate.setTextColor(Color.BLACK);
+            holder.tvMoth.setTextColor(Color.BLACK);
         }
 
         // Bắt sự kiện click
@@ -73,11 +76,12 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
     }
 
     static class DayViewHolder extends RecyclerView.ViewHolder {
-        TextView tvDate, tvDay;
+        TextView tvDate, tvDay, tvMoth;
         CardView cardDay;
 
         DayViewHolder(View itemView) {
             super(itemView);
+            tvMoth = itemView.findViewById(R.id.tvMonth);
             tvDate = itemView.findViewById(R.id.tvDate);
             tvDay = itemView.findViewById(R.id.tvDay);
             cardDay = itemView.findViewById(R.id.cardDay);

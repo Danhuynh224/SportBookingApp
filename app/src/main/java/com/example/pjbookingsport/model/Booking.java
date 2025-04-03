@@ -4,15 +4,46 @@ import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public class Booking {
     private Long bookingId;
-//    private User user;
-//    private SubFacility subFacility;
+
+    public Booking() {
+    }
+
+    private SubFacility subFacility;
     private LocalDate bookingDate;
-    private LocalTime startTime;
-    private LocalTime endTime;
+
     private BigDecimal totalPrice;
+
+    public List<BookingInfo> getBookingInfos() {
+        return bookingInfos;
+    }
+
+    public void setBookingInfos(List<BookingInfo> bookingInfos) {
+        this.bookingInfos = bookingInfos;
+    }
+
+    public SubFacility getSubFacility() {
+        return subFacility;
+    }
+
+    public void setSubFacility(SubFacility subFacility) {
+        this.subFacility = subFacility;
+    }
+
+    private int totalHour ;
+
+    public int getTotalHour() {
+        return totalHour;
+    }
+
+    public void setTotalHour(int totalHour) {
+        this.totalHour = totalHour;
+    }
+
+    private List<BookingInfo> bookingInfos;
 
     public Long getBookingId() {
         return bookingId;
@@ -30,21 +61,7 @@ public class Booking {
         this.bookingDate = bookingDate;
     }
 
-    public LocalTime getEndTime() {
-        return endTime;
-    }
 
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
-    }
-
-    public LocalTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
 
     public BigDecimal getTotalPrice() {
         return totalPrice;
@@ -56,34 +73,36 @@ public class Booking {
 
     public void Caculate(Price price){
         totalPrice=BigDecimal.valueOf(0);
-        int hourStart = startTime.getHour();
-        int hourEnd = endTime.getHour();
-        DayOfWeek dayOfWeek = bookingDate.getDayOfWeek();
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY){
-            totalPrice=BigDecimal.valueOf((hourEnd-hourStart)).multiply(price.getWeekTime());
-            return;
-        }
+        totalHour =0 ;
+        for (BookingInfo bookingInfo: bookingInfos) {
+            BigDecimal infoPrice =BigDecimal.valueOf(0);
+            int hourStart = bookingInfo.getStartTime().getHour();
+            int hourEnd = bookingInfo.getEndTime().getHour();
+            totalHour+=hourEnd-hourStart;
+            DayOfWeek dayOfWeek = bookingDate.getDayOfWeek();
+            if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY){
+                infoPrice = BigDecimal.valueOf((hourEnd-hourStart)).multiply(price.getWeekTime());
 
-        for (int i = hourStart;i < hourEnd;i++){
-            if(i<7){
-                //Tiền sáng sớm
-                totalPrice = totalPrice.add(price.getEarlyTime());
-            } else if (i<17) {
-                //Tiền ban ngày
-                totalPrice = totalPrice.add(price.getDayTime());
             }
             else {
-                //Tiền buổi tối
-                totalPrice = totalPrice.add(price.getNightTime());
+                for (int i = hourStart; i < hourEnd; i++) {
+                    if (i < 7) {
+                        //Tiền sáng sớm
+                        infoPrice = infoPrice.add(price.getEarlyTime());
+                    } else if (i < 17) {
+                        //Tiền ban ngày
+                        infoPrice = infoPrice.add(price.getDayTime());
+                    } else {
+                        //Tiền buổi tối
+                        infoPrice = infoPrice.add(price.getNightTime());
+                    }
+                }
             }
+            bookingInfo.setTotalPrice(infoPrice);
+            totalPrice=totalPrice.add(infoPrice);
         }
+
     }
 
-    public Booking(Long bookingId, LocalTime startTime, LocalDate bookingDate, LocalTime endTime, BigDecimal totalPrice) {
-        this.bookingId = bookingId;
-        this.startTime = startTime;
-        this.bookingDate = bookingDate;
-        this.endTime = endTime;
-        this.totalPrice = totalPrice;
-    }
+
 }

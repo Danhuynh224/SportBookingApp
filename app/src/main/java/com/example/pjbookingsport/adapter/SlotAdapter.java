@@ -98,7 +98,12 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotViewHolder
 
             notifyDataSetChanged();
 
-            listener.onSlotClick(hourSlots.get(position),subFacility);
+            if(startPosition!=-1 && endPostion!=-1) {
+                listener.onSlotClick(hourSlots.get(startPosition), hourSlots.get(endPostion).plusHours(1), subFacility);
+            }
+            else {
+                listener.onSlotClick(null, null, subFacility);
+            }
         });
     }
 
@@ -118,6 +123,6 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotViewHolder
         }
     }
     public interface OnSlotClickListener {
-        void onSlotClick(LocalTime hourSlot, SubFacility subFacility);
+        void onSlotClick(LocalTime startHour, LocalTime endHour, SubFacility subFacility);
     }
 }

@@ -53,4 +53,5 @@ dependencies {
     implementation(libs.converter)
     implementation(libs.gson)
     implementation(libs.viewpager2)
+    implementation(libs.flexbox)
 }

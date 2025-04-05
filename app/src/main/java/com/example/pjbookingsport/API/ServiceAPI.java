@@ -2,6 +2,7 @@
 package com.example.pjbookingsport.API;
 
 
+import com.example.pjbookingsport.model.Post;
 import com.example.pjbookingsport.model.SportFacility;
 import com.example.pjbookingsport.model.SubFacility;
 
@@ -29,4 +30,7 @@ public interface ServiceAPI {
 
     @GET("/subfacilities")
     Call<List<SubFacility>> getSubFaByFaId(@Query("faId") Long faid);
+
+    @GET("/post")
+    Call<List<Post>> getAllPosts();
 }

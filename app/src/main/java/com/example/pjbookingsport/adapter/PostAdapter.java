@@ -4,66 +4,67 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.pjbookingsport.R;
-import com.example.pjbookingsport.model.PostModel;
+import com.example.pjbookingsport.model.Post;
 
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
-    private static List<PostModel> mPosts;
-    private static Context mContext;
-    private LayoutInflater mLayoutInflater;
+    private List<Post> postsList;
+    private Context context;
 
-    public PostAdapter(Context context, List<PostModel> posts) {
-        mPosts = posts;
-        mContext = context;
-        mLayoutInflater = LayoutInflater.from(context);
+    private String imgUrl;
+
+    public PostAdapter(Context context, List<Post> postsList, String imgUrl) {
+        this.postsList = postsList;
+        this.context = context;
+        this.imgUrl = imgUrl;
     }
 
     @NonNull
     @Override
     public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = mLayoutInflater.inflate(R.layout.row_item_post, parent, false);
-        return new PostViewHolder(itemView);
+        View view = LayoutInflater.from(context).inflate(R.layout.row_item_post, parent, false);
+        return new PostViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        PostModel post = mPosts.get(position);
+        Post post = postsList.get(position);
         holder.tvTitle.setText(post.getTitle());
-        holder.imgBackground.setImageResource(post.getImgBackground());
+
+        Glide.with(context)
+                .load(imgUrl + post.getPostId())
+                .error(R.drawable.ic_launcher_foreground)
+                .into(holder.imgBackground);
     }
 
     @Override
     public int getItemCount() {
-        return mPosts.size();
+        if(postsList != null) {
+            return postsList.size();
+        }
+        return 0;
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imgBackground;
-        private TextView tvTitle;
+        ImageView imgBackground;
+        TextView tvTitle;
+        Button bookButton;
 
         public PostViewHolder(View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             imgBackground = itemView.findViewById(R.id.imgBackground);
-
-            itemView.setOnClickListener(v -> {
-                int position = getBindingAdapterPosition();
-                if (position != RecyclerView.NO_POSITION && position < mPosts.size()) {
-                    PostModel post = mPosts.get(position);
-                    Toast.makeText(mContext, post.getTitle(), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(mContext, "Invalid item clicked!", Toast.LENGTH_SHORT).show();
-                }
-            });
+            bookButton = itemView.findViewById(R.id.btnDatLich);
 
         }
     }

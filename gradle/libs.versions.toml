@@ -17,6 +17,8 @@ retrofit = "2.9.0"
 viewpager2 = "1.0.0"
 flexbox = "3.0.0"
 core = "1.15.0"
+okhttp = "4.9.0"
+logging_interceptor = "4.9.0"
 
 
 [libraries]
@@ -38,6 +40,8 @@ glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = 
 viewpager2 = { module = "androidx.viewpager2:viewpager2", name= "viewpager2", version.ref = "viewpager2" }
 flexbox = { group = "com.google.android.flexbox", name= "flexbox", version.ref = "flexbox" }
 core = { group = "androidx.core", name = "core", version.ref = "core" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "logging_interceptor" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

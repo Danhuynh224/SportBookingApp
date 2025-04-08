@@ -8,6 +8,10 @@
         <item name="android:backgroundTint">@android:color/white</item>
         <item name="android:textColor">#0056BD</item>
     </style>
+    <style name="LightBlueButtonWithBlackText" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@color/background</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
 
     <style name="Theme.PjBookingSport" parent="Base.Theme.PjBookingSport" />
     <style name="CustomActiveIndicatorStyle" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">

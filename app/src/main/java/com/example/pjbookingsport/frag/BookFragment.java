@@ -1,6 +1,7 @@
 package com.example.pjbookingsport.frag;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.icu.util.LocaleData;
 import android.os.Bundle;
 
@@ -11,10 +12,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,13 +32,16 @@ import com.example.pjbookingsport.adapter.HourAdapter;
 import com.example.pjbookingsport.adapter.SlotAdapter;
 import com.example.pjbookingsport.adapter.SubFaAdapter;
 import com.example.pjbookingsport.adapter.TypeBookAdapter;
+import com.example.pjbookingsport.enums.Role;
 import com.example.pjbookingsport.model.Booking;
 import com.example.pjbookingsport.model.BookingInfo;
 import com.example.pjbookingsport.model.FacilityType;
 import com.example.pjbookingsport.model.Price;
 import com.example.pjbookingsport.model.SportFacility;
 import com.example.pjbookingsport.model.SubFacility;
+import com.example.pjbookingsport.model.User;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -47,6 +55,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -74,6 +83,8 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
     private HourAdapter hourAdapter;
     private SubFaAdapter subFaAdapter;
     private BookInForAdapter bookInForAdapter;
+    private Button huyBtn, bookBtn;
+    private EditText noteEditText;
     List<LocalDate> days;
     List<LocalTime> hours;
     List<SubFacility> subFacilities;
@@ -82,7 +93,10 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
     LocalDate dateBook;
     Price price;
     Booking booking = new Booking();
+
     FacilityType prefacilityType;
+
+    User user = new User(1L, "Huỳnh Việt Đan", "vdan2242004@gmail.com","0362834995", Role.USER);
 
     private ServiceAPI serviceAPI;
     private static final String ARG_FACILITY = "FACILITY";
@@ -148,11 +162,49 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
 
         rvSubFa=view.findViewById(R.id.rvSubFa);
         rvBookInfo=view.findViewById(R.id.inforRv);
+        rvBookInfo.setLayoutManager(new LinearLayoutManager(getContext()));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        rvBookInfo.addItemDecoration(dividerItemDecoration);
 
         tvTotalHour = view.findViewById(R.id.tvTotalHour);
         tvTotalPrice = view.findViewById(R.id.tvTotalPrice);
 
+        noteEditText = view.findViewById(R.id.noteEditText);
+        noteEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                booking.setNote(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                booking.setNote(editable.toString());
+            }
+        });
+
+        bookBtn = view.findViewById(R.id.bookBtn);
+        bookBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addNewBooking();
+            }
+        });
+
+        huyBtn = view.findViewById(R.id.huyBtn);
+
+
+
+        booking.setUser(user);
+
     }
+
+
+
     @Override
     public void onDayClick(LocalDate date, int position) {
         setDayView(days.get(position));
@@ -242,7 +294,7 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
                 .findFirst()
                 .orElse(-1);
         if(index==-1){
-            bookingInfos.add(new BookingInfo(subFacility,startHour,endHour,booking));
+            bookingInfos.add(new BookingInfo(subFacility,startHour,endHour));
         } else if (startHour==null) {
             bookingInfos.remove(index);
         } else {
@@ -255,9 +307,6 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
 
 
         bookInForAdapter = new BookInForAdapter(bookingInfos);
-        rvBookInfo.setLayoutManager(new LinearLayoutManager(getContext()));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-        rvBookInfo.addItemDecoration(dividerItemDecoration);
         rvBookInfo.setAdapter(bookInForAdapter);
 
         tvTotalHour.setText(String.valueOf(booking.getTotalHour())+" giờ");
@@ -268,8 +317,57 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
 
         DecimalFormat decimalFormat = new DecimalFormat("#,###", symbols);
         tvTotalPrice.setText(decimalFormat.format(booking.getTotalPrice())+" VND");
-
-
     }
+
+    private void addNewBooking() {
+        serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
+        serviceAPI.addBooking(booking).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    showResultDialog(true);
+                }
+                else
+                {
+                    showResultDialog(false);
+                    String errorBody = null;
+                    try {
+                        errorBody = response.errorBody().string();
+                        Log.e("API RESPONSE", "Lỗi: " + errorBody);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                showResultDialog(false);
+                Log.d("API ERROR", "Không thể đặt: " + t.getMessage());
+            }
+        });
+    }
+
+    private void showResultDialog(boolean isSuccess) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        if (isSuccess && !booking.isEmpty()) {
+            builder.setTitle("Đã đặt sân 🎉");
+            builder.setMessage("Bạn đã đặt sân thành công");
+        } else {
+            builder.setTitle("Thất bại ❌");
+            builder.setMessage("Vui lòng điền đầy đủ thông tin");
+        }
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            dialog.dismiss(); // Đóng dialog
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+
 
 }

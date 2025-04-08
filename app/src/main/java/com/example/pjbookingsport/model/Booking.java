@@ -8,14 +8,28 @@ import java.util.List;
 
 public class Booking {
     private Long bookingId;
+    private User user;
 
-    public Booking() {
-    }
-
-    private SubFacility subFacility;
     private LocalDate bookingDate;
 
     private BigDecimal totalPrice;
+    private int totalHour ;
+    private List<BookingInfo> bookingInfos;
+    private String note;
+
+    public boolean isEmpty() {
+        return (
+                bookingInfos == null || bookingInfos.isEmpty()
+                );
+    }
+    public String getNote() {
+        return note;
+    }
+    public Booking() {
+    }
+    public void setNote(String note) {
+        this.note = note;
+    }
 
     public List<BookingInfo> getBookingInfos() {
         return bookingInfos;
@@ -25,26 +39,13 @@ public class Booking {
         this.bookingInfos = bookingInfos;
     }
 
-    public SubFacility getSubFacility() {
-        return subFacility;
-    }
-
-    public void setSubFacility(SubFacility subFacility) {
-        this.subFacility = subFacility;
-    }
-
-    private int totalHour ;
 
     public int getTotalHour() {
         return totalHour;
     }
-
     public void setTotalHour(int totalHour) {
         this.totalHour = totalHour;
     }
-
-    private List<BookingInfo> bookingInfos;
-
     public Long getBookingId() {
         return bookingId;
     }
@@ -61,10 +62,16 @@ public class Booking {
         this.bookingDate = bookingDate;
     }
 
-
-
     public BigDecimal getTotalPrice() {
         return totalPrice;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setTotalPrice(BigDecimal totalPrice) {

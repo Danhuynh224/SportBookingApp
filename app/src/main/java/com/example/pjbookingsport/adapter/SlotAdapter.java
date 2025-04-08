@@ -15,10 +15,13 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pjbookingsport.R;
+import com.example.pjbookingsport.model.Booking;
+import com.example.pjbookingsport.model.BookingInfo;
 import com.example.pjbookingsport.model.SubFacility;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotViewHolder> {
@@ -29,12 +32,13 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotViewHolder
     private int startPosition =-1 ;
     private int endPostion =-1 ;
     private int selectedPosition =-1 ;
-
+    List<Booking> bookedList;
     private LocalDate dateBook;
 
-    public SlotAdapter(List<LocalTime> hourSlots, SubFacility subFacility,LocalDate dateBook ,OnSlotClickListener listener) {
+    public SlotAdapter(List<LocalTime> hourSlots, SubFacility subFacility,LocalDate dateBook, List<Booking> bookedList ,OnSlotClickListener listener) {
         this.hourSlots = hourSlots;
         this.subFacility = subFacility;
+        this.bookedList = bookedList;
         this.listener = listener;
         this.dateBook = dateBook;
         Log.d("Ngày trong Slot",this.dateBook.toString());
@@ -50,7 +54,7 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotViewHolder
     @Override
     public void onBindViewHolder(@NonNull SlotViewHolder holder, int position) {
 
-        Log.d("Test Position", String.valueOf(startPosition) + " "+ endPostion);
+        List<BookingInfo> bookingInfos;
         if(dateBook.equals(LocalDate.now()) && (hourSlots.get(position).isBefore(LocalTime.now())||hourSlots.get(position).equals(LocalTime.now())))
         {
             holder.cardSlot.setCardBackgroundColor(Color.parseColor("#858585"));
@@ -65,6 +69,21 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotViewHolder
             holder.cardSlot.setCardBackgroundColor(Color.parseColor("#DBECFF"));
             holder.imgSlot.setImageDrawable(null);
 
+        }
+        if(bookedList!=null){
+            for(Booking booking : bookedList){
+                bookingInfos = booking.getBookingInfos();
+                for(BookingInfo bookingInfo: bookingInfos ){
+                    if((hourSlots.get(position).equals(bookingInfo.getStartTime()) || (hourSlots.get(position).isAfter(bookingInfo.getStartTime()) && hourSlots.get(position).isBefore(bookingInfo.getEndTime())))
+                            && subFacility.getSubFacilityId().equals(bookingInfo.getSubFacility().getSubFacilityId()))
+                    {
+                        Log.d("Test", hourSlots.get(position).toString());
+                        holder.cardSlot.setCardBackgroundColor(Color.parseColor("#858585"));
+                        holder.imgSlot.setImageResource(R.drawable.baseline_lock_24);
+                        holder.cardSlot.setClickable(false);
+                    }
+                }
+            }
         }
 
         holder.itemView.setOnClickListener(v->{

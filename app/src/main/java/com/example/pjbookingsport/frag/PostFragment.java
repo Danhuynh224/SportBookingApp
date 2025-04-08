@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import me.relex.circleindicator.CircleIndicator3;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,7 +34,10 @@ public class PostFragment extends Fragment {
 
     private RecyclerView rvPosts;
     private PostAdapter postAdapter;
-    private List<Post> postList = new ArrayList<>();;
+    private List<Post> postList = new ArrayList<>();
+
+    private ViewPager2 viewPager2;
+    private CircleIndicator3 circleIndicator3;
 
     private ServiceAPI apiService;
 
@@ -48,12 +53,13 @@ public class PostFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_post, container, false);
 
         rvPosts = view.findViewById(R.id.rv_postList);
+
 //        mPosts.add(new Post(R.drawable.pickleball_lon_nhat, "Giải pickleball lớn nhất thế giới tại Việt Nam"));
 //        mPosts.add(new Post(R.drawable.pickleball_lon_nhat, "Giải pickleball lớn nhất thế giới tại Việt Nam"));
 //        mPosts.add(new Post(R.drawable.pickleball_lon_nhat, "Giải pickleball lớn nhất thế giới tại Việt Nam"));
 
         String imgUrl = getString(R.string.img_url_post);
-        postAdapter = new PostAdapter(getContext(), postList, imgUrl);
+        postAdapter = new PostAdapter(getContext(), postList);
         rvPosts.setAdapter(postAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false);
@@ -61,7 +67,7 @@ public class PostFragment extends Fragment {
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rvPosts.getContext(),
                 linearLayoutManager.getOrientation());
-        dividerItemDecoration.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(getContext(), R.drawable.custom_divider)));
+        dividerItemDecoration.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(requireContext(), R.drawable.custom_divider)));
         rvPosts.addItemDecoration(dividerItemDecoration);
 
         GetAllPosts();

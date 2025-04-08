@@ -54,4 +54,5 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.viewpager2)
     implementation(libs.flexbox)
+    implementation(libs.circleindicator)
 }

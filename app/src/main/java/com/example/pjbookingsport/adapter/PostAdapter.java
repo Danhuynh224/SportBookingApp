@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.example.pjbookingsport.R;
@@ -17,16 +18,15 @@ import com.example.pjbookingsport.model.Post;
 
 import java.util.List;
 
+import me.relex.circleindicator.CircleIndicator3;
+
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private List<Post> postsList;
     private Context context;
 
-    private String imgUrl;
-
-    public PostAdapter(Context context, List<Post> postsList, String imgUrl) {
+    public PostAdapter(Context context, List<Post> postsList) {
         this.postsList = postsList;
         this.context = context;
-        this.imgUrl = imgUrl;
     }
 
     @NonNull
@@ -41,10 +41,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         Post post = postsList.get(position);
         holder.tvTitle.setText(post.getTitle());
 
-        Glide.with(context)
-                .load(imgUrl + post.getPostId())
-                .error(R.drawable.ic_launcher_foreground)
-                .into(holder.imgBackground);
+        ImageSliderPostAdapter sliderAdapter = new ImageSliderPostAdapter(context, post.getImg());
+        holder.viewPager.setAdapter(sliderAdapter);
+        holder.indicator.setViewPager(holder.viewPager);
+        sliderAdapter.registerAdapterDataObserver(holder.indicator.getAdapterDataObserver());
+
     }
 
     @Override
@@ -56,14 +57,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgBackground;
         TextView tvTitle;
         Button bookButton;
+        ViewPager2 viewPager;
+        CircleIndicator3 indicator;
 
         public PostViewHolder(View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
-            imgBackground = itemView.findViewById(R.id.imgBackground);
+            viewPager = itemView.findViewById(R.id.viewPagerSlider);
+            indicator = itemView.findViewById(R.id.indicator);
             bookButton = itemView.findViewById(R.id.btnDatLich);
 
         }

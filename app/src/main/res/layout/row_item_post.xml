@@ -5,17 +5,22 @@
     android:layout_height="wrap_content">
 
     <!-- Ảnh nền -->
-    <ImageView
-        android:id="@+id/imgBackground"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerSlider"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/pickleball_lon_nhat"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <me.relex.circleindicator.CircleIndicator3
+        android:id="@+id/indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/viewPagerSlider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="-12dp"/>
 
     <!-- TextView-->
     <androidx.cardview.widget.CardView

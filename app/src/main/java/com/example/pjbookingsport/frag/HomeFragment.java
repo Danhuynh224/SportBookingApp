@@ -6,20 +6,20 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
@@ -65,6 +65,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private ServiceAPI apiService;
     private List<SportFacility> sportFacilities;
     String imgUrl;
+
+    private ImageButton btnSearchIcon;
+    private EditText searchBar;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -108,12 +111,22 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Ánh xạ view
 
         viewPager2 = view.findViewById(R.id.view_pager_2);
+        btnSearchIcon = view.findViewById(R.id.btnSearchIcon);
+        searchBar = view.findViewById(R.id.search_bar);
+
+        // Load animation
+        Animation fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
+        Animation fadeOut = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out);
+
+        searchBar.setVisibility(View.GONE);
+        btnSearchIcon.setVisibility(View.VISIBLE);
 
         //Setting viewpager2
         viewPager2.setOffscreenPageLimit(3);
@@ -140,6 +153,36 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         });
 
         GetAllSportFa();
+
+
+
+
+        // Sự kiện nhấn vào icon tìm kiếm
+        btnSearchIcon.setOnClickListener(v -> {
+            btnSearchIcon.startAnimation(fadeOut);
+            btnSearchIcon.setVisibility(View.GONE);
+
+            searchBar.setVisibility(View.VISIBLE);
+            searchBar.startAnimation(fadeIn);
+            searchBar.requestFocus();
+        });
+
+        searchBar.setOnTouchListener((v, event) -> {
+            final int DRAWABLE_RIGHT = 2;
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (event.getRawX() >= (searchBar.getRight() - searchBar.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                    // Ẩn EditText, hiện lại icon search
+
+                    searchBar.startAnimation(fadeOut);
+                    searchBar.setVisibility(View.GONE);
+                    searchBar.setText("");
+                    btnSearchIcon.setVisibility(View.VISIBLE);
+                    btnSearchIcon.startAnimation(fadeIn);
+                    return true;
+                }
+            }
+            return false;
+        });
 
 //
     }

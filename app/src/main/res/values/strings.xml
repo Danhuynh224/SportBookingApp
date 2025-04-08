@@ -3,6 +3,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="img_url">http://10.0.2.2:8080/images/</string>
+    <string name="img_url_post">http://10.0.2.2:8080/images/post</string>
     <string-array name="vietnam_provinces">
         <item>Hà Nội</item>
         <item>TP Hồ Chí Minh</item>

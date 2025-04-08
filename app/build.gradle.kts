@@ -54,6 +54,10 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.viewpager2)
     implementation(libs.flexbox)
+<<<<<<< HEAD
     implementation(libs.okhttp)  // Đối với OkHttp
     implementation(libs.logging)  // Đối với OkHttp Logging Interceptor
+=======
+    implementation(libs.circleindicator)
+>>>>>>> d236521939cc2aaa0ca951b8aeb6031b19009dfe
 }

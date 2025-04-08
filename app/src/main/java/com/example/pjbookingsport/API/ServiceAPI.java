@@ -2,7 +2,11 @@
 package com.example.pjbookingsport.API;
 
 
+<<<<<<< HEAD
 import com.example.pjbookingsport.model.Booking;
+=======
+import com.example.pjbookingsport.model.Post;
+>>>>>>> d236521939cc2aaa0ca951b8aeb6031b19009dfe
 import com.example.pjbookingsport.model.SportFacility;
 import com.example.pjbookingsport.model.SubFacility;
 
@@ -35,9 +39,17 @@ public interface ServiceAPI {
     @GET("/subfacilities")
     Call<List<SubFacility>> getSubFaByFaId(@Query("faId") Long faid);
 
+<<<<<<< HEAD
     //Booking
     @POST("/booking/add")
     Call<ResponseBody> addBooking(@Body Booking booking);
     @GET("/booking/getByDateAndTypeAndSubFa")
     Call<List<Booking>> getByDateAndTypeAndSubFa(@Query("bookingDate") LocalDate bookingDate, @Query("facilityTypeId") Long facilityTypeId, @Query("subFacilityId") Long subFacilityId);
+=======
+    @GET("/post")
+    Call<List<Post>> getAllPosts();
+
+    @GET("/images/post/{id}")
+    Call<List<String>> getPostImageUrls(@Path("id") Long postId);
+>>>>>>> d236521939cc2aaa0ca951b8aeb6031b19009dfe
 }

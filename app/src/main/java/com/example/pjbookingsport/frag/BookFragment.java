@@ -191,7 +191,26 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
         bookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addNewBooking();
+                if(booking.isEmpty()){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Thất bại ❌");
+                    builder.setMessage("Vui lòng điền đầy đủ thông tin");
+                    builder.setPositiveButton("OK", (dialog, which) -> {
+                        dialog.dismiss(); // Đóng dialog
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+//                addNewBooking();
+                else {
+                    PaymentFragment paymentFragment = PaymentFragment.newInstance(facility, booking);
+
+                    requireActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragMain, paymentFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
             }
         });
 

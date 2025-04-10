@@ -13,7 +13,6 @@ public class BookingInfo {
                 "subFacility=" + subFacility +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
-                ", booking=" + booking +
                 '}';
     }
 
@@ -21,7 +20,7 @@ public class BookingInfo {
 
     private LocalTime endTime;
 
-    private Booking booking;
+//    private Booking booking;
     private BigDecimal totalPrice;
 
     public BigDecimal getTotalPrice() {
@@ -56,18 +55,11 @@ public class BookingInfo {
         this.endTime = endTime;
     }
 
-    public Booking getBooking() {
-        return booking;
-    }
 
-    public void setBooking(Booking booking) {
-        this.booking = booking;
-    }
 
-    public BookingInfo( SubFacility subFacility, LocalTime startTime, LocalTime endTime, Booking booking) {
+    public BookingInfo( SubFacility subFacility, LocalTime startTime, LocalTime endTime) {
         this.subFacility = subFacility;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.booking = booking;
     }
 }

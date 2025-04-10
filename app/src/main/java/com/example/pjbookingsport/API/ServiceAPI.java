@@ -34,6 +34,4 @@ public interface ServiceAPI {
     @GET("/post")
     Call<List<Post>> getAllPosts();
 
-    @GET("/images/post/{id}")
-    Call<List<String>> getPostImageUrls(@Path("id") Long postId);
 }

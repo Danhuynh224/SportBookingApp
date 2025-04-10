@@ -1,18 +1,32 @@
 package com.example.pjbookingsport.model;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Post {
+public class Post implements Serializable {
     private Long postId;
     private String title;
+
+    private String summary;
+    private String content;
     private String img;
 
-    public Post(Long postId, String title, String img) {
+    public Post(Long postId, String title, String summary, String content, String img) {
         this.postId = postId;
         this.title = title;
+        this.summary = summary;
+        this.content = content;
         this.img = img;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public Long getPostId() {
@@ -36,11 +50,19 @@ public class Post {
 
         String[] fileNames = img.split(",");
         return Arrays.stream(fileNames)
-                .map(name -> "http://10.0.2.2:8080/images/" + name.trim())
+                .map(name -> "http://10.0.2.2:8080/images/post/" + name.trim())
                 .collect(Collectors.toList());
     }
 
     public void setImg(String img) {
         this.img = img;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 }

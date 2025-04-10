@@ -1,7 +1,10 @@
 package com.example.pjbookingsport.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -15,6 +18,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.bumptech.glide.Glide;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Post;
+import com.example.pjbookingsport.model.SportFacility;
 
 import java.util.List;
 
@@ -23,10 +27,12 @@ import me.relex.circleindicator.CircleIndicator3;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private List<Post> postsList;
     private Context context;
+    private OnItemClickListener listener;
 
-    public PostAdapter(Context context, List<Post> postsList) {
+    public PostAdapter(Context context, List<Post> postsList, OnItemClickListener listener) {
         this.postsList = postsList;
         this.context = context;
+        this.listener = listener;
     }
 
     @NonNull
@@ -36,6 +42,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         return new PostViewHolder(view);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         Post post = postsList.get(position);
@@ -45,6 +52,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.viewPager.setAdapter(sliderAdapter);
         holder.indicator.setViewPager(holder.viewPager);
         sliderAdapter.registerAdapterDataObserver(holder.indicator.getAdapterDataObserver());
+
+        holder.itemView.setOnClickListener(v -> listener.onItemClick(post));
+        sliderAdapter.setOnImageClickListener(() -> listener.onItemClick(post));
 
     }
 
@@ -70,6 +80,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             bookButton = itemView.findViewById(R.id.btnDatLich);
 
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Post post);
+        void onBookClick(Post post);
+
     }
 }
 

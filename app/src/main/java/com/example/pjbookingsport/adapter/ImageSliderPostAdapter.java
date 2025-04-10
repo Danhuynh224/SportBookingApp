@@ -20,6 +20,7 @@ public class ImageSliderPostAdapter extends RecyclerView.Adapter<ImageSliderPost
     private List<String> imageUrls;
     private Context context;
 
+    private OnImageClickListener listener;
     public ImageSliderPostAdapter(Context context, List<String> imageUrls) {
         this.imageUrls = imageUrls;
         this.context = context;
@@ -39,6 +40,12 @@ public class ImageSliderPostAdapter extends RecyclerView.Adapter<ImageSliderPost
                 .load(url)
                 .error(R.drawable.ic_launcher_foreground)
                 .into(holder.imageView);
+
+        holder.imageView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onImageClick();
+            }
+        });
     }
 
     @Override
@@ -50,11 +57,18 @@ public class ImageSliderPostAdapter extends RecyclerView.Adapter<ImageSliderPost
     }
 
     public static class SliderViewHolder extends RecyclerView.ViewHolder {
-
         ImageView imageView;
         public SliderViewHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
         }
+    }
+
+    public interface OnImageClickListener {
+        void onImageClick();
+    }
+
+    public void setOnImageClickListener(OnImageClickListener listener) {
+        this.listener = listener;
     }
 }

@@ -35,10 +35,8 @@ public class PostFragment extends Fragment {
     private RecyclerView rvPosts;
     private PostAdapter postAdapter;
     private List<Post> postList = new ArrayList<>();
-
     private ViewPager2 viewPager2;
     private CircleIndicator3 circleIndicator3;
-
     private ServiceAPI apiService;
 
     public PostFragment() {
@@ -54,12 +52,21 @@ public class PostFragment extends Fragment {
 
         rvPosts = view.findViewById(R.id.rv_postList);
 
-//        mPosts.add(new Post(R.drawable.pickleball_lon_nhat, "Giải pickleball lớn nhất thế giới tại Việt Nam"));
-//        mPosts.add(new Post(R.drawable.pickleball_lon_nhat, "Giải pickleball lớn nhất thế giới tại Việt Nam"));
-//        mPosts.add(new Post(R.drawable.pickleball_lon_nhat, "Giải pickleball lớn nhất thế giới tại Việt Nam"));
+        postAdapter = new PostAdapter(getContext(), postList, new PostAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Post post) {
+                PostDetailFragment detailFragment = PostDetailFragment.newInstance(post);
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, detailFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
 
-        String imgUrl = getString(R.string.img_url_post);
-        postAdapter = new PostAdapter(getContext(), postList);
+            @Override
+            public void onBookClick(Post post) {
+
+            }
+        });
         rvPosts.setAdapter(postAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false);

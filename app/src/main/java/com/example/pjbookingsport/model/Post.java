@@ -50,7 +50,7 @@ public class Post implements Serializable {
 
         String[] fileNames = img.split(",");
         return Arrays.stream(fileNames)
-                .map(name -> "http://10.0.2.2:8080/images/post/" + name.trim())
+                .map(name -> "http://localhost:8080/images/post/" + name.trim())
                 .collect(Collectors.toList());
     }
 

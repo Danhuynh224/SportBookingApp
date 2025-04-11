@@ -31,4 +31,11 @@
         <item name="cornerSize">16dp</item>
     </style>
 
+    <style name="MyDatePickerDialog" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="colorPrimary">@color/outline</item> <!-- Viền nút, title -->
+        <item name="colorOnPrimary">@color/white</item>     <!-- Màu chữ khi chọn -->
+        <item name="android:textColorPrimary">@color/black</item> <!-- Màu chữ bình thường -->
+    </style>
+
+
 </resources>

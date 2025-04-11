@@ -50,8 +50,11 @@ public class MainActivity extends AppCompatActivity {
             else if (idItem==R.id.nav_booked) {
                 fragmentSelected =new BookedFragment();
             }
-            else {
+            else if (idItem==R.id.nav_post)  {
                 fragmentSelected =new PostFragment();
+            }
+            else {
+                fragmentSelected = new PersonalFragment();
             }
             loadFragment(fragmentSelected);
             return true;

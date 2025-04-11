@@ -18,4 +18,8 @@
         android:id="@+id/nav_post"
         android:icon="@drawable/baseline_ballot_24"
         android:title="Nổi bật" />
+    <item
+        android:id="@+id/nav_user"
+        android:icon="@drawable/baseline_account_box_24"
+        android:title="Cá nhân" />
 </menu>

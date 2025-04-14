@@ -1,66 +1,84 @@
 package com.example.pjbookingsport.frag;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.pjbookingsport.API.RetrofitClient;
+import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
+import com.example.pjbookingsport.adapter.BookedAdapter;
+import com.example.pjbookingsport.model.Booking;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BookedFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class BookedFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView rvBooked;
+    private BookedAdapter adapter;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private List<Booking> bookingList = new ArrayList<>();
+    private ServiceAPI apiService;
 
     public BookedFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BookedFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BookedFragment newInstance(String param1, String param2) {
-        BookedFragment fragment = new BookedFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_booked, container, false);
+        View view = inflater.inflate(R.layout.fragment_booked, container, false);
+        rvBooked = view.findViewById(R.id.rv_bookedList);
+        adapter = new BookedAdapter(bookingList, booking -> {
+            BookedDetailFragment detailFragment = BookedDetailFragment.newInstance(booking);
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, detailFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+        rvBooked.setAdapter(adapter);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        rvBooked.setLayoutManager(layoutManager);
+
+        getBookingsByUserId(3L);
+
+        return view;
+    }
+
+    private void getBookingsByUserId(Long userId) {
+        apiService = RetrofitClient.getClient().create(ServiceAPI.class);
+        apiService.getBookingsByUserId(userId).enqueue(new Callback<List<Booking>>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(Call<List<Booking>> call, Response<List<Booking>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    bookingList.clear();
+                    bookingList.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Log.e("API ERROR", "Không thể lấy danh sách đã đặt");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Booking>> call, Throwable t) {
+                Log.e("API ERROR", "Lỗi khi gọi API lấy danh sách đặt: " + t.getMessage());
+            }
+        });
     }
 }

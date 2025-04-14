@@ -1,5 +1,7 @@
 package com.example.pjbookingsport.model;
 
+import com.example.pjbookingsport.R;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -48,9 +50,11 @@ public class Post implements Serializable {
     public List<String> getImg() {
         if (img == null || img.isEmpty()) return List.of();
 
+        String imgUrl = String.valueOf(R.string.img_url_post);
+
         String[] fileNames = img.split(",");
         return Arrays.stream(fileNames)
-                .map(name -> "http://localhost:8080/images/post/" + name.trim())
+                .map(name -> imgUrl + name.trim())
                 .collect(Collectors.toList());
     }
 

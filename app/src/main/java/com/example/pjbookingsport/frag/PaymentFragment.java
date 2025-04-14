@@ -29,6 +29,7 @@ import com.example.pjbookingsport.enums.Role;
 import com.example.pjbookingsport.model.Booking;
 import com.example.pjbookingsport.model.SportFacility;
 import com.example.pjbookingsport.model.User;
+import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -63,7 +64,7 @@ public class PaymentFragment extends Fragment {
     private RecyclerView rcInfo;
     private ImageButton btnBack;
     BookInforPayAdapter bookInForAdapter;
-    User user = new User(1L, "Huỳnh Việt Đan", "vdan2242004@gmail.com","0362834995", Role.USER);
+    User user;
 
     private ServiceAPI serviceAPI;
     public PaymentFragment() {
@@ -113,10 +114,12 @@ public class PaymentFragment extends Fragment {
         huyBtn = view.findViewById(R.id.huyBtn);
         bookBtn = view.findViewById(R.id.bookBtn);
         btnBack = view.findViewById(R.id.btn_back);
+        user = SharedPreferencesHelper.getUser(getContext());
         LoadBookingInfo();
     }
 
     private void LoadBookingInfo() {
+
         txtName.setText(facility.getName());
         txtAddress.setText(facility.getAddress());
         txtType.setText(booking.getBookingInfos().get(0).getSubFacility().getFacilityType().getName());
@@ -144,11 +147,33 @@ public class PaymentFragment extends Fragment {
                     showResultDialog(false);
                 }
                 if(radioCash.isChecked()){
+                    if(!user.getFullName().equals(txtUserName.getText().toString()) || !user.getPhone().equals(txtPhone.getText().toString())){
+                        updateInfoUser();
+                    }
                     addNewBooking();
                 }
             }
         });
     }
+
+    private void updateInfoUser() {
+        user.setFullName(txtUserName.getText().toString());
+        user.setPhone(txtPhone.getText().toString());
+        SharedPreferencesHelper.saveUser(getContext(),user);
+        serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
+        serviceAPI.updateUser(user).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("Lỗi API", "Không truy cập được API: " + t.getMessage());
+            }
+        });
+    }
+
     private void addNewBooking() {
         serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
         serviceAPI.addBooking(booking).enqueue(new Callback<ResponseBody>() {

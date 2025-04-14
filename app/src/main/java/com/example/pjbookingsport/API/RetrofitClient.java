@@ -42,7 +42,8 @@ public class RetrofitClient {
 
             // Khởi tạo Retrofit client
             retrofit = new Retrofit.Builder()
-                    .baseUrl("http://localhost:8080/")  // Địa chỉ API
+//                    .baseUrl("http://localhost:8080/")
+                    .baseUrl("http://10.0.2.2:8080/")// Địa chỉ API
                     .addConverterFactory(GsonConverterFactory.create(gson)) // Chuyển đổi Gson
                     .client(client) // Thêm OkHttpClient vào Retrofit
                     .build();

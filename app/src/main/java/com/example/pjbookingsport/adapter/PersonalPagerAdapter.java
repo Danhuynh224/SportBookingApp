@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.example.pjbookingsport.frag.PersonalAccountFragment;
 import com.example.pjbookingsport.frag.PersonalInfoFragment;
 
 public class PersonalPagerAdapter extends FragmentStateAdapter {
@@ -19,7 +20,7 @@ public class PersonalPagerAdapter extends FragmentStateAdapter {
         if (position == 0) {
             return new PersonalInfoFragment();
         } else {
-            return null;
+            return new PersonalAccountFragment();
         }
     }
 

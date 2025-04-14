@@ -19,7 +19,13 @@ public class LocalDateAdapter extends TypeAdapter<LocalDate> {
     @Override
     public LocalDate read(JsonReader in) throws IOException {
         String dateString = in.nextString();
+
+        if (dateString == null || dateString.isEmpty() || dateString.equals("0000-00-00")) {
+            return null;
+        }
+
         return LocalDate.parse(dateString, formatter);
     }
+
 }
 

@@ -2,6 +2,7 @@ package com.example.pjbookingsport.frag;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,10 +10,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,19 +24,29 @@ import com.example.pjbookingsport.API.AddressAPI;
 import com.example.pjbookingsport.API.RetrofitAddress;
 import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
+import com.example.pjbookingsport.LoginActivity;
 import com.example.pjbookingsport.R;
+import com.example.pjbookingsport.SignUpActivity;
 import com.example.pjbookingsport.adapter.FacilityPagerAdapter;
 import com.example.pjbookingsport.adapter.PersonalPagerAdapter;
+import com.example.pjbookingsport.model.District;
+import com.example.pjbookingsport.model.DistrictResponse;
 import com.example.pjbookingsport.model.Province;
 import com.example.pjbookingsport.model.ProvinceResponse;
+import com.example.pjbookingsport.model.User;
+import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,14 +63,20 @@ public class PersonalInfoFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    Spinner spinnerGender ;
-    EditText edtBirthday ;
-    private TextView cityPicker;
+    Button updateBtn;
+    EditText edtBirthday, txtUserName, txtPhone, txtEmail ;
+    private TextView cityPicker,districtPicker, sexPicker;
     List<Province> provinces;
     List<String> provinceNames = new ArrayList<>();
+    List<District> districts;
+    List<String> ditrictNames = new ArrayList<>();
 
+    String idProvince;
+
+    User user ;
     private AddressAPI addressAPI;
-    String[] genders = {"Chọn giới tính", "Nam", "Nữ", "Khác"};
+    private ServiceAPI serviceAPI;
+    String[] genders = { "Nam", "Nữ", "LGBT"};
 
 
     // TODO: Rename and change types of parameters
@@ -104,19 +123,23 @@ public class PersonalInfoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        spinnerGender = view.findViewById(R.id.spinnerGender);
+        addressAPI = RetrofitAddress.getClient().create(AddressAPI.class);
+        sexPicker = view.findViewById(R.id.sex_picker);
         edtBirthday = view.findViewById(R.id.edtBirthday);
         cityPicker = view.findViewById(R.id.city_picker);
-
-
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_spinner_item, genders);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerGender.setAdapter(adapter);
-        spinnerGender.setSelection(0);
-
+        districtPicker = view.findViewById(R.id.district_picker);
+        txtEmail = view.findViewById(R.id.txtEmail);
+        txtUserName = view.findViewById(R.id.txtUserName);
+        txtPhone = view.findViewById(R.id.txtPhone);
+        user = SharedPreferencesHelper.getUser(getContext());
+        updateBtn = view.findViewById(R.id.updateBtn);
+        updateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                update();
+            }
+        });
+        binding();
         edtBirthday.setOnClickListener(v -> {
             final Calendar calendar = Calendar.getInstance();
             DatePickerDialog datePickerDialog = new DatePickerDialog(
@@ -142,6 +165,10 @@ public class PersonalInfoFragment extends Fragment {
             datePickerDialog.show();
         });
 
+        sexPicker.setOnClickListener(view1 -> {
+            showSexPickerDialog();
+        });
+
         cityPicker.setOnClickListener(view1 -> {
             if (provinces != null && !provinces.isEmpty()) {
                 showCityPickerDialog();
@@ -150,7 +177,27 @@ public class PersonalInfoFragment extends Fragment {
                 getProvinces();
             }
         });
+
+        districtPicker.setOnClickListener(view1 -> {
+            if (districts != null && !districts.isEmpty()) {
+                showDistrictPickerDialog();
+            } else {
+                // Gọi API ngay khi tạo Fragment
+                getDistrict();
+            }
+        });
     }
+
+    private void showSexPickerDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Chọn giới tính");
+
+        builder.setItems(genders, (dialog, which) -> {
+            sexPicker.setText(genders[which]);
+        });
+        builder.show();
+    }
+
     private void showCityPickerDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Chọn tỉnh/thành phố");
@@ -160,12 +207,29 @@ public class PersonalInfoFragment extends Fragment {
 
         builder.setItems(provinceArray, (dialog, which) -> {
             cityPicker.setText(provinceArray[which]);
+            for(Province province : provinces ){
+                if(Objects.equals(province.getName(), provinceArray[which])){
+                    idProvince = province.getId();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void showDistrictPickerDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Chọn huyện/quận");
+
+        // Chuyển List<String> sang String[]
+        String[] districtArray = ditrictNames.toArray(new String[0]);
+
+        builder.setItems(districtArray, (dialog, which) -> {
+            districtPicker.setText(districtArray[which]);
         });
         builder.show();
     }
 
     private  void getProvinces(){
-        addressAPI = RetrofitAddress.getClient().create(AddressAPI.class);
         addressAPI.getProvinces().enqueue(new Callback<ProvinceResponse>() {
             @Override
             public void onResponse(Call<ProvinceResponse> call, Response<ProvinceResponse> response) {
@@ -184,6 +248,103 @@ public class PersonalInfoFragment extends Fragment {
 
             }
         });
+    }
+    private void getDistrict(){
+        if(idProvince!=null){
+            addressAPI.getDistricts(idProvince).enqueue(new Callback<DistrictResponse>() {
+                @Override
+                public void onResponse(Call<DistrictResponse> call, Response<DistrictResponse> response) {
+                    if(response.isSuccessful() && response.body() !=null){
+                        districts = response.body().getData();
+                        ditrictNames.clear();
+                        for(District district : districts){
+                            ditrictNames.add(district.getName());
+                        }
+                        showDistrictPickerDialog();
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<DistrictResponse> call, Throwable t) {
+
+                }
+            });
+        }
+    }
+
+    private void binding(){
+        txtUserName.setText(user.getFullName());
+        txtPhone.setText(user.getPhone());
+        txtEmail.setText(user.getEmail());
+        if(!user.getAddress().isEmpty()){
+            String[] parts = user.getAddress().split("\\|");
+            districtPicker.setText(parts[0]);
+            cityPicker.setText(parts[1]);
+        }
+        sexPicker.setText(user.getSex());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String selectedDate = user.getBirthday().format(formatter);
+        edtBirthday.setText(selectedDate);
+    }
+
+    private void update(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        String fullName = txtUserName.getText().toString();
+        String phone = txtPhone.getText().toString();
+        String email = txtEmail.getText().toString();
+        String sex = sexPicker.getText().toString();
+        String address = districtPicker.getText().toString() + "|" + cityPicker.getText().toString();
+
+        LocalDate birthday = null;
+        try {
+            birthday = LocalDate.parse(edtBirthday.getText().toString(), formatter);
+        } catch (Exception e) {
+            e.printStackTrace(); // xử lý nếu người dùng nhập sai format
+        }
+
+        user.setFullName(fullName);
+        user.setPhone(phone);
+        user.setEmail(email);
+        user.setSex(sex);
+        user.setAddress(address);
+        user.setBirthday(birthday);
+        SharedPreferencesHelper.saveUser(getContext(),user);
+        serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
+        serviceAPI.updateUser(user).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    showResultDialog(response.isSuccessful());
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("Lỗi API", "Không truy cập được API: " + t.getMessage());
+            }
+        });
+
+    }
+    private void showResultDialog(boolean isSuccess) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        if (isSuccess) {
+            builder.setTitle("Cập nhật thành công 🎉");
+            builder.setMessage("Thông tin của bạn đã được cập nhật");
+        } else {
+            builder.setTitle("Thất bại ❌");
+            builder.setMessage("Cập nhật thông tin thất bại vui lòng kiểm tra lại");
+        }
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            if(isSuccess) {
+                binding();
+            }
+            dialog.dismiss(); // Đóng dialog
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }

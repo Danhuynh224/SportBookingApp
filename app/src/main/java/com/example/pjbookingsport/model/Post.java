@@ -54,6 +54,7 @@ public class Post implements Serializable {
 
         String[] fileNames = img.split(",");
         return Arrays.stream(fileNames)
+              
                 .map(name -> imgUrl + name.trim())
                 .collect(Collectors.toList());
     }

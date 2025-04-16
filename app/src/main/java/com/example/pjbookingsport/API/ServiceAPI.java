@@ -6,6 +6,7 @@ import com.example.pjbookingsport.model.Booking;
 import com.example.pjbookingsport.model.Post;
 import com.example.pjbookingsport.model.SportFacility;
 import com.example.pjbookingsport.model.SubFacility;
+import com.example.pjbookingsport.model.User;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,7 +36,6 @@ public interface ServiceAPI {
 
     @GET("/subfacilities")
     Call<List<SubFacility>> getSubFaByFaId(@Query("faId") Long faid);
-
     //Booking
     @POST("/booking/add")
     Call<ResponseBody> addBooking(@Body Booking booking);
@@ -43,6 +43,8 @@ public interface ServiceAPI {
     Call<List<Booking>> getByDateAndTypeAndSubFa(@Query("bookingDate") LocalDate bookingDate, @Query("facilityTypeId") Long facilityTypeId, @Query("subFacilityId") Long subFacilityId);
     @GET("/post")
     Call<List<Post>> getAllPosts();
+    @POST("/user/update")
+    Call<ResponseBody> updateUser(@Body User user);
 
     @GET("/booking/user/{userId}")
     Call<List<Booking>> getBookingsByUserId(@Path("userId") Long userId);

@@ -40,6 +40,7 @@ import com.example.pjbookingsport.model.Price;
 import com.example.pjbookingsport.model.SportFacility;
 import com.example.pjbookingsport.model.SubFacility;
 import com.example.pjbookingsport.model.User;
+import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -96,7 +97,7 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
 
     FacilityType prefacilityType;
 
-    User user = new User(1L, "Huỳnh Việt Đan", "vdan2242004@gmail.com","0362834995", Role.USER);
+    User user ;
 
     private ServiceAPI serviceAPI;
     private static final String ARG_FACILITY = "FACILITY";
@@ -130,6 +131,7 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        user = SharedPreferencesHelper.getUser(getContext());
         tvThu =view.findViewById(R.id.tvThu);
         tvDayMonthYear = view.findViewById(R.id.tvDayMonthYear);
 

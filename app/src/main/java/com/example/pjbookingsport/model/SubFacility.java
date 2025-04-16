@@ -6,15 +6,11 @@ public class SubFacility {
     private Long facilityId;
     private FacilityType facilityType;
 
-    private SportFacility sportFacility;
-
-
-    public SubFacility(Long subFacilityId, String name, Long facilityId, FacilityType facilityType, SportFacility sportFacility) {
+    public SubFacility(Long subFacilityId, String name, Long facilityId, FacilityType facilityType) {
         this.subFacilityId = subFacilityId;
         this.name = name;
         this.facilityId = facilityId;
         this.facilityType = facilityType;
-        this.sportFacility = sportFacility;
     }
 
     public Long getSubFacilityId() {
@@ -48,11 +44,5 @@ public class SubFacility {
     public void setFacilityType(FacilityType facilityType) {
         this.facilityType = facilityType;
     }
-    public SportFacility getSportFacility() {
-        return sportFacility;
-    }
 
-    public void setSportFacility(SportFacility sportFacility) {
-        this.sportFacility = sportFacility;
-    }
 }

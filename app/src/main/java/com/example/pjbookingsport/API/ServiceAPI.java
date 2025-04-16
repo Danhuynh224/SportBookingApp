@@ -47,4 +47,6 @@ public interface ServiceAPI {
     @GET("/booking/user/{userId}")
     Call<List<Booking>> getBookingsByUserId(@Path("userId") Long userId);
 
+    @GET("/sportsfacilities/{id}")
+    Call<SportFacility> getSportsFacilityById(@Path("id") Long id);
 }

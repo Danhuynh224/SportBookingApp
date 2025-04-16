@@ -1,9 +1,12 @@
 package com.example.pjbookingsport.frag;
 
+import android.annotation.SuppressLint;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -13,18 +16,35 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.pjbookingsport.API.RetrofitClient;
+import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.adapter.BookedAdapter;
 import com.example.pjbookingsport.adapter.ImageSliderPostAdapter;
 import com.example.pjbookingsport.model.Booking;
+import com.example.pjbookingsport.model.BookingInfo;
 import com.example.pjbookingsport.model.Post;
+import com.example.pjbookingsport.model.SportFacility;
+import com.example.pjbookingsport.model.SubFacility;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BookedDetailFragment extends Fragment {
 
     private Booking booking;
     private ImageButton btnBack;
 
-    private TextView tvTenSan, tvDiaChi, tvNgayGio, tvTongTien;
+    private AppCompatButton btnBackMain, btnBookNew;
+
+    private TextView tvTenSan, tvDiaChi, tvNgayGio, tvTongTien, tvBookingID, tvDateTitle;
 
     private LinearLayout layoutTimeSlots;
     private static final String ARG_BOOKING = "BOOKING";
@@ -58,9 +78,14 @@ public class BookedDetailFragment extends Fragment {
         tvNgayGio = view.findViewById(R.id.tvNgayGio);
         tvTongTien = view.findViewById(R.id.tvTongTien);
         layoutTimeSlots = view.findViewById(R.id.layoutTimeSlots);
+        tvBookingID = view.findViewById(R.id.tvBookingID);
+        tvDateTitle = view.findViewById(R.id.tvDateTitle);
         btnBack = view.findViewById(R.id.btn_back);
+        btnBackMain = view.findViewById(R.id.btnBackMain);
+        btnBookNew = view.findViewById(R.id.btnThanhToan);
 
         btnBack.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
+        btnBackMain .setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
 
         if (getArguments() != null) {
             booking = (Booking) getArguments().getSerializable(ARG_BOOKING);
@@ -71,8 +96,55 @@ public class BookedDetailFragment extends Fragment {
         }
     }
 
+    @SuppressLint({"ResourceAsColor", "SetTextI18n"})
     private void displayBookingDetails(Booking booking) {
+        List<BookingInfo> bookingInfos = booking.getBookingInfos();
 
+        if (bookingInfos == null || bookingInfos.isEmpty()) {
+            return;
+        }
+
+        SubFacility subFacility = bookingInfos.get(0).getSubFacility();
+
+        ServiceAPI apiService = RetrofitClient.getClient().create(ServiceAPI.class);
+        Call<SportFacility> call = apiService.getSportsFacilityById(subFacility.getFacilityId());
+        call.enqueue(new Callback<SportFacility>() {
+            @Override
+            public void onResponse(Call<SportFacility> call, Response<SportFacility> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    SportFacility facility = response.body();
+                    tvTenSan.setText(facility.getName());
+                    tvDiaChi.setText(facility.getAddress());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SportFacility> call, Throwable t) {
+
+            }
+        });
+
+        layoutTimeSlots.removeAllViews();
+        for (int i = 0; i < bookingInfos.size(); i++) {
+            BookingInfo info = bookingInfos.get(i);
+            SubFacility sub = info.getSubFacility();
+            TextView timeSlotText = new TextView(getContext());
+            timeSlotText.setText(sub.getName() + ": " + info.getStartTime() + " - " + info.getEndTime());
+            timeSlotText.setTextColor(R.color.black);
+            timeSlotText.setTypeface(null, Typeface.BOLD);
+            layoutTimeSlots.addView(timeSlotText);
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        tvNgayGio.setText("Ngày: " + booking.getBookingDate().format(formatter));
+        tvDateTitle.setText(booking.getBookingDate().format(formatter));
+        tvBookingID.setText(booking.getBookingId().toString());
+
+        // Định dạng tiền
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+        symbols.setGroupingSeparator('.'); // Dùng dấu chấm (.) để phân tách hàng nghìn
+        DecimalFormat decimalFormat = new DecimalFormat("#,###", symbols);
+
+        tvTongTien.setText("Tổng tiền: " + decimalFormat.format(booking.getTotalPrice())  + " VND");
 
     }
 }

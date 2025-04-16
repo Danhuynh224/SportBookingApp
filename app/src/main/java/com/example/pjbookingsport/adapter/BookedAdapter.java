@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pjbookingsport.API.RetrofitClient;
+import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.frag.BookedFragment;
 import com.example.pjbookingsport.model.Booking;
@@ -19,7 +21,15 @@ import com.example.pjbookingsport.model.BookingInfo;
 import com.example.pjbookingsport.model.SportFacility;
 import com.example.pjbookingsport.model.SubFacility;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BookedAdapter extends RecyclerView.Adapter<BookedAdapter.BookingViewHolder> {
     private List<Booking> bookingList;
@@ -48,12 +58,27 @@ public class BookedAdapter extends RecyclerView.Adapter<BookedAdapter.BookingVie
         }
 
         SubFacility subFacility = bookingInfos.get(0).getSubFacility();
-        SportFacility sportFacility = subFacility.getSportFacility();
 
+        ServiceAPI apiService = RetrofitClient.getClient().create(ServiceAPI.class);
+        Call<SportFacility> call = apiService.getSportsFacilityById(subFacility.getFacilityId());
+        call.enqueue(new Callback<SportFacility>() {
+            @Override
+            public void onResponse(Call<SportFacility> call, Response<SportFacility> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    SportFacility facility = response.body();
+                    holder.tvFacilityName.setText(facility.getName());
+                    holder.tvAddress.setText(facility.getAddress());
+                }
+            }
 
-        holder.tvDate.setText(booking.getBookingDate().toString());
-        holder.tvFacilityName.setText(sportFacility.getName());
-        holder.tvAddress.setText(sportFacility.getAddress());
+            @Override
+            public void onFailure(Call<SportFacility> call, Throwable t) {
+
+            }
+        });
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        holder.tvDate.setText(String.format(booking.getBookingDate().toString(), formatter));
 
         holder.layoutTimeSlots.removeAllViews();
         for (int i = 0; i < bookingInfos.size(); i++) {
@@ -66,9 +91,15 @@ public class BookedAdapter extends RecyclerView.Adapter<BookedAdapter.BookingVie
             holder.layoutTimeSlots.addView(timeSlotText);
         }
 
-        holder.tvBookingTime.setText("Đã đặt lúc " + booking.getBookingDate());
+        holder.tvBookingTime.setText("Đã đặt lúc " + booking.getBookingDate().format(formatter));
         holder.tvBookingID.setText("ID: " + booking.getBookingId());
-        holder.tvPrice.setText(booking.getTotalPrice() + " VND");
+
+        // Định dạng tiền
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+        symbols.setGroupingSeparator('.'); // Dùng dấu chấm (.) để phân tách hàng nghìn
+        DecimalFormat decimalFormat = new DecimalFormat("#,###", symbols);
+
+        holder.tvPrice.setText(decimalFormat.format(booking.getTotalPrice())  + " VND");
 
         holder.itemView.setOnClickListener(v -> listener.onItemClick(booking));
     }

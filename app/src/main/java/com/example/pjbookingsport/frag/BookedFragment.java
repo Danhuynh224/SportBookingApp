@@ -55,7 +55,7 @@ public class BookedFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvBooked.setLayoutManager(layoutManager);
 
-        getBookingsByUserId(3L);
+        getBookingsByUserId(1L);
 
         return view;
     }

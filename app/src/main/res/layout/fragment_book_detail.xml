@@ -32,6 +32,7 @@
             android:layout_height="wrap_content"
             android:text="Chi tiết đơn hàng"
             android:textSize="24sp"
+            android:textColor="@color/black"
             android:textStyle="bold"
             android:gravity="center"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,22 +54,22 @@
     <!-- Icon tick -->
     <ImageView
         android:id="@+id/imgTick"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@drawable/baseline_check_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_check_done"
         android:contentDescription="Success Tick"
         app:layout_constraintTop_toBottomOf="@id/space"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp" />
+        android:layout_marginTop="30dp" />
 
     <!-- Trạng thái -->
     <TextView
         android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Giữ chỗ"
-        android:textSize="20sp"
+        android:text="Đã đặt"
+        android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="#000000"
         app:layout_constraintTop_toBottomOf="@id/imgTick"
@@ -76,33 +77,89 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp" />
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tvStatus"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:backgroundTint="#EDE6E6"
+        app:cardCornerRadius="4dp"
+        android:layout_marginTop="16dp"
+        android:elevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:paddingRight="6dp"
+            android:paddingLeft="6dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mã: "
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="18dp"/>
+
+            <TextView
+                android:id="@+id/tvBookingID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textStyle="bold"
+                android:textColor="@color/primary"
+                android:textSize="18dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" | "
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="18dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ngày: "
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="18dp"/>
+
+            <TextView
+                android:id="@+id/tvDateTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12/04/2025"
+                android:textStyle="bold"
+                android:textColor="@color/primary"
+                android:textSize="18dp"/>
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
     <!-- Hướng dẫn thanh toán -->
     <TextView
         android:id="@+id/tvInstruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Vui lòng thanh toán để hoàn tất đặt lịch\nĐơn hàng của bạn đã được giữ trong 5 phút"
+        android:text="Bạn đã đặt đơn hàng thành công!"
         android:textSize="14sp"
         android:textColor="#666666"
         android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@id/tvStatus"
+        app:layout_constraintTop_toBottomOf="@id/cardInfo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="4dp" />
+        android:layout_marginTop="8dp" />
 
-    <!-- Đồng hồ đếm ngược -->
-    <TextView
-        android:id="@+id/tvTimer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="04:25"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@color/primary"
-        app:layout_constraintTop_toBottomOf="@id/tvInstruction"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp" />
 
     <!-- Thông tin chi tiết sân -->
     <LinearLayout
@@ -112,13 +169,19 @@
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:padding="16dp"
-        app:layout_constraintTop_toBottomOf="@id/tvTimer"
+        app:layout_constraintTop_toBottomOf="@id/tvInstruction"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:elevation="2dp">
+        android:layout_marginEnd="16dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="#CCCCCC" />
 
         <TextView
             android:id="@+id/tvTenSan"
@@ -136,15 +199,7 @@
             android:text="1110 Phạm Văn Đồng, Linh Đông, Thủ Đức"
             android:textColor="#555555"
             android:textSize="14sp"
-            android:layout_marginTop="4dp" />
-
-
-        <LinearLayout
-            android:id="@+id/layoutTimeSlots"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="4dp"/>
+            android:layout_marginTop="6dp" />
 
         <TextView
             android:id="@+id/tvNgayGio"
@@ -152,8 +207,16 @@
             android:layout_height="wrap_content"
             android:text="Ngày: 12/04/2025"
             android:textColor="#000000"
+            android:textStyle="bold"
             android:textSize="14sp"
-            android:layout_marginTop="4dp" />
+            android:layout_marginTop="6dp" />
+
+        <LinearLayout
+            android:id="@+id/layoutTimeSlots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="6dp"/>
 
         <TextView
             android:id="@+id/tvTongTien"
@@ -163,7 +226,7 @@
             android:textColor="@color/primary"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:layout_marginTop="4dp" />
+            android:layout_marginTop="6dp" />
     </LinearLayout>
 
     <!-- Nút Thanh Toán -->
@@ -171,34 +234,36 @@
         android:id="@+id/btnThanhToan"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="THANH TOÁN"
+        android:text="TẠO ĐƠN HÀNG MỚI"
         android:textColor="@android:color/white"
         android:backgroundTint="@color/primary"
         android:background="@drawable/btn_frame"
         android:textStyle="bold"
         android:textSize="17dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         app:layout_constraintTop_toBottomOf="@id/layoutInfo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Nút Chat với chủ sân -->
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnChatChuSan"
+        android:id="@+id/btnBackMain"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="CHAT VỚI CHỦ SÂN"
-        android:textSize="17dp"
+        android:text="QUAY LẠI MÀN HÌNH CHÍNH"
         android:textColor="@color/primary"
+        android:backgroundTint="#DCDCDC"
         android:background="@drawable/btn_frame"
-        android:backgroundTint="@color/material_dynamic_neutral_variant90"
         android:textStyle="bold"
+        android:textSize="17dp"
         android:layout_marginTop="12dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         app:layout_constraintTop_toBottomOf="@id/btnThanhToan"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

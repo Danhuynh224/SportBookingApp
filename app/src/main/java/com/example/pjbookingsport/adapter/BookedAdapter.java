@@ -34,7 +34,6 @@ import retrofit2.Response;
 public class BookedAdapter extends RecyclerView.Adapter<BookedAdapter.BookingViewHolder> {
     private List<Booking> bookingList;
     private OnItemClickListener listener;
-
     public BookedAdapter(List<Booking> bookingList, OnItemClickListener listener) {
         this.bookingList = bookingList;
         this.listener = listener;

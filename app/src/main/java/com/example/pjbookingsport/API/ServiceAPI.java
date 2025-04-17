@@ -25,7 +25,6 @@ public interface ServiceAPI {
     Call<List<SportFacility>> getAllSportFacility();
     @GET("/sportsfacilities/search")
     Call<List<SportFacility>> getSportsFacilities(@Query("keyword") String keyword);
-
     @GET("/sportsfacilities/filter")
     Call<List<SportFacility>> filterSportsFacilities(
             @Query("types") List<String> types,
@@ -45,10 +44,8 @@ public interface ServiceAPI {
     Call<List<Post>> getAllPosts();
     @POST("/user/update")
     Call<ResponseBody> updateUser(@Body User user);
-
     @GET("/booking/user/{userId}")
     Call<List<Booking>> getBookingsByUserId(@Path("userId") Long userId);
-
     @GET("/sportsfacilities/{id}")
     Call<SportFacility> getSportsFacilityById(@Path("id") Long id);
 }

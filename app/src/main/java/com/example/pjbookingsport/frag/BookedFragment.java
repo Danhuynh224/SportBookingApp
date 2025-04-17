@@ -17,6 +17,8 @@ import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.adapter.BookedAdapter;
 import com.example.pjbookingsport.model.Booking;
+import com.example.pjbookingsport.model.User;
+import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +57,10 @@ public class BookedFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvBooked.setLayoutManager(layoutManager);
 
-        getBookingsByUserId(1L);
+        User user = SharedPreferencesHelper.getUser(requireContext());
+
+        assert user != null;
+        getBookingsByUserId(user.getUserId());
 
         return view;
     }

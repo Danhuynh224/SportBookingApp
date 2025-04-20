@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/location_icon"/>
 
-        <TextView
+            <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Book Now"
@@ -78,6 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textUsername"
+                android:maxLines="1"
                 android:padding="16dp"
                 android:drawableEnd="@drawable/check_icon"/>
 

@@ -55,8 +55,6 @@ public class BookingInfo {
         this.endTime = endTime;
     }
 
-
-
     public BookingInfo( SubFacility subFacility, LocalTime startTime, LocalTime endTime) {
         this.subFacility = subFacility;
         this.startTime = startTime;

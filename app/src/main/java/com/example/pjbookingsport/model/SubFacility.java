@@ -1,8 +1,14 @@
 package com.example.pjbookingsport.model;
 
-public class SubFacility {
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+public class SubFacility implements Serializable {
     private Long subFacilityId;
     private String name;
+
+    @SerializedName("sportsFacility")
     private Long facilityId;
     private FacilityType facilityType;
 

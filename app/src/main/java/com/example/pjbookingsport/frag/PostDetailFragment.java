@@ -85,7 +85,7 @@ public class PostDetailFragment extends Fragment {
         tvSummary.setText(post.getSummary());
         tvContent.setText(post.getContent());
 
-        ImageSliderPostAdapter sliderAdapter = new ImageSliderPostAdapter(requireContext(), post.getImg());
+        ImageSliderPostAdapter sliderAdapter = new ImageSliderPostAdapter(requireContext(), post.getImg(getContext()));
         viewPager.setAdapter(sliderAdapter);
 
         indicator3.setViewPager(viewPager);

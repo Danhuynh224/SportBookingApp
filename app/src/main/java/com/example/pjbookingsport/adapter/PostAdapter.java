@@ -48,7 +48,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         Post post = postsList.get(position);
         holder.tvTitle.setText(post.getTitle());
 
-        ImageSliderPostAdapter sliderAdapter = new ImageSliderPostAdapter(context, post.getImg());
+        ImageSliderPostAdapter sliderAdapter = new ImageSliderPostAdapter(context, post.getImg(context));
         holder.viewPager.setAdapter(sliderAdapter);
         holder.indicator.setViewPager(holder.viewPager);
         sliderAdapter.registerAdapterDataObserver(holder.indicator.getAdapterDataObserver());

@@ -2,9 +2,11 @@ package com.example.pjbookingsport.adapter;
 
 import android.annotation.SuppressLint;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,12 +20,15 @@ import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.frag.BookedFragment;
 import com.example.pjbookingsport.model.Booking;
 import com.example.pjbookingsport.model.BookingInfo;
+import com.example.pjbookingsport.model.Price;
 import com.example.pjbookingsport.model.SportFacility;
 import com.example.pjbookingsport.model.SubFacility;
+import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -57,9 +62,11 @@ public class BookedAdapter extends RecyclerView.Adapter<BookedAdapter.BookingVie
         }
 
         SubFacility subFacility = bookingInfos.get(0).getSubFacility();
-
+        Log.d("DEBUG_SubFacility", "subFacility: " + new Gson().toJson(subFacility));
+        Log.d("SubFacilityDebug", new Gson().toJson(bookingInfos.get(0).getSubFacility()));
         ServiceAPI apiService = RetrofitClient.getClient().create(ServiceAPI.class);
         Call<SportFacility> call = apiService.getSportsFacilityById(subFacility.getFacilityId());
+        //Log.d("FaID:", subFacility.getFacilityId().toString());
         call.enqueue(new Callback<SportFacility>() {
             @Override
             public void onResponse(Call<SportFacility> call, Response<SportFacility> response) {
@@ -67,6 +74,47 @@ public class BookedAdapter extends RecyclerView.Adapter<BookedAdapter.BookingVie
                     SportFacility facility = response.body();
                     holder.tvFacilityName.setText(facility.getName());
                     holder.tvAddress.setText(facility.getAddress());
+
+                    holder.layoutIcon.removeAllViews();
+                    List<Price> prices = facility.getPrices();
+                    List<String> types= new ArrayList<>();
+                    if (prices != null && !prices.isEmpty()) {
+                        for(Price price : prices){
+                            types.add(price.getFacilityType().getName());
+                        }
+                    }
+                    Log.d("LoaiSan", types.toString());
+                    // Danh sách icon phù hợp với loại sân thể thao
+                    List<Integer> iconList = new ArrayList<>();
+
+                    Log.d("DanhSachIcon:", iconList.toString());
+
+                    for (String type: types) {
+                        if (type.equals("Cầu lông")) {
+                            iconList.add(R.drawable.badminton);
+                        } else if (type.equals("Bóng đá")) {
+                            iconList.add(R.drawable.football);
+                        } else if (type.equals("Tennis")) {
+                            iconList.add(R.drawable.tennis);
+                        } else if (type.equals("Pickleball")) {
+                            iconList.add(R.drawable.pickle);
+                        } else if (type.equals("Bóng rổ")) {
+                            iconList.add(R.drawable.basketball);
+                        } else {
+                            iconList.add(R.drawable.volleyball);
+                        }
+                    }
+
+                    // Thêm icon vào LinearLayout
+                    for (int iconRes : iconList) {
+                        ImageView iconView = new ImageView(holder.itemView.getContext());
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(24, 24);
+                        params.setMargins(0, 6, 0, 0);
+                        iconView.setLayoutParams(params);
+                        iconView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        iconView.setImageResource(iconRes);
+                        holder.layoutIcon.addView(iconView);
+                    }
                 }
             }
 
@@ -113,7 +161,7 @@ public class BookedAdapter extends RecyclerView.Adapter<BookedAdapter.BookingVie
 
     public static class BookingViewHolder extends RecyclerView.ViewHolder {
         TextView tvDate, tvFacilityName, tvAddress, tvBookingTime, tvBookingID, tvPrice;
-        LinearLayout layoutTimeSlots;
+        LinearLayout layoutTimeSlots, layoutIcon;
 
         public BookingViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -121,6 +169,7 @@ public class BookedAdapter extends RecyclerView.Adapter<BookedAdapter.BookingVie
             tvFacilityName = itemView.findViewById(R.id.tvFacilityName);
             tvAddress = itemView.findViewById(R.id.tvAddress);
             layoutTimeSlots = itemView.findViewById(R.id.layoutTimeSlots);
+            layoutIcon = itemView.findViewById(R.id.layoutIcon);
             tvBookingTime = itemView.findViewById(R.id.tvBookingTime);
             tvBookingID = itemView.findViewById(R.id.tvBookingID);
             tvPrice = itemView.findViewById(R.id.tvPrice);

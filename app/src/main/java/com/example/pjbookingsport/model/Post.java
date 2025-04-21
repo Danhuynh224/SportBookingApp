@@ -1,5 +1,7 @@
 package com.example.pjbookingsport.model;
 
+import android.content.Context;
+
 import com.example.pjbookingsport.R;
 
 import java.io.Serializable;
@@ -47,10 +49,10 @@ public class Post implements Serializable {
         this.title = title;
     }
 
-    public List<String> getImg() {
+    public List<String> getImg(Context context) {
         if (img == null || img.isEmpty()) return List.of();
 
-        String imgUrl = String.valueOf(R.string.img_url_post);
+        String imgUrl = context.getString(R.string.img_url_post);
 
         String[] fileNames = img.split(",");
         return Arrays.stream(fileNames)

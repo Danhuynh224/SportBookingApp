@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".frag.PersonalAccountFragment">
 
@@ -25,25 +26,37 @@
                     android:layout_marginTop="5dp"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
+                    android:editable="false"
                     android:id="@+id/txtLoginName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="16dp"
-                    android:background="@drawable/border_textview" />
+                    android:background="@drawable/border_textview"
+                    tools:ignore="Deprecated" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="16dp"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Mật khẩu"/>
+                    android:text="Mật khẩu cũ"/>
                 <EditText
                     android:layout_marginTop="5dp"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     android:id="@+id/txtPassword"
+                    android:inputType="textPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="16dp"
                     android:background="@drawable/border_textview" />
+                <TextView
+                    android:id="@+id/textErrorOldPass"
+                    android:textColor="@color/red"
+                    android:textSize="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -60,6 +73,12 @@
                     android:inputType="textPassword"
                     android:background="@drawable/border_textview" />
                 <TextView
+                    android:id="@+id/textErrorNewPass"
+                    android:textColor="@color/red"
+                    android:textSize="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -74,6 +93,12 @@
                     android:textSize="16dp"
                     android:inputType="textPassword"
                     android:background="@drawable/border_textview" />
+                <TextView
+                    android:id="@+id/textErrorConfirmPass"
+                    android:textColor="@color/red"
+                    android:textSize="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
                 <Button
                     android:layout_gravity="center"
                     android:id="@+id/updateBtn"

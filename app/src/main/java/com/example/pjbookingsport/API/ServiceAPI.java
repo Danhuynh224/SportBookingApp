@@ -2,6 +2,7 @@
 package com.example.pjbookingsport.API;
 
 
+import com.example.pjbookingsport.model.Account;
 import com.example.pjbookingsport.model.Booking;
 import com.example.pjbookingsport.model.Post;
 import com.example.pjbookingsport.model.SportFacility;
@@ -44,6 +45,8 @@ public interface ServiceAPI {
     Call<List<Post>> getAllPosts();
     @POST("/user/update")
     Call<ResponseBody> updateUser(@Body User user);
+    @POST("/account/update")
+    Call<ResponseBody> updateAccount(@Body Account account);
     @GET("/booking/user/{userId}")
     Call<List<Booking>> getBookingsByUserId(@Path("userId") Long userId);
     @GET("/sportsfacilities/{id}")

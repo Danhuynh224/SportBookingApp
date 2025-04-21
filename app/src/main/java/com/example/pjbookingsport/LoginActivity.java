@@ -1,9 +1,12 @@
 package com.example.pjbookingsport;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -104,8 +107,43 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        textPassword.setOnTouchListener(new View.OnTouchListener() {
+            private long touchStartTime;
+
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_END = 2; // drawableEnd = index 2
+
+                if (textPassword.getCompoundDrawables()[DRAWABLE_END] != null) {
+                    int drawableWidth = textPassword.getCompoundDrawables()[DRAWABLE_END].getBounds().width();
+                    int clickAreaStart = textPassword.getWidth() - textPassword.getPaddingEnd() - drawableWidth;
+
+                    if (event.getX() >= clickAreaStart) {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                // Bắt đầu giữ → hiện mật khẩu
+                                textPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                                // Di chuyển con trỏ về cuối
+                                textPassword.setSelection(textPassword.getText().length());
+                                return true;
+
+                            case MotionEvent.ACTION_UP:
+                            case MotionEvent.ACTION_CANCEL:
+                                // Thả ra → ẩn mật khẩu lại
+                                textPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                                textPassword.setSelection(textPassword.getText().length());
+                                return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        });
+
 
     }
+
     private void showResultDialog(String string) {
         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
         builder.setMessage(string);

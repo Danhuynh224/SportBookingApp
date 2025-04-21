@@ -7,16 +7,22 @@ import java.io.Serializable;
 public class SubFacility implements Serializable {
     private Long subFacilityId;
     private String name;
-
-    @SerializedName("sportsFacility")
-    private Long facilityId;
+    private SportFacility sportsFacility;
     private FacilityType facilityType;
 
-    public SubFacility(Long subFacilityId, String name, Long facilityId, FacilityType facilityType) {
+    public SubFacility(Long subFacilityId, String name, SportFacility sportsFacility, FacilityType facilityType) {
         this.subFacilityId = subFacilityId;
         this.name = name;
-        this.facilityId = facilityId;
+        this.sportsFacility = sportsFacility;
         this.facilityType = facilityType;
+    }
+
+    public SportFacility getSportsFacility() {
+        return sportsFacility;
+    }
+
+    public void setSportsFacility(SportFacility sportsFacility) {
+        this.sportsFacility = sportsFacility;
     }
 
     public Long getSubFacilityId() {
@@ -35,13 +41,6 @@ public class SubFacility implements Serializable {
         this.name = name;
     }
 
-    public Long getFacilityId() {
-        return facilityId;
-    }
-
-    public void setFacilityId(Long facilityId) {
-        this.facilityId = facilityId;
-    }
 
     public FacilityType getFacilityType() {
         return facilityType;
@@ -50,5 +49,4 @@ public class SubFacility implements Serializable {
     public void setFacilityType(FacilityType facilityType) {
         this.facilityType = facilityType;
     }
-
 }

@@ -106,23 +106,8 @@ public class BookedDetailFragment extends Fragment {
 
         SubFacility subFacility = bookingInfos.get(0).getSubFacility();
 
-        ServiceAPI apiService = RetrofitClient.getClient().create(ServiceAPI.class);
-        Call<SportFacility> call = apiService.getSportsFacilityById(subFacility.getFacilityId());
-        call.enqueue(new Callback<SportFacility>() {
-            @Override
-            public void onResponse(Call<SportFacility> call, Response<SportFacility> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    SportFacility facility = response.body();
-                    tvTenSan.setText(facility.getName());
-                    tvDiaChi.setText(facility.getAddress());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SportFacility> call, Throwable t) {
-
-            }
-        });
+        tvTenSan.setText(subFacility.getSportsFacility().getName());
+        tvDiaChi.setText(subFacility.getSportsFacility().getAddress());
 
         layoutTimeSlots.removeAllViews();
         for (int i = 0; i < bookingInfos.size(); i++) {
@@ -130,7 +115,7 @@ public class BookedDetailFragment extends Fragment {
             SubFacility sub = info.getSubFacility();
             TextView timeSlotText = new TextView(getContext());
             timeSlotText.setText(sub.getName() + ": " + info.getStartTime() + " - " + info.getEndTime());
-            timeSlotText.setTextColor(R.color.black);
+            timeSlotText.setTextColor(getResources().getColor(R.color.black));
             timeSlotText.setTypeface(null, Typeface.BOLD);
             layoutTimeSlots.addView(timeSlotText);
         }

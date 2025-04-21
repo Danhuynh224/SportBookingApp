@@ -49,6 +49,4 @@ public interface ServiceAPI {
     Call<ResponseBody> updateAccount(@Body Account account);
     @GET("/booking/user/{userId}")
     Call<List<Booking>> getBookingsByUserId(@Path("userId") Long userId);
-    @GET("/sportsfacilities/{id}")
-    Call<SportFacility> getSportsFacilityById(@Path("id") Long id);
 }

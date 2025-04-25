@@ -42,7 +42,7 @@ public class BookedDetailFragment extends Fragment {
     private Booking booking;
     private ImageButton btnBack;
 
-    private AppCompatButton btnBackMain, btnBookNew;
+    private AppCompatButton btnBackMain, btnFeedback;
 
     private TextView tvTenSan, tvDiaChi, tvNgayGio, tvTongTien, tvBookingID, tvDateTitle;
 
@@ -82,10 +82,17 @@ public class BookedDetailFragment extends Fragment {
         tvDateTitle = view.findViewById(R.id.tvDateTitle);
         btnBack = view.findViewById(R.id.btn_back);
         btnBackMain = view.findViewById(R.id.btnBackMain);
-        btnBookNew = view.findViewById(R.id.btnThanhToan);
+        btnFeedback = view.findViewById(R.id.btnFeedback);
 
         btnBack.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
         btnBackMain .setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
+        btnFeedback.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, ReviewFragment.newInstance(booking))
+                    .addToBackStack("review")
+                    .commit();
+        });
 
         if (getArguments() != null) {
             booking = (Booking) getArguments().getSerializable(ARG_BOOKING);

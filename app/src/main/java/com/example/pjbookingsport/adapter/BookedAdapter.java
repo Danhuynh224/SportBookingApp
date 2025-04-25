@@ -10,22 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.pjbookingsport.API.RetrofitClient;
-import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
-import com.example.pjbookingsport.frag.BookedFragment;
 import com.example.pjbookingsport.model.Booking;
 import com.example.pjbookingsport.model.BookingInfo;
 import com.example.pjbookingsport.model.Price;
-import com.example.pjbookingsport.model.SportFacility;
 import com.example.pjbookingsport.model.SubFacility;
-import com.google.gson.Gson;
-
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.format.DateTimeFormatter;
@@ -33,9 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class BookedAdapter extends RecyclerView.Adapter<BookedAdapter.BookingViewHolder> {
     private List<Booking> bookingList;
@@ -74,11 +62,8 @@ public class BookedAdapter extends RecyclerView.Adapter<BookedAdapter.BookingVie
                 types.add(price.getFacilityType().getName());
             }
         }
-        Log.d("LoaiSan", types.toString());
         // Danh sách icon phù hợp với loại sân thể thao
         List<Integer> iconList = new ArrayList<>();
-
-        Log.d("DanhSachIcon:", iconList.toString());
 
         for (String type: types) {
             if (type.equals("Cầu lông")) {

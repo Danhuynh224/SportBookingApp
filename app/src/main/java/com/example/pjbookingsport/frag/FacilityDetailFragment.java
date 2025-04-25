@@ -1,5 +1,6 @@
 package com.example.pjbookingsport.frag;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +27,7 @@ public class FacilityDetailFragment extends Fragment {
     private SportFacility facility;
     private ImageView imgFacility;
     private ImageButton btnBack;
-    private TextView tvName;
+    private TextView tvName, tvRating, tvTotalRating;
     private Button btnBook;
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
@@ -56,6 +57,8 @@ public class FacilityDetailFragment extends Fragment {
         imgUrl = getString(R.string.img_url);
         imgFacility = view.findViewById(R.id.img_facility);
         tvName = view.findViewById(R.id.tv_name);
+        tvRating = view.findViewById(R.id.tvRating);
+        tvTotalRating = view.findViewById(R.id.tvTotalRating);
         viewPager = view.findViewById(R.id.viewPager);
         tabLayout = view.findViewById(R.id.tabLayout);
         btnBack = view.findViewById(R.id.btn_back);
@@ -92,8 +95,11 @@ public class FacilityDetailFragment extends Fragment {
                     .commit();
         });
     }
+    @SuppressLint("SetTextI18n")
     private void displayFacilityDetails(SportFacility facility) {
         tvName.setText(facility.getName());
+        tvRating.setText(facility.getAverageRating() + "/5");
+        tvTotalRating.setText("(" + facility.getReviewCount() + ")");
 
         Glide.with(this)
                 .load(imgUrl + facility.getSportsFacilityId())

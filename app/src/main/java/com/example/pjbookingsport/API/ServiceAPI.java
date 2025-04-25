@@ -5,6 +5,8 @@ package com.example.pjbookingsport.API;
 import com.example.pjbookingsport.model.Account;
 import com.example.pjbookingsport.model.Booking;
 import com.example.pjbookingsport.model.Post;
+import com.example.pjbookingsport.model.Review;
+import com.example.pjbookingsport.model.ReviewRequest;
 import com.example.pjbookingsport.model.SportFacility;
 import com.example.pjbookingsport.model.SubFacility;
 import com.example.pjbookingsport.model.User;
@@ -49,4 +51,7 @@ public interface ServiceAPI {
     Call<ResponseBody> updateAccount(@Body Account account);
     @GET("/booking/user/{userId}")
     Call<List<Booking>> getBookingsByUserId(@Path("userId") Long userId);
+    @POST("review/save")
+    Call<ResponseBody> saveReview(@Body ReviewRequest reviewRequest);
+
 }

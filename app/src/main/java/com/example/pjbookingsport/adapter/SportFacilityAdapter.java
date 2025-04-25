@@ -2,6 +2,7 @@ package com.example.pjbookingsport.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,18 +10,26 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.pjbookingsport.API.RetrofitClient;
+import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Price;
+import com.example.pjbookingsport.model.Review;
 import com.example.pjbookingsport.model.SportFacility;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SportFacilityAdapter extends RecyclerView.Adapter<SportFacilityAdapter.ViewHolder> {
     private Context context;
@@ -53,6 +62,9 @@ public class SportFacilityAdapter extends RecyclerView.Adapter<SportFacilityAdap
                 .load(imgUrl + sportFacility.getSportsFacilityId())
                 .error(R.drawable.ic_launcher_foreground)
                 .into(holder.image);
+
+        holder.rating_value.setText(sportFacility.getAverageRating() + "/5");
+        holder.rating_sum.setText("(" + sportFacility.getReviewCount() + ")");
 
         holder.iconContainer.removeAllViews();
 
@@ -108,6 +120,10 @@ public class SportFacilityAdapter extends RecyclerView.Adapter<SportFacilityAdap
         });
 
 
+
+
+
+
     }
 
     @Override
@@ -117,7 +133,7 @@ public class SportFacilityAdapter extends RecyclerView.Adapter<SportFacilityAdap
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
-        TextView title, address;
+        TextView title, address, rating_value, rating_sum;
         Button bookButton;
         LinearLayout iconContainer;
 
@@ -128,6 +144,8 @@ public class SportFacilityAdapter extends RecyclerView.Adapter<SportFacilityAdap
             address = itemView.findViewById(R.id.address);
             bookButton = itemView.findViewById(R.id.book_button);
             iconContainer = itemView.findViewById(R.id.icon_sport_container);
+            rating_sum = itemView.findViewById(R.id.rating_sum);
+            rating_value = itemView.findViewById(R.id.rating_value);
         }
     }
 
@@ -166,4 +184,5 @@ public class SportFacilityAdapter extends RecyclerView.Adapter<SportFacilityAdap
         void onBookClick(SportFacility facility);
 
     }
+
 }

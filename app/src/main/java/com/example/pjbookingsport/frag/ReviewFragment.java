@@ -31,6 +31,8 @@ import com.example.pjbookingsport.model.BookingInfo;
 import com.example.pjbookingsport.model.Review;
 import com.example.pjbookingsport.model.ReviewRequest;
 import com.example.pjbookingsport.model.SubFacility;
+import com.example.pjbookingsport.model.User;
+import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,7 +50,7 @@ public class ReviewFragment extends Fragment {
     private Button btnSend;
     private ImageButton btnBack;
     private ImageView imgFacility;
-    private TextView tvName;
+    private TextView tvName, tvRating, tvTotalRating;
     private LinearLayout layoutSlot;
     private static final String ARG_BOOKING = "BOOKING";
 
@@ -78,6 +80,8 @@ public class ReviewFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         imgFacility = view.findViewById(R.id.img_facility);
         tvName = view.findViewById(R.id.tv_name);
+        tvRating = view.findViewById(R.id.tvRating);
+        tvTotalRating = view.findViewById(R.id.tvTotalRating);
         layoutSlot = view.findViewById(R.id.layoutSlot);
         ratingBar = view.findViewById(R.id.ratingBar);
         editTextComment = view.findViewById(R.id.editTextComment);
@@ -106,6 +110,9 @@ public class ReviewFragment extends Fragment {
                 .into(imgFacility);
 
         tvName.setText(subFacility.getSportsFacility().getName());
+
+        tvRating.setText(subFacility.getSportsFacility().getAverageRating() + "/5");
+        tvTotalRating.setText("(" + subFacility.getSportsFacility().getReviewCount() + ")");
 
         layoutSlot.removeAllViews();
         for (int i = 0; i < bookingInfos.size(); i++) {
@@ -136,8 +143,11 @@ public class ReviewFragment extends Fragment {
                     return;
                 }
 
+                User user = SharedPreferencesHelper.getUser(requireContext());
+
+                assert user != null;
                 ReviewRequest savedReview = new ReviewRequest(
-                        booking.getUser().getUserId(),
+                        user.getUserId(),
                         subFacility.getSportsFacility().getSportsFacilityId(),
                         rating,
                         comment

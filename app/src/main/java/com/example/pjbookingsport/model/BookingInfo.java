@@ -1,9 +1,10 @@
 package com.example.pjbookingsport.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 
-public class BookingInfo {
+public class BookingInfo implements Serializable {
 
     private SubFacility subFacility;
 

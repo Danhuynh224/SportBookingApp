@@ -54,4 +54,7 @@ public interface ServiceAPI {
     @POST("review/save")
     Call<ResponseBody> saveReview(@Body ReviewRequest reviewRequest);
 
+    @GET("/payment/create")
+    Call<String> createPayment(@Query("price") Long price);
+
 }

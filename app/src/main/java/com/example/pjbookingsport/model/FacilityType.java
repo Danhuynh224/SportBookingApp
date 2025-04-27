@@ -1,6 +1,8 @@
 package com.example.pjbookingsport.model;
 
-public class FacilityType {
+import java.io.Serializable;
+
+public class FacilityType implements Serializable {
     private Long facilityTypeId;
     private String name;
 

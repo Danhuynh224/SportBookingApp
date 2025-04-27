@@ -1,8 +1,9 @@
 package com.example.pjbookingsport.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class Price {
+public class Price implements Serializable {
     private  Long priceID;
     private BigDecimal earlyTime;
     private BigDecimal dayTime ;

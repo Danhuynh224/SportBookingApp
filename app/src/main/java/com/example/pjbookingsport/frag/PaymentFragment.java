@@ -1,6 +1,7 @@
 package com.example.pjbookingsport.frag;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 
 import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
+import com.example.pjbookingsport.PaymentVNPayActivity;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.adapter.BookInForAdapter;
 import com.example.pjbookingsport.adapter.BookInforPayAdapter;
@@ -150,7 +152,10 @@ public class PaymentFragment extends Fragment {
                     if(!user.getFullName().equals(txtUserName.getText().toString()) || !user.getPhone().equals(txtPhone.getText().toString())){
                         updateInfoUser();
                     }
-                    addNewBooking();
+                    Intent intent = new Intent(getContext(), PaymentVNPayActivity.class);
+                    intent.putExtra("booking", booking); // gửi object
+                    startActivity(intent);
+
                 }
             }
         });

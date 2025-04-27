@@ -71,5 +71,22 @@ public class SharedPreferencesHelper {
 
         return null;
     }
+
+    // Xóa User khỏi SharedPreferences
+    public static void clearUser(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(KEY_USER);
+        editor.apply(); // hoặc editor.commit();
+    }
+
+    // Xóa Account khỏi SharedPreferences
+    public static void clearAccount(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(KEY_ACCOUNT);
+        editor.apply(); // hoặc editor.commit();
+    }
+
 }
 

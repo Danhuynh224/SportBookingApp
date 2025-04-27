@@ -1,6 +1,8 @@
 package com.example.pjbookingsport.model;
 
-public class Account {
+import java.io.Serializable;
+
+public class Account implements Serializable {
     private String username;
     private String password;
 

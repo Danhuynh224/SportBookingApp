@@ -3,6 +3,8 @@ package com.example.pjbookingsport.frag;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -11,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.pjbookingsport.R;
+import com.example.pjbookingsport.adapter.ReviewAdapter;
 import com.example.pjbookingsport.model.Price;
+import com.example.pjbookingsport.model.Review;
 import com.example.pjbookingsport.model.SportFacility;
 
 import java.util.ArrayList;
@@ -25,7 +29,10 @@ import java.util.List;
 public class FacilityInfoFragment extends Fragment {
     private static final String ARG_FACILITY = "FACILITY";
     private SportFacility facility;
-    private TextView tvAddress, tvTypes, tvDescription;
+    private TextView tvAddress, tvTypes, tvDescription, tvNoReview;
+    private RecyclerView rvReview;
+    private ReviewAdapter reviewAdapter;
+
     public static FacilityInfoFragment newInstance(SportFacility facility) {
         FacilityInfoFragment fragment = new FacilityInfoFragment();
         Bundle args = new Bundle();
@@ -41,6 +48,8 @@ public class FacilityInfoFragment extends Fragment {
         tvDescription = view.findViewById(R.id.tv_description);
         tvAddress = view.findViewById(R.id.tv_address);
         tvTypes = view.findViewById(R.id.tv_types);
+        rvReview = view.findViewById(R.id.rv_review);
+        tvNoReview = view.findViewById(R.id.tvNoReview);
 
         if (getArguments() != null) {
             facility = (SportFacility) getArguments().getSerializable(ARG_FACILITY);
@@ -56,6 +65,19 @@ public class FacilityInfoFragment extends Fragment {
                     }
                 }
                 tvTypes.setText(TextUtils.join(", ", types));
+
+                List<Review> reviews = facility.getReviews();
+                if (reviews != null && !reviews.isEmpty()) {
+                    tvNoReview.setVisibility(View.GONE);
+                    rvReview.setVisibility(View.VISIBLE);
+
+                    rvReview.setLayoutManager(new LinearLayoutManager(getContext()));
+                    reviewAdapter = new ReviewAdapter(reviews);
+                    rvReview.setAdapter(reviewAdapter);
+                } else {
+                    tvNoReview.setVisibility(View.VISIBLE);
+                    rvReview.setVisibility(View.GONE);
+                }
             }
         }
 

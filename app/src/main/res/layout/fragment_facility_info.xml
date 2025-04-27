@@ -130,7 +130,14 @@
                     android:textSize="18sp"
                     android:textAlignment="center"/>
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_review"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"/>
+
                 <TextView
+                    android:id="@+id/tvNoReview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Chưa có bình luận nào"

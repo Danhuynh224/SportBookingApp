@@ -18,8 +18,10 @@ import java.util.List;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -40,7 +42,7 @@ public interface ServiceAPI {
     Call<List<SubFacility>> getSubFaByFaId(@Query("faId") Long faid);
     //Booking
     @POST("/booking/add")
-    Call<ResponseBody> addBooking(@Body Booking booking);
+    Call<Booking> addBooking(@Body Booking booking);
     @GET("/booking/getByDateAndTypeAndSubFa")
     Call<List<Booking>> getByDateAndTypeAndSubFa(@Query("bookingDate") LocalDate bookingDate, @Query("facilityTypeId") Long facilityTypeId, @Query("subFacilityId") Long subFacilityId);
     @GET("/post")
@@ -57,4 +59,9 @@ public interface ServiceAPI {
     @GET("/payment/create")
     Call<String> createPayment(@Query("price") Long price);
 
+    @PUT("/booking/{bookingId}/updateStatus")
+    Call<Booking> updateBookingStatus(@Path("bookingId") Long bookingId);
+
+    @DELETE("/booking/delete/{bookingId}")
+    Call<Void> deleteBooking(@Path("bookingId") Long bookingId);
 }

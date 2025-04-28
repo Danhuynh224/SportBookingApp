@@ -1,5 +1,7 @@
 package com.example.pjbookingsport.model;
 
+import com.example.pjbookingsport.enums.BookingStatus;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
@@ -17,6 +19,15 @@ public class Booking implements Serializable {
     private int totalHour ;
     private List<BookingInfo> bookingInfos;
     private String note;
+    private BookingStatus status = BookingStatus.PENDING;
+
+    public BookingStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(BookingStatus status) {
+        this.status = status;
+    }
 
     public boolean isEmpty() {
         return (
@@ -111,6 +122,7 @@ public class Booking implements Serializable {
         }
 
     }
+
 
 
 }

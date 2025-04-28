@@ -96,19 +96,40 @@ public class PaymentVNPayActivity extends AppCompatActivity {
                 if ("00".equals(transactionStatus)) {
                     Log.d("PaymentStatus", "Thanh toán thành công");
                     Toast.makeText(this, "Thanh toán thành công", Toast.LENGTH_SHORT).show();
-                    addNewBooking();
+                    completeBooking();
+                    // gửi object
                     Intent successIntent = new Intent(this, SuccessActivity.class);
+                    successIntent.putExtra("booking", booking);
                     startActivity(successIntent);
                     finish();
                 } else {
-                    Log.d("PaymentStatus", "Thanh toán thất bại");
-                    Toast.makeText(this, "Thanh toán thất bại", Toast.LENGTH_SHORT).show();
+                    serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
+                    serviceAPI.deleteBooking(booking.getBookingId()).enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                // Xóa thành công
+                                Log.d("Booking", "Delete thành công!");
 
+                            } else {
+                                // Booking không tồn tại hoặc lỗi khác
+                                Log.d("Booking", "Không tìm thấy booking hoặc lỗi: " + response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            // Lỗi mạng, server chết,...
+                            Log.e("Booking", "Lỗi gọi API", t);
+                        }
+                    });
                     // Quay về activity trước đó (PreviousActivity) và giữ nguyên fragment và dữ liệu
                     Intent previousIntent = new Intent(this, MainActivity.class);
                     previousIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // Quay về mà không tạo mới activity
                     startActivity(previousIntent);
                     finish(); // Đóng FailedActivity
+
+
                 }
             }
 
@@ -138,11 +159,11 @@ public class PaymentVNPayActivity extends AppCompatActivity {
         webView.loadUrl(url);
     }
 
-    private void addNewBooking() {
+    private void completeBooking() {
         serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
-        serviceAPI.addBooking(booking).enqueue(new Callback<ResponseBody>() {
+        serviceAPI.updateBookingStatus(booking.getBookingId()).enqueue(new Callback<Booking>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<Booking> call, Response<Booking> response) {
                 if(response.isSuccessful()){
                 }
                 else
@@ -158,7 +179,7 @@ public class PaymentVNPayActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<Booking> call, Throwable t) {
                 Log.d("API ERROR", "Không thể đặt: " + t.getMessage());
             }
         });

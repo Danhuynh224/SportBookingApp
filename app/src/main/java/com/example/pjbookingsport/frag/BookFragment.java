@@ -32,6 +32,7 @@ import com.example.pjbookingsport.adapter.HourAdapter;
 import com.example.pjbookingsport.adapter.SlotAdapter;
 import com.example.pjbookingsport.adapter.SubFaAdapter;
 import com.example.pjbookingsport.adapter.TypeBookAdapter;
+import com.example.pjbookingsport.enums.BookingStatus;
 import com.example.pjbookingsport.enums.Role;
 import com.example.pjbookingsport.model.Booking;
 import com.example.pjbookingsport.model.BookingInfo;
@@ -206,12 +207,8 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
                 }
 //                addNewBooking();
                 else {
-                    PaymentFragment paymentFragment = PaymentFragment.newInstance(facility, booking);
+                    addNewBooking();
 
-                    requireActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragMain, paymentFragment)
-                            .addToBackStack(null)
-                            .commit();
                 }
             }
         });
@@ -342,11 +339,24 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
 
     private void addNewBooking() {
         serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
-        serviceAPI.addBooking(booking).enqueue(new Callback<ResponseBody>() {
+        booking.setStatus(BookingStatus.PENDING);
+        serviceAPI.addBooking(booking).enqueue(new Callback<Booking>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<Booking> call, Response<Booking> response) {
                 if(response.isSuccessful()){
-                    showResultDialog(true);
+                    booking = response.body();
+                    for(BookingInfo bookingInfo : bookingInfos){
+                        SubFacility subFacility = bookingInfo.getSubFacility();
+                        subFacility.setSportsFacility(facility);
+                        bookingInfo.setSubFacility(subFacility);
+                    }
+                    booking.setBookingInfos(bookingInfos);
+                    PaymentFragment paymentFragment = PaymentFragment.newInstance(facility, booking);
+                    requireActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragMain, paymentFragment)
+                            .addToBackStack(null)
+                            .commit();
+
                 }
                 else
                 {
@@ -362,7 +372,7 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<Booking> call, Throwable t) {
                 showResultDialog(false);
                 Log.d("API ERROR", "Không thể đặt: " + t.getMessage());
             }

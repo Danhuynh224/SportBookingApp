@@ -59,8 +59,6 @@ public class PaymentFragment extends Fragment {
     private static final String ARG_BOOK = "BOOK";
     private Booking booking;
     private TextView txtName, txtAddress, txtType, txtDate, txtTotal;
-    private RadioGroup radioGroup;
-    private RadioButton radioCash, radioBank;
     private EditText txtUserName, txtPhone;
     private Button huyBtn, bookBtn;
     private RecyclerView rcInfo;
@@ -108,16 +106,40 @@ public class PaymentFragment extends Fragment {
         txtDate = view.findViewById(R.id.txtDate);
         txtTotal = view.findViewById(R.id.txtTotal);
         rcInfo = view.findViewById(R.id.rcInfo);
-        radioGroup = view.findViewById(R.id.radioGroup);
-        radioBank = view.findViewById(R.id.radioBank);
-        radioCash = view.findViewById(R.id.radioCash);
         txtUserName = view.findViewById(R.id.txtUserName);
         txtPhone = view.findViewById(R.id.txtPhone);
         huyBtn = view.findViewById(R.id.huyBtn);
         bookBtn = view.findViewById(R.id.bookBtn);
-        btnBack = view.findViewById(R.id.btn_back);
+
         user = SharedPreferencesHelper.getUser(getContext());
         LoadBookingInfo();
+
+        huyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
+                serviceAPI.deleteBooking(booking.getBookingId()).enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            // Xóa thành công
+                            Log.d("Booking", "Delete thành công!");
+                            booking.setBookingId(null);
+                            requireActivity().getSupportFragmentManager().popBackStack();
+                        } else {
+                            // Booking không tồn tại hoặc lỗi khác
+                            Log.d("Booking", "Không tìm thấy booking hoặc lỗi: " + response.code());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        // Lỗi mạng, server chết,...
+                        Log.e("Booking", "Lỗi gọi API", t);
+                    }
+                });
+            }
+        });
     }
 
     private void LoadBookingInfo() {
@@ -139,24 +161,18 @@ public class PaymentFragment extends Fragment {
         txtTotal.setText(decimalFormat.format(booking.getTotalPrice())+" VND");
         txtUserName.setText(user.getFullName());
         txtPhone.setText(user.getPhone());
-        btnBack.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
+
 
         bookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!radioCash.isChecked() && !radioBank.isChecked())
-                {
-                    showResultDialog(false);
+                if(!user.getFullName().equals(txtUserName.getText().toString()) || !user.getPhone().equals(txtPhone.getText().toString())){
+                    updateInfoUser();
                 }
-                if(radioCash.isChecked()){
-                    if(!user.getFullName().equals(txtUserName.getText().toString()) || !user.getPhone().equals(txtPhone.getText().toString())){
-                        updateInfoUser();
-                    }
-                    Intent intent = new Intent(getContext(), PaymentVNPayActivity.class);
-                    intent.putExtra("booking", booking); // gửi object
-                    startActivity(intent);
-
-                }
+                Log.d("BookingID", "PaymentFragment: "+ booking.getBookingId());
+                Intent intent = new Intent(getContext(), PaymentVNPayActivity.class);
+                intent.putExtra("booking", booking); // gửi object
+                startActivity(intent);
             }
         });
     }
@@ -179,51 +195,23 @@ public class PaymentFragment extends Fragment {
         });
     }
 
-    private void addNewBooking() {
-        serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
-        serviceAPI.addBooking(booking).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful()){
-                    showResultDialog(true);
-                }
-                else
-                {
-                    showResultDialog(false);
-                    String errorBody = null;
-                    try {
-                        errorBody = response.errorBody().string();
-                        Log.e("API RESPONSE", "Lỗi: " + errorBody);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                showResultDialog(false);
-                Log.d("API ERROR", "Không thể đặt: " + t.getMessage());
-            }
-        });
-    }
-
-    private void showResultDialog(boolean isSuccess) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-        if (isSuccess && !booking.isEmpty()) {
-            builder.setTitle("Đã đặt sân 🎉");
-            builder.setMessage("Bạn đã đặt sân thành công");
-        } else {
-            builder.setTitle("Thất bại ❌");
-            builder.setMessage("Vui lòng điền đầy đủ thông tin");
-        }
-
-        builder.setPositiveButton("OK", (dialog, which) -> {
-            dialog.dismiss(); // Đóng dialog
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
+//    private void showResultDialog(boolean isSuccess) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//
+//        if (isSuccess && !booking.isEmpty()) {
+//            builder.setTitle("Đã đặt sân 🎉");
+//            builder.setMessage("Bạn đã đặt sân thành công");
+//        } else {
+//            builder.setTitle("Thất bại ❌");
+//            builder.setMessage("Vui lòng điền đầy đủ thông tin");
+//        }
+//
+//        builder.setPositiveButton("OK", (dialog, which) -> {
+//            dialog.dismiss(); // Đóng dialog
+//        });
+//
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
+//    }
 }

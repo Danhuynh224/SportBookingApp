@@ -25,13 +25,15 @@
         app:layout_constraintTop_toTopOf="@id/iconUser"
         app:layout_constraintStart_toEndOf="@id/iconUser"
         android:textSize="16sp"
-        android:layout_marginStart="4dp"/>
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"/>
     <TextView
         android:id="@+id/tv_date_review"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="10/04/2025"
         android:layout_marginTop="6dp"
+        android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="@id/iconUser"
         app:layout_constraintStart_toStartOf="@id/tv_name_user"
         android:textSize="12sp"/>

@@ -2,9 +2,10 @@ package com.example.pjbookingsport.model;
 
 import com.example.pjbookingsport.enums.Role;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class User {
+public class User implements Serializable {
     private Long userId;
     private String fullName;
     private String email;

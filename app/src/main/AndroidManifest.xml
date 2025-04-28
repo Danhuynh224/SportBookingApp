@@ -20,12 +20,31 @@
         android:theme="@style/Theme.PjBookingSport"
         tools:targetApi="31">
         <activity
+            android:name=".SuccessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PaymentVNPayActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            tools:ignore="AppLinkUrlError">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="payment"
+                    android:scheme="myapp" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".SignUpActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize"/> <!-- <activity -->
+            android:windowSoftInputMode="adjustResize" /> <!-- <activity -->
         <!-- android:name=".FacilityDetailActivity" -->
         <!-- android:exported="false"> -->
         <!-- </activity> -->

@@ -63,7 +63,7 @@ public class PersonalInfoFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    Button updateBtn;
+    Button updateBtn, logOutBtn;
     EditText edtBirthday, txtUserName, txtPhone, txtEmail ;
     private TextView cityPicker,districtPicker, sexPicker;
     List<Province> provinces;
@@ -132,7 +132,17 @@ public class PersonalInfoFragment extends Fragment {
         txtUserName = view.findViewById(R.id.txtUserName);
         txtPhone = view.findViewById(R.id.txtPhone);
         user = SharedPreferencesHelper.getUser(getContext());
+        logOutBtn = view.findViewById(R.id.logOutBtn);
         updateBtn = view.findViewById(R.id.updateBtn);
+        logOutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferencesHelper.clearAccount(getContext());
+                SharedPreferencesHelper.clearUser(getContext());
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
         updateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -271,6 +281,7 @@ public class PersonalInfoFragment extends Fragment {
                 }
             });
         }
+
     }
 
     private void binding(){

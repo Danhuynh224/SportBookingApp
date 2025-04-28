@@ -1,6 +1,7 @@
 package com.example.pjbookingsport.frag;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 
 import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
+import com.example.pjbookingsport.LoginActivity;
+import com.example.pjbookingsport.MainActivity;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Account;
 import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
@@ -44,7 +47,7 @@ public class PersonalAccountFragment extends Fragment {
 
     private TextView textErrorOldPass, textErrorNewPass, textErrorConfirmPass;
     private EditText txtLoginName, txtPassword, txtNewPass, txtPassConfirm;
-    private Button updateBtn;
+    private Button updateBtn, logOutBtn;
     private ServiceAPI serviceAPI;
     Account account;
     public PersonalAccountFragment() {
@@ -96,6 +99,7 @@ public class PersonalAccountFragment extends Fragment {
         textErrorOldPass = view.findViewById(R.id.textErrorOldPass);
         textErrorConfirmPass = view.findViewById(R.id.textErrorConfirmPass);
         updateBtn = view.findViewById(R.id.updateBtn);
+        logOutBtn = view.findViewById(R.id.logOutBtn);
         txtLoginName.setText(account.getUsername());
 
         updateBtn.setOnClickListener(new View.OnClickListener() {
@@ -140,6 +144,16 @@ public class PersonalAccountFragment extends Fragment {
                         }
                     });
                 }
+            }
+        });
+
+        logOutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferencesHelper.clearAccount(getContext());
+                SharedPreferencesHelper.clearUser(getContext());
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
             }
         });
     }

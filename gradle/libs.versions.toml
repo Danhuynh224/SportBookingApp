@@ -46,7 +46,7 @@ flexbox = { group = "com.google.android.flexbox", name= "flexbox", version.ref =
 core = { group = "androidx.core", name = "core", version.ref = "core" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "logging_interceptor" }
-
+converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 google-android-libraries-mapsplatform-secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "googleAndroidLibrariesMapsplatformSecretsGradlePlugin" }

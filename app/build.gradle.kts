@@ -58,4 +58,5 @@ dependencies {
     implementation(libs.okhttp)  // Đối với OkHttp
     implementation(libs.logging)  // Đối với OkHttp Logging Interceptor
     implementation(libs.circleindicator)
+    implementation (libs.converter.scalars)
 }

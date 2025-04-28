@@ -1,6 +1,8 @@
 package com.example.pjbookingsport.model;
 
-public class Field {
+import java.io.Serializable;
+
+public class Field implements Serializable {
     private String name;
 
     //Vĩ độ

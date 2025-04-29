@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Review;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
@@ -53,7 +54,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     public void onBindViewHolder(@NonNull ReviewViewHolder holder, int position) {
         Review review = reviewList.get(position);
         holder.tvNameUser.setText(review.getUser().getFullName());
-        holder.tvDateReview.setText(review.getCreatedAt().toString());
+
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        holder.tvDateReview.setText(sdf.format(review.getCreatedAt()));
         holder.ratingValue.setRating(review.getRating());
 
         makeExpandableText(holder.tvContentReview, review.getComment(), 2);

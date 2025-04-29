@@ -28,6 +28,12 @@ import retrofit2.http.Query;
 public interface ServiceAPI {
     @GET("/sportsfacilities")
     Call<List<SportFacility>> getAllSportFacility();
+
+    @GET("/sportsfacilities/nearby")
+    Call<List<SportFacility>> getSportFacilityNearMe(
+            @Query("latitude") double latitude,
+            @Query("longitude") double longitude
+    );
     @GET("/sportsfacilities/search")
     Call<List<SportFacility>> getSportsFacilities(@Query("keyword") String keyword);
     @GET("/sportsfacilities/filter")

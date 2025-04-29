@@ -1,10 +1,14 @@
 package com.example.pjbookingsport.frag;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
@@ -33,18 +37,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -68,15 +75,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     private ImageButton btnSearchIcon;
     private EditText searchBar;
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MapFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
+    private FusedLocationProviderClient fusedLocationClient;
+    private Location currentLocation;
+
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -152,7 +154,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        GetAllSportFa();
+//        GetAllSportFa();
 
 
 
@@ -184,16 +186,134 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             return false;
         });
 
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+
+        fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    currentLocation = location;
+                    Log.d("Location", "Lat: " + location.getLatitude() + ", Lng: " + location.getLongitude());
+                    // GỌI API LẤY SÂN GẦN
+                    getNearbyFacilities(location.getLatitude(), location.getLongitude());
+                } else {
+                    Log.d("Location", "Không thể lấy được vị trí hiện tại");
+                }
+            }
+        });
+
 //
     }
 
-    private void GetAllSportFa() {
+//    private void GetAllSportFa() {
+//        apiService = RetrofitClient.getClient().create(ServiceAPI.class);
+//        apiService.getAllSportFacility().enqueue(new Callback<List<SportFacility>>() {
+//            @Override
+//            public void onResponse(Call<List<SportFacility>> call, Response<List<SportFacility>> response) {
+//                if(response.isSuccessful()){
+//                    sportFacilities=response.body();
+//                    if (!sportFacilities.isEmpty()) {
+//                        LoadingMap(0);
+//                    }
+//                    PhotoAdapter photoAdapter = new PhotoAdapter(HomeFragment.this, sportFacilities, new PhotoAdapter.OnItemClickListener() {
+//                        @Override
+//                        public void onItemClick(SportFacility facility) {
+//                            FacilityDetailFragment detailFragment = FacilityDetailFragment.newInstance(facility);
+//
+//                            requireActivity().getSupportFragmentManager().beginTransaction()
+//                                    .replace(R.id.fragMain, detailFragment)
+//                                    .addToBackStack(null)
+//                                    .commit();
+//                        }
+//
+//                        @Override
+//                        public void onBookClick(SportFacility facility) {
+//                            BookFragment bookFragment = BookFragment.newInstance(facility);
+//
+//                            requireActivity().getSupportFragmentManager().beginTransaction()
+//                                    .replace(R.id.fragMain, bookFragment)
+//                                    .addToBackStack(null)
+//                                    .commit();
+//                        }
+//                    });
+//                    viewPager2.setAdapter(photoAdapter);
+//                }
+//                else {
+//                    Log.d("API ERROR", "Không thể lấy danh sách");
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<SportFacility>> call, Throwable t) {
+//                Log.d("API ERROR", "Không thể lấy danh mục" + t.getMessage());
+//            }
+//        });
+//    }
+
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style));
+        // Kiểm tra sportFacilities đã có dữ liệu chưa
+        if (sportFacilities != null && !sportFacilities.isEmpty()) {
+            LoadingMap(0);
+        }
+    }
+
+
+    @SuppressLint("DefaultLocale")
+    private void LoadingMap(int vitri) {
+        SportFacility sportFacility = sportFacilities.get(vitri);
+        LatLng location = new LatLng(sportFacility.getLatitude(), sportFacility.getLongitude());
+        mMap.clear();
+
+        // Lấy tọa độ của người dùng
+        double userLatitude = currentLocation.getLatitude();
+        double userLongitude = currentLocation.getLongitude();
+
+        // Tính khoảng cách
+        double distance = calculateDistance(userLatitude, userLongitude, sportFacility.getLatitude(), sportFacility.getLongitude());
+
+        mMap.addMarker(new MarkerOptions()
+                .position(location)
+                .title(sportFacility.getName())
+                .snippet("Khoảng cách: " + String.format("%.2f", distance) + " km"));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15), 500, null);
+//
+    }
+
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371; // Bán kính trái đất (đơn vị km)
+
+        double lat1Rad = Math.toRadians(lat1);
+        double lon1Rad = Math.toRadians(lon1);
+        double lat2Rad = Math.toRadians(lat2);
+        double lon2Rad = Math.toRadians(lon2);
+
+        double deltaLat = lat2Rad - lat1Rad;
+        double deltaLon = lon2Rad - lon1Rad;
+
+        double a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+                Math.cos(lat1Rad) * Math.cos(lat2Rad) *
+                        Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c; // Khoảng cách (km)
+    }
+
+    private void getNearbyFacilities(double lat, double lng) {
         apiService = RetrofitClient.getClient().create(ServiceAPI.class);
-        apiService.getAllSportFacility().enqueue(new Callback<List<SportFacility>>() {
+        apiService.getSportFacilityNearMe(lat, lng).enqueue(new Callback<List<SportFacility>>() {
             @Override
             public void onResponse(Call<List<SportFacility>> call, Response<List<SportFacility>> response) {
-                if(response.isSuccessful()){
-                    sportFacilities=response.body();
+                if (response.isSuccessful()) {
+                    sportFacilities = response.body();
                     if (!sportFacilities.isEmpty()) {
                         LoadingMap(0);
                     }
@@ -219,37 +339,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         }
                     });
                     viewPager2.setAdapter(photoAdapter);
-                }
-                else {
-                    Log.d("API ERROR", "Không thể lấy danh sách");
+                } else {
+                    Log.d("API ERROR", "Không thể lấy danh sách sân gần bạn");
                 }
             }
 
             @Override
             public void onFailure(Call<List<SportFacility>> call, Throwable t) {
-                Log.d("API ERROR", "Không thể lấy danh mục" + t.getMessage());
+                Log.d("API ERROR", "Không thể lấy danh sách sân gần bạn: " + t.getMessage());
             }
         });
     }
 
-
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style));
-        // Kiểm tra sportFacilities đã có dữ liệu chưa
-        if (sportFacilities != null && !sportFacilities.isEmpty()) {
-            LoadingMap(0);
-        }
-    }
-
-
-    private void LoadingMap(int vitri) {
-        SportFacility sportFacility = sportFacilities.get(vitri);
-        LatLng location = new LatLng(sportFacility.getLatitude(), sportFacility.getLongitude());
-        mMap.clear();
-        mMap.addMarker(new MarkerOptions().position(location).title(sportFacility.getName()));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15), 500, null);
-//
-    }
 }

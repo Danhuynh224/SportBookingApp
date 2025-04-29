@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
     implementation(libs.recyclerview)
     implementation(libs.core)
     testImplementation(libs.junit)

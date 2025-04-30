@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,8 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.frag.HomeFragment;
+import com.example.pjbookingsport.model.Price;
 import com.example.pjbookingsport.model.SportFacility;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
@@ -48,7 +51,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         if (sportFacility == null) {
             return;
         }
-
         holder.bind(sportFacility, listener, imgUrl);
     }
 
@@ -62,6 +64,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         private TextView txtName;
         private TextView txtAddress;
         private Button btnBook;
+        private LinearLayout containerType;
 
         public PhotoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -69,6 +72,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
             txtName = itemView.findViewById(R.id.name);
             txtAddress = itemView.findViewById(R.id.address);
             btnBook = itemView.findViewById(R.id.book_button);
+            containerType = itemView.findViewById(R.id.containerType);
         }
 
         public void bind(SportFacility facility, OnItemClickListener listener, String imgUrl) {
@@ -79,6 +83,47 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
                     .load(imgUrl + facility.getSportsFacilityId())
                     .placeholder(R.drawable.ic_launcher_foreground)
                     .into(imgPhoto);
+
+            containerType.removeAllViews();
+
+            // Lấy loại sân thể thao
+            List<Price> prices = facility.getPrices();
+            List<String> types= new ArrayList<>();
+            if (prices != null && !prices.isEmpty()) {
+                for(Price price : prices){
+                    types.add(price.getFacilityType().getName());
+                }
+            }
+
+            // Danh sách icon phù hợp với loại sân thể thao
+            List<Integer> iconList = new ArrayList<>();
+
+            for (String type: types) {
+                if (type.equals("Cầu lông")) {
+                    iconList.add(R.drawable.badminton);
+                } else if (type.equals("Bóng đá")) {
+                    iconList.add(R.drawable.football);
+                } else if (type.equals("Tennis")) {
+                    iconList.add(R.drawable.tennis);
+                } else if (type.equals("Pickleball")) {
+                    iconList.add(R.drawable.pickle);
+                } else if (type.equals("Bóng rổ")) {
+                    iconList.add(R.drawable.basketball);
+                } else {
+                    iconList.add(R.drawable.volleyball);
+                }
+            }
+
+            // Thêm icon vào LinearLayout
+            for (int iconRes : iconList) {
+                ImageView iconView = new ImageView(itemView.getContext());
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(58, 58);
+                params.setMargins(10, 0, 0, 0);
+                iconView.setLayoutParams(params);
+                iconView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                iconView.setImageResource(iconRes);
+                containerType.addView(iconView);
+            }
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
@@ -91,6 +136,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
                     listener.onBookClick(facility);
                 }
             });
+
+
         }
     }
 }

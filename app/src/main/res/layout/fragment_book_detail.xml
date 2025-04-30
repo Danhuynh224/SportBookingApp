@@ -55,14 +55,14 @@
     <!-- Icon tick -->
     <ImageView
         android:id="@+id/imgTick"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_check_done"
-        android:contentDescription="Success Tick"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/baseline_check_circle_outline_24"
         app:layout_constraintTop_toBottomOf="@id/space"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="30dp" />
+        android:layout_marginTop="30dp"
+        app:tint="@color/primary" />
 
     <!-- Trạng thái -->
     <TextView

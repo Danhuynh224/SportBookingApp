@@ -1,4 +1,4 @@
-package com.example.pjbookingsport;
+package com.example.pjbookingsport.activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -21,6 +21,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.pjbookingsport.API.AuthAPI;
 import com.example.pjbookingsport.API.RetrofitClient;
+import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Account;
 import com.example.pjbookingsport.model.AuthRequest;
 import com.example.pjbookingsport.model.User;

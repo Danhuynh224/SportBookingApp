@@ -1,4 +1,4 @@
-package com.example.pjbookingsport;
+package com.example.pjbookingsport.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -17,7 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.pjbookingsport.API.AuthAPI;
 import com.example.pjbookingsport.API.RetrofitClient;
-import com.example.pjbookingsport.model.AuthRequest;
+import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.RegisterRequest;
 
 import okhttp3.ResponseBody;

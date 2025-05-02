@@ -1,4 +1,4 @@
-package com.example.pjbookingsport;
+package com.example.pjbookingsport.activity;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -13,11 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
+import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Booking;
 
 import java.io.IOException;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -148,7 +148,7 @@ public class PaymentVNPayActivity extends AppCompatActivity {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.startsWith("myapp://")) {
                     // Nếu URL bắt đầu với custom scheme, xử lý nó
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url)).setClassName(/* TODO: provide the application ID. For example: */ getPackageName(), "com.example.pjbookingsport.PaymentVNPayActivity");
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url)).setClassName(/* TODO: provide the application ID. For example: */ getPackageName(), "com.example.pjbookingsport.activity.PaymentVNPayActivity");
                     startActivity(intent);  // Chuyển sang màn hình xử lý custom scheme
                     return true;  // Tránh việc mở URL trong WebView
                 }

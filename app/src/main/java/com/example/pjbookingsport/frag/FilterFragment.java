@@ -18,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -25,16 +27,23 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.pjbookingsport.API.AddressAPI;
+import com.example.pjbookingsport.API.RetrofitAddress;
 import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.adapter.ButtonCardAdapter;
+import com.example.pjbookingsport.model.District;
+import com.example.pjbookingsport.model.DistrictResponse;
+import com.example.pjbookingsport.model.Province;
+import com.example.pjbookingsport.model.ProvinceResponse;
 import com.example.pjbookingsport.model.SportFacility;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.slider.RangeSlider;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -50,12 +59,19 @@ import retrofit2.Response;
 public class FilterFragment extends Fragment {
 
     private ImageButton btnBack;
-    private TextView cityPicker;
+    private AutoCompleteTextView provincePicker, districtPicker;
+    private TextView districtLabel;
+    private TextInputLayout districtLayout;
+    private List<Province> provinces = new ArrayList<>();
+    private List<District> districts = new ArrayList<>();
+    private List<String> provinceNames = new ArrayList<>();
+    private List<String> districtNames = new ArrayList<>();
+    private String idProvince;
     private RecyclerView recyclerView;
     private ButtonCardAdapter adapter;
     private ServiceAPI apiService;
+    private AddressAPI addressAPI;
     private AppCompatButton resetButton, applyButton;
-
     private MaterialCardView cardPriceBelow500, cardPrice500_1m, cardPriceAbove1m;
     private TextView textPriceBelow500, textPrice500_1m, textPriceAbove1m;
 
@@ -74,7 +90,10 @@ public class FilterFragment extends Fragment {
 
         // anh xa
         btnBack = view.findViewById(R.id.btn_back);
-        cityPicker = view.findViewById(R.id.city_picker);
+        provincePicker = view.findViewById(R.id.province_picker);
+        districtPicker = view.findViewById(R.id.district_picker);
+        districtLabel = view.findViewById(R.id.district_label);
+        districtLayout = view.findViewById(R.id.district_layout);
         recyclerView = view.findViewById(R.id.rvBoMon);
         resetButton = view.findViewById(R.id.reset_button);
         applyButton = view.findViewById(R.id.apply_button);
@@ -98,8 +117,38 @@ public class FilterFragment extends Fragment {
 //        });
 
         // citypicker
-        cityPicker.setOnClickListener(v -> {
-            showCityPickerDialog();
+        getProvinces();
+
+        provincePicker.setOnClickListener(v -> provincePicker.showDropDown());
+        districtPicker.setOnClickListener(v -> districtPicker.showDropDown());
+
+        provincePicker.setOnItemClickListener((parent, view1, position, id) -> {
+            String selectedProvince = provinceNames.get(position);
+            provincePicker.setText(selectedProvince, false); // false để tránh trigger lại dropdown
+
+            // Lấy idProvince
+            for (Province province : provinces) {
+                if (province.getName().equals(selectedProvince)) {
+                    idProvince = province.getId();
+                    break;
+                }
+            }
+
+            districtLabel.setVisibility(View.VISIBLE);
+            districtLayout.setVisibility(View.VISIBLE);
+
+            // Reset quận/huyện khi chọn tỉnh mới
+            districtPicker.setText("Tất cả");
+            districtNames.clear();
+            districts.clear();
+
+            getDistricts(); // Gọi API lấy quận/huyện
+        });
+
+        districtPicker.setOnItemClickListener((parent, view12, position, id) -> {
+            String selectedDistrict = districtNames.get(position);
+            districtPicker.setText(selectedDistrict, false);
+            // Bạn có thể lấy id Quận nếu muốn tương tự như trên
         });
 
         // recyclerview type
@@ -147,7 +196,7 @@ public class FilterFragment extends Fragment {
     private void resetFilters() {
         adapter.clearSelection();
 
-        cityPicker.setText("Chọn tỉnh/thành phố");
+        provincePicker.setText("Tất cả");
 
         updateCardState(cardPriceBelow500, textPriceBelow500, false);
         updateCardState(cardPrice500_1m, textPrice500_1m, false);
@@ -164,7 +213,7 @@ public class FilterFragment extends Fragment {
 
     private void applyFilters() {
         List<String> selectedTypes = adapter.getSelectedItems();
-        String selectedCity = cityPicker.getText().toString();
+        String selectedCity = provincePicker.getText().toString();
         BigDecimal minPrice = null;
         BigDecimal maxPrice = null;
 
@@ -211,15 +260,57 @@ public class FilterFragment extends Fragment {
         }
     }
 
-    private void showCityPickerDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Chọn tỉnh/thành phố");
+    private void getProvinces() {
+        addressAPI = RetrofitAddress.getClient().create(AddressAPI.class);
+        addressAPI.getProvinces().enqueue(new Callback<ProvinceResponse>() {
+            @Override
+            public void onResponse(Call<ProvinceResponse> call, Response<ProvinceResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    provinces = response.body().getData();
+                    provinceNames.clear();
+                    for (Province province : provinces) {
+                        provinceNames.add(province.getName());
+                    }
 
-        // Lấy danh sách tỉnh/thành phố từ resources
-        String[] provinces = getResources().getStringArray(R.array.vietnam_provinces);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                            android.R.layout.simple_dropdown_item_1line, provinceNames);
+                    provincePicker.setAdapter(adapter);
+                }
+            }
 
-        builder.setItems(provinces, (dialog, which) -> cityPicker.setText(provinces[which]));
-        builder.show();
+            @Override
+            public void onFailure(Call<ProvinceResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Không thể tải tỉnh/thành phố", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
+    private void getDistricts() {
+        if (idProvince != null) {
+            addressAPI = RetrofitAddress.getClient().create(AddressAPI.class);
+            addressAPI.getDistricts(idProvince).enqueue(new Callback<DistrictResponse>() {
+                @Override
+                public void onResponse(Call<DistrictResponse> call, Response<DistrictResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        districts = response.body().getData();
+                        districtNames.clear();
+                        for (District district : districts) {
+                            districtNames.add(district.getName());
+                        }
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                                android.R.layout.simple_dropdown_item_1line, districtNames);
+                        districtPicker.setAdapter(adapter);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DistrictResponse> call, Throwable t) {
+                    Toast.makeText(getContext(), "Không thể tải quận/huyện", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
 
 }

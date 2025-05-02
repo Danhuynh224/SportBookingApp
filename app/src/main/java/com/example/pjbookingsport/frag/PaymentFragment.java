@@ -1,6 +1,5 @@
 package com.example.pjbookingsport.frag;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -17,24 +16,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
-import com.example.pjbookingsport.PaymentVNPayActivity;
+import com.example.pjbookingsport.activity.PaymentVNPayActivity;
 import com.example.pjbookingsport.R;
-import com.example.pjbookingsport.adapter.BookInForAdapter;
 import com.example.pjbookingsport.adapter.BookInforPayAdapter;
-import com.example.pjbookingsport.enums.Role;
 import com.example.pjbookingsport.model.Booking;
 import com.example.pjbookingsport.model.SportFacility;
 import com.example.pjbookingsport.model.User;
 import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 
-import java.io.IOException;
-import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.format.DateTimeFormatter;

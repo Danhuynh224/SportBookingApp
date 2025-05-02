@@ -8,35 +8,27 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.pjbookingsport.API.AddressAPI;
 import com.example.pjbookingsport.API.RetrofitAddress;
 import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
-import com.example.pjbookingsport.LoginActivity;
+import com.example.pjbookingsport.activity.LoginActivity;
 import com.example.pjbookingsport.R;
-import com.example.pjbookingsport.SignUpActivity;
-import com.example.pjbookingsport.adapter.FacilityPagerAdapter;
-import com.example.pjbookingsport.adapter.PersonalPagerAdapter;
 import com.example.pjbookingsport.model.District;
 import com.example.pjbookingsport.model.DistrictResponse;
 import com.example.pjbookingsport.model.Province;
 import com.example.pjbookingsport.model.ProvinceResponse;
 import com.example.pjbookingsport.model.User;
 import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

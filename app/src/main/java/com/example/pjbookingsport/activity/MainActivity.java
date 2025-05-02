@@ -1,4 +1,4 @@
-package com.example.pjbookingsport;
+package com.example.pjbookingsport.activity;
 
 import android.os.Bundle;
 

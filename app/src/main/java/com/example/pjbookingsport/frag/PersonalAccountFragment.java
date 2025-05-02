@@ -17,8 +17,7 @@ import android.widget.TextView;
 
 import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
-import com.example.pjbookingsport.LoginActivity;
-import com.example.pjbookingsport.MainActivity;
+import com.example.pjbookingsport.activity.LoginActivity;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Account;
 import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;

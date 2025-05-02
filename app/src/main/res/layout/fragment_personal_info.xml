@@ -8,8 +8,7 @@
     tools:context=".frag.PersonalInfoFragment">
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -96,8 +95,7 @@
                     android:focusable="false"
                     android:clickable="true"
                     android:inputType="none"
-                    android:background="@drawable/border_textview"
-                    />
+                    android:background="@drawable/border_textview"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -118,7 +116,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Huyện - Quận"/>
+                    android:text="Quận - Huyện"/>
                 <TextView
                     android:id="@+id/district_picker"
                     android:layout_width="match_parent"

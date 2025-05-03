@@ -1,7 +1,11 @@
 package com.example.pjbookingsport.frag;
 
+import android.content.Intent;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,6 +61,11 @@ public class FacilityInfoFragment extends Fragment {
                 tvDescription.setText(facility.getDetail());
                 tvAddress.setText(facility.getAddress());
 
+                tvAddress.setPaintFlags(tvAddress.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                tvAddress.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_blue_dark));
+                tvAddress.setClickable(true);
+
+
                 List<Price> prices = facility.getPrices();
                 List<String> types= new ArrayList<>();
                 if (prices != null && !prices.isEmpty()) {
@@ -80,6 +89,23 @@ public class FacilityInfoFragment extends Fragment {
                 }
             }
         }
+
+        tvAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                double lat = facility.getLatitude();
+                double lng = facility.getLongitude();
+                String label = facility.getName();
+
+                // Mở Google Maps với vị trí cụ thể
+                String uri = "geo:" + lat + "," + lng + "?q=" + lat + "," + lng + "(" + Uri.encode(label) + ")";
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                intent.setPackage("com.google.android.apps.maps"); // mở bằng Google Maps
+                if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+            }
+        });
 
         return view;
     }

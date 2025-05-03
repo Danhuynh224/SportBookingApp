@@ -128,8 +128,8 @@ public class FilterFragment extends Fragment {
 
             // Lấy idProvince
             for (Province province : provinces) {
-                if (province.getName().equals(selectedProvince)) {
-                    idProvince = province.getId();
+                if (province.getProvince_name().equals(selectedProvince)) {
+                    idProvince = province.getProvince_id();
                     break;
                 }
             }
@@ -266,10 +266,10 @@ public class FilterFragment extends Fragment {
             @Override
             public void onResponse(Call<ProvinceResponse> call, Response<ProvinceResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    provinces = response.body().getData();
+                    provinces = response.body().getResults();
                     provinceNames.clear();
                     for (Province province : provinces) {
-                        provinceNames.add(province.getName());
+                        provinceNames.add(province.getProvince_name());
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
@@ -292,10 +292,10 @@ public class FilterFragment extends Fragment {
                 @Override
                 public void onResponse(Call<DistrictResponse> call, Response<DistrictResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        districts = response.body().getData();
+                        districts = response.body().getResults();
                         districtNames.clear();
                         for (District district : districts) {
-                            districtNames.add(district.getName());
+                            districtNames.add(district.getDistrict_name());
                         }
 
                         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),

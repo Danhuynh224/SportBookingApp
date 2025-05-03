@@ -2,17 +2,23 @@ package com.example.pjbookingsport.frag;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -126,21 +132,8 @@ public class PersonalInfoFragment extends Fragment {
         user = SharedPreferencesHelper.getUser(getContext());
         logOutBtn = view.findViewById(R.id.logOutBtn);
         updateBtn = view.findViewById(R.id.updateBtn);
-        logOutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferencesHelper.clearAccount(getContext());
-                SharedPreferencesHelper.clearUser(getContext());
-                Intent intent = new Intent(getContext(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
-        updateBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                update();
-            }
-        });
+        logOutBtn.setOnClickListener(view2 -> showLogoutDialog());
+        updateBtn.setOnClickListener(view3 -> update());
         binding();
         edtBirthday.setOnClickListener(v -> {
             final Calendar calendar = Calendar.getInstance();
@@ -210,8 +203,8 @@ public class PersonalInfoFragment extends Fragment {
         builder.setItems(provinceArray, (dialog, which) -> {
             cityPicker.setText(provinceArray[which]);
             for(Province province : provinces ){
-                if(Objects.equals(province.getName(), provinceArray[which])){
-                    idProvince = province.getId();
+                if(Objects.equals(province.getProvince_name(), provinceArray[which])){
+                    idProvince = province.getProvince_id();
                 }
             }
         });
@@ -236,10 +229,11 @@ public class PersonalInfoFragment extends Fragment {
             @Override
             public void onResponse(Call<ProvinceResponse> call, Response<ProvinceResponse> response) {
                 if (response.isSuccessful() && response.body() != null){
-                    provinces = response.body().getData();
+                    provinces = response.body().getResults();
+                    Log.d("Test Province:", provinces.toString());
                     provinceNames.clear();
                     for (Province province : provinces) {
-                        provinceNames.add(province.getName());
+                        provinceNames.add(province.getProvince_name());
                     }
                     showCityPickerDialog();
                 }
@@ -257,10 +251,10 @@ public class PersonalInfoFragment extends Fragment {
                 @Override
                 public void onResponse(Call<DistrictResponse> call, Response<DistrictResponse> response) {
                     if(response.isSuccessful() && response.body() !=null){
-                        districts = response.body().getData();
+                        districts = response.body().getResults();
                         ditrictNames.clear();
                         for(District district : districts){
-                            ditrictNames.add(district.getName());
+                            ditrictNames.add(district.getDistrict_name());
                         }
                         showDistrictPickerDialog();
                     }
@@ -347,6 +341,36 @@ public class PersonalInfoFragment extends Fragment {
         });
 
         AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void showLogoutDialog() {
+        Dialog dialog = new Dialog(requireContext(), R.style.CustomDialog);
+        dialog.setContentView(R.layout.dialog_confirm_logout);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().setDimAmount(0.5f);
+
+        Window window = dialog.getWindow();
+        if (window != null) {
+            // Mở rộng chiều ngang của dialog (ví dụ 90% chiều rộng màn hình)
+            window.setLayout((int) (getResources().getDisplayMetrics().widthPixels * 0.9), WindowManager.LayoutParams.WRAP_CONTENT);
+        }
+
+        AppCompatButton btnHuy = dialog.findViewById(R.id.huyBtn);
+        AppCompatButton btnLogout = dialog.findViewById(R.id.logOutBtn);
+
+        btnHuy.setOnClickListener(v -> dialog.dismiss());
+
+        btnLogout.setOnClickListener(v -> {
+            SharedPreferencesHelper.clearAccount(requireContext());
+            SharedPreferencesHelper.clearUser(requireContext());
+            Intent intent = new Intent(getContext(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            dialog.dismiss();
+        });
+
         dialog.show();
     }
 

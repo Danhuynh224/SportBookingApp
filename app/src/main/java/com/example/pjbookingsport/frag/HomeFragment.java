@@ -72,8 +72,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private ServiceAPI apiService;
     private List<SportFacility> sportFacilities;
     String imgUrl;
-
-    private ImageButton btnSearchIcon;
+    private ImageButton btnSearchIcon, btnUser;
     private EditText searchBar;
 
     private FusedLocationProviderClient fusedLocationClient;
@@ -122,6 +121,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         viewPager2 = view.findViewById(R.id.view_pager_2);
         btnSearchIcon = view.findViewById(R.id.btnSearchIcon);
         searchBar = view.findViewById(R.id.search_bar);
+        btnUser = view.findViewById(R.id.btnUser);
 
         // Load animation
         Animation fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
@@ -154,10 +154,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-//        GetAllSportFa();
-
-
-
 
         // Sự kiện nhấn vào icon tìm kiếm
         btnSearchIcon.setOnClickListener(v -> {
@@ -186,6 +182,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             return false;
         });
 
+        // Xu ly su kien nut User
+        btnUser.setOnClickListener(v -> {
+            UserFragment userFragment = new UserFragment();
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, userFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
@@ -206,54 +211,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
         });
-
-//
     }
-
-//    private void GetAllSportFa() {
-//        apiService = RetrofitClient.getClient().create(ServiceAPI.class);
-//        apiService.getAllSportFacility().enqueue(new Callback<List<SportFacility>>() {
-//            @Override
-//            public void onResponse(Call<List<SportFacility>> call, Response<List<SportFacility>> response) {
-//                if(response.isSuccessful()){
-//                    sportFacilities=response.body();
-//                    if (!sportFacilities.isEmpty()) {
-//                        LoadingMap(0);
-//                    }
-//                    PhotoAdapter photoAdapter = new PhotoAdapter(HomeFragment.this, sportFacilities, new PhotoAdapter.OnItemClickListener() {
-//                        @Override
-//                        public void onItemClick(SportFacility facility) {
-//                            FacilityDetailFragment detailFragment = FacilityDetailFragment.newInstance(facility);
-//
-//                            requireActivity().getSupportFragmentManager().beginTransaction()
-//                                    .replace(R.id.fragMain, detailFragment)
-//                                    .addToBackStack(null)
-//                                    .commit();
-//                        }
-//
-//                        @Override
-//                        public void onBookClick(SportFacility facility) {
-//                            BookFragment bookFragment = BookFragment.newInstance(facility);
-//
-//                            requireActivity().getSupportFragmentManager().beginTransaction()
-//                                    .replace(R.id.fragMain, bookFragment)
-//                                    .addToBackStack(null)
-//                                    .commit();
-//                        }
-//                    });
-//                    viewPager2.setAdapter(photoAdapter);
-//                }
-//                else {
-//                    Log.d("API ERROR", "Không thể lấy danh sách");
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<SportFacility>> call, Throwable t) {
-//                Log.d("API ERROR", "Không thể lấy danh mục" + t.getMessage());
-//            }
-//        });
-//    }
 
 
     @Override
@@ -265,7 +223,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             LoadingMap(0);
         }
     }
-
 
     @SuppressLint("DefaultLocale")
     private void LoadingMap(int vitri) {
@@ -285,7 +242,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 .title(sportFacility.getName())
                 .snippet("Khoảng cách: " + String.format("%.2f", distance) + " km"));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15), 500, null);
-//
     }
 
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {

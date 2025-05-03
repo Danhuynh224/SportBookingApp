@@ -1,16 +1,22 @@
 package com.example.pjbookingsport.frag;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -146,15 +152,7 @@ public class PersonalAccountFragment extends Fragment {
             }
         });
 
-        logOutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferencesHelper.clearAccount(getContext());
-                SharedPreferencesHelper.clearUser(getContext());
-                Intent intent = new Intent(getContext(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
+        logOutBtn.setOnClickListener(view1 -> showLogoutDialog());
     }
     private void showResultDialog(boolean isSuccess) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -173,6 +171,36 @@ public class PersonalAccountFragment extends Fragment {
         });
 
         AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void showLogoutDialog() {
+        Dialog dialog = new Dialog(requireContext(), R.style.CustomDialog);
+        dialog.setContentView(R.layout.dialog_confirm_logout);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().setDimAmount(0.5f);
+
+        Window window = dialog.getWindow();
+        if (window != null) {
+            // Mở rộng chiều ngang của dialog (ví dụ 90% chiều rộng màn hình)
+            window.setLayout((int) (getResources().getDisplayMetrics().widthPixels * 0.9), WindowManager.LayoutParams.WRAP_CONTENT);
+        }
+
+        AppCompatButton btnHuy = dialog.findViewById(R.id.huyBtn);
+        AppCompatButton btnLogout = dialog.findViewById(R.id.logOutBtn);
+
+        btnHuy.setOnClickListener(v -> dialog.dismiss());
+
+        btnLogout.setOnClickListener(v -> {
+            SharedPreferencesHelper.clearAccount(requireContext());
+            SharedPreferencesHelper.clearUser(requireContext());
+            Intent intent = new Intent(getContext(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            dialog.dismiss();
+        });
+
         dialog.show();
     }
 }

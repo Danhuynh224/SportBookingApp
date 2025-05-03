@@ -8,8 +8,8 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 public interface AddressAPI {
-    @GET("provinces")
+    @GET("api/v2/province")
     Call<ProvinceResponse> getProvinces();
-    @GET("districts/{provinceId}")
-    Call<DistrictResponse> getDistricts(@Path("provinceId") String provinceId);
+    @GET("api/v2/province/district/{province_id}")
+    Call<DistrictResponse> getDistricts(@Path("province_id") String provinceId);
 }

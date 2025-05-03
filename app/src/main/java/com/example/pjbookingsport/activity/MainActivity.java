@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             else if (idItem==R.id.nav_post)  {
                 fragmentSelected =new PostFragment();
             }
-            else {
+            else if (idItem==R.id.nav_user){
                 fragmentSelected = new PersonalFragment();
             }
             loadFragment(fragmentSelected);

@@ -34,9 +34,9 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintStart_toEndOf="@id/btnSearchIcon"
-            app:layout_constraintEnd_toStartOf="@id/btnNotification"
+            app:layout_constraintEnd_toStartOf="@id/btnUser"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
@@ -57,19 +57,19 @@
         </LinearLayout>
 
         <!-- Notification button -->
-        <ImageButton
-            android:id="@+id/btnNotification"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="4dp"
-            android:alpha="0.8"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_notification"
-            android:contentDescription="Notification"
-            app:layout_constraintEnd_toStartOf="@id/btnUser"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+<!--        <ImageButton-->
+<!--            android:id="@+id/btnNotification"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="8dp"-->
+<!--            android:layout_marginEnd="4dp"-->
+<!--            android:alpha="0.8"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:src="@drawable/ic_notification"-->
+<!--            android:contentDescription="Notification"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/btnUser"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent" />-->
 
         <!-- User button -->
         <ImageButton
@@ -104,5 +104,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

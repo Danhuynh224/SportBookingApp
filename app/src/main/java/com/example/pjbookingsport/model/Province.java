@@ -1,31 +1,20 @@
 package com.example.pjbookingsport.model;
 
 public class Province {
-    private String id;
-    private String name;
-    private int type;
-    private String typeText;
-    private String slug;
+    private String province_id;
+    private String province_name;
+    private String province_type;
 
-    // Getters
-    public String getId() {
-        return id;
+    public String getProvince_id() {
+        return province_id;
     }
 
-    public String getName() {
-        return name;
+    public String getProvince_name() {
+        return province_name;
     }
 
-    public int getType() {
-        return type;
-    }
-
-    public String getTypeText() {
-        return typeText;
-    }
-
-    public String getSlug() {
-        return slug;
+    public String getProvince_type() {
+        return province_type;
     }
 }
 

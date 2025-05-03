@@ -30,8 +30,8 @@ public class RetrofitAddress {
                     .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter()) // dùng cho java.time.LocalTime
                     .registerTypeAdapter(LocalDate.class, new LocalDateAdapter()) // nếu cần luôn LocalDate
                     .create();
-             retrofit = new Retrofit.Builder()
-                    .baseUrl("https://open.oapi.vn/location/")
+            retrofit = new Retrofit.Builder()
+                    .baseUrl("https://api.vnappmob.com/")
                      .addConverterFactory(GsonConverterFactory.create(gson))
                      .client(client) // Thêm OkHttpClient vào Retrofit
                     .build();

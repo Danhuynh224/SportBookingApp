@@ -387,7 +387,7 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
             builder.setMessage("Bạn đã đặt sân thành công");
         } else {
             builder.setTitle("Thất bại ❌");
-            builder.setMessage("Vui lòng điền đầy đủ thông tin");
+            builder.setMessage("Đã có lỗi, vui lòng kiểm tra lại thông tin");
         }
 
         builder.setPositiveButton("OK", (dialog, which) -> {

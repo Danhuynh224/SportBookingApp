@@ -363,8 +363,10 @@ public class PersonalInfoFragment extends Fragment {
         btnHuy.setOnClickListener(v -> dialog.dismiss());
 
         btnLogout.setOnClickListener(v -> {
-            SharedPreferencesHelper.clearAccount(requireContext());
-            SharedPreferencesHelper.clearUser(requireContext());
+            if(!user.isSave()) {
+                SharedPreferencesHelper.clearAccount(requireContext());
+                SharedPreferencesHelper.clearUser(requireContext());
+            }
             Intent intent = new Intent(getContext(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);

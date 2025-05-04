@@ -1,24 +1,33 @@
 package com.example.pjbookingsport.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.example.pjbookingsport.R;
+import com.example.pjbookingsport.activity.LoginActivity;
 import com.example.pjbookingsport.model.Post;
 import com.example.pjbookingsport.model.SportFacility;
+import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 
 import java.util.List;
 
@@ -55,6 +64,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         holder.itemView.setOnClickListener(v -> listener.onItemClick(post));
         sliderAdapter.setOnImageClickListener(() -> listener.onItemClick(post));
+        holder.bookButton.setOnClickListener(v -> {
+            if(SharedPreferencesHelper.checkUserIsSave(holder.itemView.getContext())) {
+                if (listener != null) {
+                    listener.onBookClick(post.getSportFacility());
+                }
+            }
+            else {
+                showLogoutDialog();
+            }
+        });
 
     }
 
@@ -79,13 +98,46 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             indicator = itemView.findViewById(R.id.indicator);
             bookButton = itemView.findViewById(R.id.btnDatLich);
 
+
+
         }
     }
 
     public interface OnItemClickListener {
         void onItemClick(Post post);
-        void onBookClick(Post post);
+        void onBookClick(SportFacility sportFacility);
 
+    }
+    public void showLogoutDialog() {
+        android.app.Dialog dialog = new android.app.Dialog(context, R.style.CustomDialog);
+        dialog.setContentView(R.layout.dialog_confirm_login);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.getWindow().setDimAmount(0.5f);
+
+        android.view.Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout((int) (context.getResources().getDisplayMetrics().widthPixels * 0.9),
+                    android.view.WindowManager.LayoutParams.WRAP_CONTENT);
+        }
+
+        androidx.appcompat.widget.AppCompatButton btnHuy = dialog.findViewById(R.id.huyBtn);
+        androidx.appcompat.widget.AppCompatButton btnLogout = dialog.findViewById(R.id.loginButton);
+
+        btnHuy.setOnClickListener(v -> dialog.dismiss());
+
+        btnLogout.setOnClickListener(v -> {
+            com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper.clearAccount(context);
+            com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper.clearUser(context);
+
+            android.content.Intent intent = new android.content.Intent(context, com.example.pjbookingsport.activity.LoginActivity.class);
+            intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(intent);
+
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 }
 

@@ -26,6 +26,7 @@ import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.activity.LoginActivity;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Account;
+import com.example.pjbookingsport.model.User;
 import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 
 import okhttp3.ResponseBody;
@@ -193,14 +194,17 @@ public class PersonalAccountFragment extends Fragment {
         btnHuy.setOnClickListener(v -> dialog.dismiss());
 
         btnLogout.setOnClickListener(v -> {
-            SharedPreferencesHelper.clearAccount(requireContext());
-            SharedPreferencesHelper.clearUser(requireContext());
+            User user = SharedPreferencesHelper.getUser(this.getContext());
+            if(!user.isSave()) {
+                SharedPreferencesHelper.clearAccount(requireContext());
+                SharedPreferencesHelper.clearUser(requireContext());
+            }
             Intent intent = new Intent(getContext(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             dialog.dismiss();
-        });
 
+        });
         dialog.show();
     }
 }

@@ -20,6 +20,7 @@ import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.adapter.PostAdapter;
 import com.example.pjbookingsport.model.Post;
+import com.example.pjbookingsport.model.SportFacility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,8 +64,13 @@ public class PostFragment extends Fragment {
             }
 
             @Override
-            public void onBookClick(Post post) {
+            public void onBookClick(SportFacility sportFacility) {
+                BookFragment bookFragment = BookFragment.newInstance(sportFacility);
 
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragMain, bookFragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
         rvPosts.setAdapter(postAdapter);

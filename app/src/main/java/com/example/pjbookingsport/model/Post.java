@@ -17,6 +17,20 @@ public class Post implements Serializable {
     private String content;
     private String img;
 
+    public SportFacility getSportFacility() {
+        return sportsFacility;
+    }
+
+    public void setSportFacility(SportFacility sportFacility) {
+        this.sportsFacility = sportFacility;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    private SportFacility sportsFacility;
+
     public Post(Long postId, String title, String summary, String content, String img) {
         this.postId = postId;
         this.title = title;

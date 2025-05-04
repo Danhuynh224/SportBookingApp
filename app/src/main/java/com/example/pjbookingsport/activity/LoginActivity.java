@@ -38,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     CheckBox checkRemember;
     Button btnSignIn;
     String username, password;
+    User saveUser;
 
     AuthAPI authAPI;
     @Override
@@ -51,12 +52,22 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
+
+
         textUsername = findViewById(R.id.textUsername);
         textPassword = findViewById(R.id.textPassword);
         textForget = findViewById(R.id.textForget);
         textViewSignUp = findViewById(R.id.textViewSignUp);
         checkRemember = findViewById(R.id.checkRemember);
         btnSignIn = findViewById(R.id.btnSignIn);
+        saveUser = SharedPreferencesHelper.getUser(this);
+        Account acc = SharedPreferencesHelper.getAccount(this);
+        if(saveUser!=null )
+        {
+            checkRemember.setChecked(saveUser.isSave());
+            textUsername.setText(acc.getUsername());
+            textPassword.setText(acc.getPassword());
+        }
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override

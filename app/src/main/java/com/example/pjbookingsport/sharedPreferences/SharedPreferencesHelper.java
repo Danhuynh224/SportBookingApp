@@ -87,6 +87,13 @@ public class SharedPreferencesHelper {
         editor.remove(KEY_ACCOUNT);
         editor.apply(); // hoặc editor.commit();
     }
+    public static boolean checkUserIsSave(Context context){
+        User saveUser = getUser(context);
+        if(saveUser==null){
+            return false;
+        }
+        return true;
+    }
 
 }
 

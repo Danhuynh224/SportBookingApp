@@ -23,6 +23,7 @@ import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Price;
 import com.example.pjbookingsport.model.Review;
 import com.example.pjbookingsport.model.SportFacility;
+import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,8 +115,13 @@ public class SportFacilityAdapter extends RecyclerView.Adapter<SportFacilityAdap
             }
         });
         holder.bookButton.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onBookClick(sportFacility);
+            if(SharedPreferencesHelper.checkUserIsSave(holder.itemView.getContext())) {
+                if (listener != null) {
+                    listener.onBookClick(sportFacility);
+                }
+            }
+            else {
+                showLogoutDialog();
             }
         });
 
@@ -184,5 +190,37 @@ public class SportFacilityAdapter extends RecyclerView.Adapter<SportFacilityAdap
         void onBookClick(SportFacility facility);
 
     }
+
+    public void showLogoutDialog() {
+        android.app.Dialog dialog = new android.app.Dialog(context, R.style.CustomDialog);
+        dialog.setContentView(R.layout.dialog_confirm_login);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.getWindow().setDimAmount(0.5f);
+
+        android.view.Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout((int) (context.getResources().getDisplayMetrics().widthPixels * 0.9),
+                    android.view.WindowManager.LayoutParams.WRAP_CONTENT);
+        }
+
+        androidx.appcompat.widget.AppCompatButton btnHuy = dialog.findViewById(R.id.huyBtn);
+        androidx.appcompat.widget.AppCompatButton btnLogout = dialog.findViewById(R.id.loginButton);
+
+        btnHuy.setOnClickListener(v -> dialog.dismiss());
+
+        btnLogout.setOnClickListener(v -> {
+            com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper.clearAccount(context);
+            com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper.clearUser(context);
+            android.content.Intent intent = new android.content.Intent(context, com.example.pjbookingsport.activity.LoginActivity.class);
+            intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(intent);
+
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
 
 }

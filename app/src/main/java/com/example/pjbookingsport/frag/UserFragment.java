@@ -117,14 +117,17 @@ public class UserFragment extends Fragment {
         btnHuy.setOnClickListener(v -> dialog.dismiss());
 
         btnLogout.setOnClickListener(v -> {
-            SharedPreferencesHelper.clearAccount(requireContext());
-            SharedPreferencesHelper.clearUser(requireContext());
+            User user = SharedPreferencesHelper.getUser(this.getContext());
+            if(!user.isSave()) {
+                SharedPreferencesHelper.clearAccount(requireContext());
+                SharedPreferencesHelper.clearUser(requireContext());
+            }
             Intent intent = new Intent(getContext(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             dialog.dismiss();
-        });
 
+        });
         dialog.show();
     }
 }

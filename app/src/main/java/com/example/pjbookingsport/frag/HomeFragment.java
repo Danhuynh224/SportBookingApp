@@ -222,31 +222,43 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         }
 
 // Tạo yêu cầu vị trí
-        locationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(10000)
-                .setFastestInterval(5000);
+//        locationRequest = LocationRequest.create()
+//                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+//                .setInterval(10000)
+//                .setFastestInterval(5000);
+//
+//// Tạo callback để xử lý khi có vị trí mới
+//        locationCallback = new LocationCallback() {
+//            @Override
+//            public void onLocationResult(LocationResult locationResult) {
+//                if (locationResult == null) return;
+//
+//                Location location = locationResult.getLastLocation();
+//                if (location != null) {
+//                    currentLocation = location;
+//                    Log.d("DEBUG", "Location from update: " + location.getLatitude() + ", " + location.getLongitude());
+//
+//                    // GỌI API LẤY SÂN GẦN nếu chưa gọi
+//                    getNearbyFacilities(location.getLatitude(), location.getLongitude());
+//                }
+//            }
+//        };
+//
+//// Yêu cầu cập nhật vị trí
+//        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
 
-// Tạo callback để xử lý khi có vị trí mới
-        locationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null) return;
+        fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener(location -> {
+                    if (location != null) {
+                        currentLocation = location;
+                        Log.d("DEBUG", "One-time location: " + location.getLatitude() + ", " + location.getLongitude());
 
-                Location location = locationResult.getLastLocation();
-                if (location != null) {
-                    currentLocation = location;
-                    Log.d("DEBUG", "Location from update: " + location.getLatitude() + ", " + location.getLongitude());
-
-                    // GỌI API LẤY SÂN GẦN nếu chưa gọi
-                    getNearbyFacilities(location.getLatitude(), location.getLongitude());
-                }
-            }
-        };
-
-// Yêu cầu cập nhật vị trí
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-
+                        // Gọi API lấy sân gần
+                        getNearbyFacilities(location.getLatitude(), location.getLongitude());
+                    } else {
+                        Log.w("DEBUG", "Không lấy được vị trí");
+                    }
+                });
     }
 
 

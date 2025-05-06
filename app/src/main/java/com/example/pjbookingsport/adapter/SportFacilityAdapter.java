@@ -124,12 +124,6 @@ public class SportFacilityAdapter extends RecyclerView.Adapter<SportFacilityAdap
                 showLogoutDialog();
             }
         });
-
-
-
-
-
-
     }
 
     @Override

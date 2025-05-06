@@ -8,4 +8,8 @@ public class ProvinceResponse {
     public List<Province> getResults() {
         return results;
     }
+
+    public void setResults(List<Province> results) {
+        this.results = results;
+    }
 }

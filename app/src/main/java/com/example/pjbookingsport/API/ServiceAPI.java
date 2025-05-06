@@ -39,7 +39,7 @@ public interface ServiceAPI {
     @GET("/sportsfacilities/filter")
     Call<List<SportFacility>> filterSportsFacilities(
             @Query("types") List<String> types,
-            @Query("addresses") String addresses,
+            @Query("address") String address,
             @Query("minPrice") BigDecimal minPrice,
             @Query("maxPrice") BigDecimal maxPrice
     );

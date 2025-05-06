@@ -22,18 +22,16 @@ public class RetrofitAddress {
 
             // Tạo OkHttpClient với interceptor
             OkHttpClient client = new OkHttpClient.Builder()
-                    .addInterceptor(interceptor) // Thêm interceptor vào client
+                    .addInterceptor(interceptor)// Thêm interceptor vào client
                     .build();
 
             Gson gson = new GsonBuilder()
                     .setDateFormat("yyyy-MM-dd'T'HH:mm:ss") // dùng cho java.util.Date
-                    .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter()) // dùng cho java.time.LocalTime
-                    .registerTypeAdapter(LocalDate.class, new LocalDateAdapter()) // nếu cần luôn LocalDate
                     .create();
             retrofit = new Retrofit.Builder()
                     .baseUrl("https://api.vnappmob.com/")
-                     .addConverterFactory(GsonConverterFactory.create(gson))
-                     .client(client) // Thêm OkHttpClient vào Retrofit
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .client(client) // Thêm OkHttpClient vào Retrofit
                     .build();
         }
         return retrofit;

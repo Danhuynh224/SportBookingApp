@@ -54,7 +54,6 @@
         android:id="@+id/scrollview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/space"
         app:layout_constraintBottom_toTopOf="@id/comboButton">
         <LinearLayout
@@ -132,7 +131,7 @@
                     android:textSize="18sp"
                     android:inputType="none"
                     android:drawableEnd="@drawable/ic_arrow_drop_down_24"
-                    android:background="@android:drawable/editbox_background" />
+                    android:background="@drawable/border_textview" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -151,6 +150,7 @@
                 android:layout_height="wrap_content"
                 android:padding="0dp"
                 android:visibility="gone"
+                android:background="@color/white"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
                 <AutoCompleteTextView
@@ -161,7 +161,7 @@
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:inputType="none"
-                    android:background="@android:drawable/editbox_background"
+                    android:background="@drawable/border_textview"
                     android:drawableEnd="@drawable/ic_arrow_drop_down_24" />
             </com.google.android.material.textfield.TextInputLayout>
             <!-- Lọc theo mức giá -->
@@ -175,94 +175,94 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="24dp"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:gravity="center_vertical">-->
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_price_below_500"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="12dp"
-                    app:contentPaddingLeft="12dp"
-                    app:contentPaddingTop="8dp"
-                    app:contentPaddingRight="12dp"
-                    app:contentPaddingBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/textDisabled"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:backgroundTint="@color/white">
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    android:id="@+id/card_price_below_500"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:layout_marginEnd="12dp"-->
+<!--                    app:contentPaddingLeft="12dp"-->
+<!--                    app:contentPaddingTop="8dp"-->
+<!--                    app:contentPaddingRight="12dp"-->
+<!--                    app:contentPaddingBottom="8dp"-->
+<!--                    app:cardCornerRadius="8dp"-->
+<!--                    app:strokeWidth="1dp"-->
+<!--                    app:strokeColor="@color/textDisabled"-->
+<!--                    android:clickable="true"-->
+<!--                    android:focusable="true"-->
+<!--                    android:backgroundTint="@color/white">-->
 
-                    <TextView
-                        android:id="@+id/text_price_below_500"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Dưới 500K"
-                        android:textSize="13sp"
-                        android:textColor="@color/black"
-                        android:layout_gravity="center"/>
-                </com.google.android.material.card.MaterialCardView>
+<!--                    <TextView-->
+<!--                        android:id="@+id/text_price_below_500"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Dưới 500K"-->
+<!--                        android:textSize="13sp"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:layout_gravity="center"/>-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_price_500_1m"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="12dp"
-                    app:contentPaddingLeft="12dp"
-                    app:contentPaddingTop="8dp"
-                    app:contentPaddingRight="12dp"
-                    app:contentPaddingBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/textDisabled"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:backgroundTint="@color/white">
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    android:id="@+id/card_price_500_1m"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:layout_marginEnd="12dp"-->
+<!--                    app:contentPaddingLeft="12dp"-->
+<!--                    app:contentPaddingTop="8dp"-->
+<!--                    app:contentPaddingRight="12dp"-->
+<!--                    app:contentPaddingBottom="8dp"-->
+<!--                    app:cardCornerRadius="8dp"-->
+<!--                    app:strokeWidth="1dp"-->
+<!--                    app:strokeColor="@color/textDisabled"-->
+<!--                    android:clickable="true"-->
+<!--                    android:focusable="true"-->
+<!--                    android:backgroundTint="@color/white">-->
 
-                    <TextView
-                        android:id="@+id/text_price_500_1m"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="500K - 1 triệu"
-                        android:textSize="13sp"
-                        android:maxLines="1"
-                        android:textColor="@color/black"
-                        android:layout_gravity="center"/>
-                </com.google.android.material.card.MaterialCardView>
+<!--                    <TextView-->
+<!--                        android:id="@+id/text_price_500_1m"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="500K - 1 triệu"-->
+<!--                        android:textSize="13sp"-->
+<!--                        android:maxLines="1"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:layout_gravity="center"/>-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_price_above_1m"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:contentPaddingLeft="12dp"
-                    app:contentPaddingTop="8dp"
-                    app:contentPaddingRight="12dp"
-                    app:contentPaddingBottom="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/textDisabled"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:backgroundTint="@color/white">
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    android:id="@+id/card_price_above_1m"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    app:contentPaddingLeft="12dp"-->
+<!--                    app:contentPaddingTop="8dp"-->
+<!--                    app:contentPaddingRight="12dp"-->
+<!--                    app:contentPaddingBottom="8dp"-->
+<!--                    app:cardCornerRadius="8dp"-->
+<!--                    app:strokeWidth="1dp"-->
+<!--                    app:strokeColor="@color/textDisabled"-->
+<!--                    android:clickable="true"-->
+<!--                    android:focusable="true"-->
+<!--                    android:backgroundTint="@color/white">-->
 
-                    <TextView
-                        android:id="@+id/text_price_above_1m"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Trên 1 triệu"
-                        android:textSize="13sp"
-                        android:textColor="@color/black"
-                        android:layout_gravity="center"/>
-                </com.google.android.material.card.MaterialCardView>
+<!--                    <TextView-->
+<!--                        android:id="@+id/text_price_above_1m"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Trên 1 triệu"-->
+<!--                        android:textSize="13sp"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:layout_gravity="center"/>-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
         </LinearLayout>
     </ScrollView>

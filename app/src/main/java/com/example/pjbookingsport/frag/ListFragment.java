@@ -98,28 +98,33 @@ public class ListFragment extends Fragment {
         });
 
         // Nhận dữ liệu lọc từ Bundle nếu có
-        Bundle bundle = getArguments();
-        if (bundle != null) {
+        requireActivity().getSupportFragmentManager().setFragmentResultListener("filterResult", this, (requestKey, bundle) -> {
             List<String> selectedTypes = bundle.getStringArrayList("selectedTypes");
             String selectedCity = bundle.getString("selectedCity");
+            String selectedDistrict = bundle.getString("selectedDistrict");
             BigDecimal minPrice = (BigDecimal) bundle.getSerializable("minPrice");
             BigDecimal maxPrice = (BigDecimal) bundle.getSerializable("maxPrice");
 
-            // Gọi API với bộ lọc
-            applyFilters(selectedTypes, selectedCity, minPrice, maxPrice);
-        } else {
-            GetSportFacilities(); // Nếu không có bộ lọc, lấy danh sách đầy đủ
-        }
-
+            applyFilters(selectedTypes, selectedCity, selectedDistrict, minPrice, maxPrice);
+        });
 
         return view;
     }
 
-    private void applyFilters(List<String> selectedTypes, String selectedCity, BigDecimal minPrice, BigDecimal maxPrice) {
-        // Gọi API
+    private void applyFilters(List<String> selectedTypes, String selectedCity, String selectedDistrict, BigDecimal minPrice, BigDecimal maxPrice) {
+
+        String addressFilter = null;
+        if (selectedDistrict != null && selectedCity != null) {
+            addressFilter = selectedDistrict + ", " + selectedCity;
+        } else if (selectedDistrict != null) {
+            addressFilter = selectedDistrict;
+        } else if (selectedCity != null) {
+            addressFilter = selectedCity;
+        }
+
         Call<List<SportFacility>> call = apiService.filterSportsFacilities(
                 selectedTypes == null || selectedTypes.isEmpty() ? null : selectedTypes,
-                selectedCity == null || selectedCity.isEmpty() ? null : selectedCity,
+                addressFilter,
                 minPrice,
                 maxPrice
         );
@@ -129,6 +134,7 @@ public class ListFragment extends Fragment {
             public void onResponse(Call<List<SportFacility>> call, Response<List<SportFacility>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<SportFacility> filteredFacilities = response.body();
+                    Log.d("Test API Filter:", filteredFacilities.toString());
                     sportFacilityAdapter.updateList(filteredFacilities);
 
                     if (filteredFacilities.isEmpty()) {

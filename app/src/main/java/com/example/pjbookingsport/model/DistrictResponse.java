@@ -7,4 +7,8 @@ public class DistrictResponse {
     public List<District> getResults() {
         return results;
     }
+
+    public void setResults(List<District> results) {
+        this.results = results;
+    }
 }

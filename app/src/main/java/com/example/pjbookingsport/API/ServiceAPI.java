@@ -40,8 +40,7 @@ public interface ServiceAPI {
     Call<List<SportFacility>> filterSportsFacilities(
             @Query("types") List<String> types,
             @Query("address") String address,
-            @Query("minPrice") BigDecimal minPrice,
-            @Query("maxPrice") BigDecimal maxPrice
+            @Query("minRating") int minRating
     );
 
     @GET("/subfacilities")

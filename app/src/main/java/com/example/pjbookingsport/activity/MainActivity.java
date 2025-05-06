@@ -4,31 +4,42 @@ import static androidx.core.content.ContentProviderCompat.requireContext;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import android.Manifest;
 import com.example.pjbookingsport.R;
 
 
 import com.example.pjbookingsport.databinding.ActivityMainBinding;
 import com.example.pjbookingsport.frag.*;
+import com.example.pjbookingsport.model.LocationViewModel;
 import com.example.pjbookingsport.model.User;
 import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 
 public class MainActivity extends AppCompatActivity {
 
-
+    private FusedLocationProviderClient fusedLocationClient;
+    private LocationViewModel locationViewModel;
     public ActivityMainBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +56,25 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        locationViewModel = new ViewModelProvider(this).get(LocationViewModel.class);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        }
+
+        fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener(location -> {
+                    if (location != null) {
+                        locationViewModel.setLocation(location);
+                        Log.d("MainActivity", "Location shared to ViewModel: " + location.getLatitude());
+                    } else {
+                        Log.w("MainActivity", "Không thể lấy vị trí");
+                    }
+                });
 
         User user = SharedPreferencesHelper.getUser(this);
 

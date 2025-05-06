@@ -81,28 +81,6 @@
                 android:clipChildren="false"
                 android:background="@android:color/transparent"/>
 
-            <!-- Lọc theo ngày giờ -->
-<!--            <TextView-->
-<!--                android:id="@+id/date_label"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Lọc theo ngày trống sân"-->
-<!--                android:textStyle="bold"-->
-<!--                android:layout_marginTop="16dp"/>-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/datetime_picker"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:hint="Chọn ngày"-->
-<!--                android:textSize="16sp"-->
-<!--                android:padding="12dp"-->
-<!--                android:background="@android:drawable/editbox_background"-->
-<!--                android:focusable="true"-->
-<!--                android:clickable="true"-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:drawableEnd="@drawable/ic_datetime_24"/>-->
-
             <!-- Lọc theo địa điểm -->
             <TextView
                 android:id="@+id/location_label"
@@ -169,100 +147,36 @@
                 android:id="@+id/price_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lọc theo mức giá"
+                android:text="Lọc theo đánh giá"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="24dp"/>
 
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:gravity="center_vertical">-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-<!--                <com.google.android.material.card.MaterialCardView-->
-<!--                    android:id="@+id/card_price_below_500"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:layout_marginEnd="12dp"-->
-<!--                    app:contentPaddingLeft="12dp"-->
-<!--                    app:contentPaddingTop="8dp"-->
-<!--                    app:contentPaddingRight="12dp"-->
-<!--                    app:contentPaddingBottom="8dp"-->
-<!--                    app:cardCornerRadius="8dp"-->
-<!--                    app:strokeWidth="1dp"-->
-<!--                    app:strokeColor="@color/textDisabled"-->
-<!--                    android:clickable="true"-->
-<!--                    android:focusable="true"-->
-<!--                    android:backgroundTint="@color/white">-->
+                <RatingBar
+                    android:id="@+id/rating_filter_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="1.0"
+                    android:rating="0"
+                    style="@style/Widget.AppCompat.RatingBar"
+                    android:layout_marginEnd="10dp"
+                    android:progressTint="@android:color/holo_orange_light"/>
 
-<!--                    <TextView-->
-<!--                        android:id="@+id/text_price_below_500"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="Dưới 500K"-->
-<!--                        android:textSize="13sp"-->
-<!--                        android:textColor="@color/black"-->
-<!--                        android:layout_gravity="center"/>-->
-<!--                </com.google.android.material.card.MaterialCardView>-->
-
-<!--                <com.google.android.material.card.MaterialCardView-->
-<!--                    android:id="@+id/card_price_500_1m"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:layout_marginEnd="12dp"-->
-<!--                    app:contentPaddingLeft="12dp"-->
-<!--                    app:contentPaddingTop="8dp"-->
-<!--                    app:contentPaddingRight="12dp"-->
-<!--                    app:contentPaddingBottom="8dp"-->
-<!--                    app:cardCornerRadius="8dp"-->
-<!--                    app:strokeWidth="1dp"-->
-<!--                    app:strokeColor="@color/textDisabled"-->
-<!--                    android:clickable="true"-->
-<!--                    android:focusable="true"-->
-<!--                    android:backgroundTint="@color/white">-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/text_price_500_1m"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="500K - 1 triệu"-->
-<!--                        android:textSize="13sp"-->
-<!--                        android:maxLines="1"-->
-<!--                        android:textColor="@color/black"-->
-<!--                        android:layout_gravity="center"/>-->
-<!--                </com.google.android.material.card.MaterialCardView>-->
-
-<!--                <com.google.android.material.card.MaterialCardView-->
-<!--                    android:id="@+id/card_price_above_1m"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    app:contentPaddingLeft="12dp"-->
-<!--                    app:contentPaddingTop="8dp"-->
-<!--                    app:contentPaddingRight="12dp"-->
-<!--                    app:contentPaddingBottom="8dp"-->
-<!--                    app:cardCornerRadius="8dp"-->
-<!--                    app:strokeWidth="1dp"-->
-<!--                    app:strokeColor="@color/textDisabled"-->
-<!--                    android:clickable="true"-->
-<!--                    android:focusable="true"-->
-<!--                    android:backgroundTint="@color/white">-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/text_price_above_1m"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="Trên 1 triệu"-->
-<!--                        android:textSize="13sp"-->
-<!--                        android:textColor="@color/black"-->
-<!--                        android:layout_gravity="center"/>-->
-<!--                </com.google.android.material.card.MaterialCardView>-->
-
-<!--            </LinearLayout>-->
+                <TextView
+                    android:id="@+id/rating_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tất cả đánh giá"
+                    android:textSize="18sp" />
+           </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

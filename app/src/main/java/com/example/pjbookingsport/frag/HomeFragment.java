@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
@@ -38,6 +39,7 @@ import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.activity.LoginActivity;
 import com.example.pjbookingsport.adapter.PhotoAdapter;
+import com.example.pjbookingsport.model.LocationViewModel;
 import com.example.pjbookingsport.model.SportFacility;
 import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -86,9 +88,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private ImageButton btnSearchIcon, btnUser;
     private EditText searchBar;
 
-    private FusedLocationProviderClient fusedLocationClient;
-    private LocationCallback locationCallback;
-    private LocationRequest locationRequest;
+    private LocationViewModel locationViewModel;
 
     private Location currentLocation;
 
@@ -213,52 +213,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         });
 
 
-        // Khởi tạo fusedLocationClient
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+        locationViewModel = new ViewModelProvider(requireActivity()).get(LocationViewModel.class);
 
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            return;
-        }
-
-// Tạo yêu cầu vị trí
-//        locationRequest = LocationRequest.create()
-//                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-//                .setInterval(10000)
-//                .setFastestInterval(5000);
-//
-//// Tạo callback để xử lý khi có vị trí mới
-//        locationCallback = new LocationCallback() {
-//            @Override
-//            public void onLocationResult(LocationResult locationResult) {
-//                if (locationResult == null) return;
-//
-//                Location location = locationResult.getLastLocation();
-//                if (location != null) {
-//                    currentLocation = location;
-//                    Log.d("DEBUG", "Location from update: " + location.getLatitude() + ", " + location.getLongitude());
-//
-//                    // GỌI API LẤY SÂN GẦN nếu chưa gọi
-//                    getNearbyFacilities(location.getLatitude(), location.getLongitude());
-//                }
-//            }
-//        };
-//
-//// Yêu cầu cập nhật vị trí
-//        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-
-        fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)
-                .addOnSuccessListener(location -> {
-                    if (location != null) {
-                        currentLocation = location;
-                        Log.d("DEBUG", "One-time location: " + location.getLatitude() + ", " + location.getLongitude());
-
-                        // Gọi API lấy sân gần
-                        getNearbyFacilities(location.getLatitude(), location.getLongitude());
-                    } else {
-                        Log.w("DEBUG", "Không lấy được vị trí");
-                    }
-                });
+        locationViewModel.getLocation().observe(getViewLifecycleOwner(), location -> {
+            if (location != null) {
+                double lat = location.getLatitude();
+                double lng = location.getLongitude();
+                currentLocation = location;
+                Log.d("HomeFragment", "Received location: " + lat + ", " + lng);
+                getNearbyFacilities(lat, lng); // API gọi danh sách sân gần
+            }
+        });
     }
 
 
@@ -384,14 +349,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             dialog.dismiss();
         });
         dialog.show();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (fusedLocationClient != null && locationCallback != null) {
-            fusedLocationClient.removeLocationUpdates(locationCallback);
-        }
     }
 
 

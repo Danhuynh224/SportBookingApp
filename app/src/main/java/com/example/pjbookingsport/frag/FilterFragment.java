@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,12 +47,13 @@ public class FilterFragment extends Fragment {
 
     private ImageButton btnBack;
     private AutoCompleteTextView provincePicker, districtPicker;
-    private TextView districtLabel;
+    private TextView districtLabel, ratingText;
     private TextInputLayout districtLayout;
     private List<Province> provinces = new ArrayList<>();
     private List<District> districts = new ArrayList<>();
     private List<String> provinceNames = new ArrayList<>();
     private List<String> districtNames = new ArrayList<>();
+    private RatingBar ratingBar;
     private String idProvince;
     private RecyclerView recyclerView;
     private ButtonCardAdapter adapter;
@@ -85,6 +87,17 @@ public class FilterFragment extends Fragment {
         resetButton = view.findViewById(R.id.reset_button);
         applyButton = view.findViewById(R.id.apply_button);
         addressAPI = RetrofitAddress.getClient().create(AddressAPI.class);
+        ratingBar = view.findViewById(R.id.rating_filter_bar);
+        ratingText = view.findViewById(R.id.rating_text);
+
+        ratingBar.setOnRatingBarChangeListener((ratingBar1, rating, fromUser) -> {
+            int star = (int) rating;
+            if (star == 0) {
+                ratingText.setText("Tất cả đánh giá");
+            } else {
+                ratingText.setText(star + " sao trở lên");
+            }
+        });
 
         // nút back
         btnBack.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
@@ -159,10 +172,16 @@ public class FilterFragment extends Fragment {
 
     private void resetFilters() {
         adapter.clearSelection();
-        provincePicker.setText("Tất cả", false);
-        districtPicker.setText("Tất cả", false);
+        provincePicker.setText("Tất cả");
+        districtPicker.setText("Tất cả");
         districtLabel.setVisibility(View.GONE);
         districtLayout.setVisibility(View.GONE);
+        ratingBar.setRating(0);
+        ratingText.setText("Tất cả đánh giá");
+
+        Bundle result = new Bundle();
+        result.putBoolean("resetFilters", true);
+        getParentFragmentManager().setFragmentResult("resetFilters", result);
 
     }
 
@@ -170,16 +189,13 @@ public class FilterFragment extends Fragment {
         List<String> selectedTypes = adapter.getSelectedItems();
         String selectedCity = provincePicker.getText().toString();
         String selectedDistrict = districtPicker.getText().toString();
-
-        BigDecimal minPrice = null;
-        BigDecimal maxPrice = null;
+        int selectedRating = (int) ratingBar.getRating();
 
         Bundle result = new Bundle();
         result.putStringArrayList("selectedTypes", new ArrayList<>(selectedTypes));
         result.putString("selectedCity", selectedCity.equals("Tất cả") ? null : selectedCity);
         result.putString("selectedDistrict", selectedDistrict.equals("Tất cả") ? null : selectedDistrict);
-        result.putSerializable("minPrice", minPrice);
-        result.putSerializable("maxPrice", maxPrice);
+        result.putInt("selectedRating", selectedRating);
 
         getParentFragmentManager().setFragmentResult("filterRequest", result);
 

@@ -2,6 +2,7 @@ package com.example.pjbookingsport.frag;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
@@ -17,6 +18,7 @@ import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.adapter.SportFacilityAdapter;
+import com.example.pjbookingsport.model.LocationViewModel;
 import com.example.pjbookingsport.model.SportFacility;
 
 import java.math.BigDecimal;
@@ -35,6 +37,8 @@ public class ListFragment extends Fragment {
     private TextView tvNoResult;
     private EditText searchBar;
     private ImageButton btnFilter;;
+    private LocationViewModel locationViewModel;
+    private double lat, lng;
 
     public ListFragment() {
         // Required empty public constructor
@@ -74,7 +78,15 @@ public class ListFragment extends Fragment {
         });
         recyclerView.setAdapter(sportFacilityAdapter);
 
-        GetSportFacilities(); // gọi API lấy danh sách sân
+        locationViewModel = new ViewModelProvider(requireActivity()).get(LocationViewModel.class);
+
+        locationViewModel.getLocation().observe(getViewLifecycleOwner(), location -> {
+            if (location != null) {
+                lat = location.getLatitude();
+                lng = location.getLongitude();
+                getNearbyFacilities(lat, lng); // API gọi danh sách sân gần
+            }
+        });
 
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
@@ -98,20 +110,26 @@ public class ListFragment extends Fragment {
         });
 
         // Nhận dữ liệu lọc từ Bundle nếu có
-        requireActivity().getSupportFragmentManager().setFragmentResultListener("filterResult", this, (requestKey, bundle) -> {
+        requireActivity().getSupportFragmentManager().setFragmentResultListener("filterRequest", this, (requestKey, bundle) -> {
             List<String> selectedTypes = bundle.getStringArrayList("selectedTypes");
             String selectedCity = bundle.getString("selectedCity");
             String selectedDistrict = bundle.getString("selectedDistrict");
-            BigDecimal minPrice = (BigDecimal) bundle.getSerializable("minPrice");
-            BigDecimal maxPrice = (BigDecimal) bundle.getSerializable("maxPrice");
+            int selectedRating = bundle.getInt("selectedRating");
 
-            applyFilters(selectedTypes, selectedCity, selectedDistrict, minPrice, maxPrice);
+            applyFilters(selectedTypes, selectedCity, selectedDistrict, selectedRating);
+        });
+
+        requireActivity().getSupportFragmentManager().setFragmentResultListener("resetFilters", this, (requestKey, bundle) -> {
+            if (bundle.getBoolean("resetFilters", false)) {
+                // Xử lý hiển thị danh sách mặc định (không filter)
+                getNearbyFacilities(lat, lng);
+            }
         });
 
         return view;
     }
 
-    private void applyFilters(List<String> selectedTypes, String selectedCity, String selectedDistrict, BigDecimal minPrice, BigDecimal maxPrice) {
+    private void applyFilters(List<String> selectedTypes, String selectedCity, String selectedDistrict, int minRating) {
 
         String addressFilter = null;
         if (selectedDistrict != null && selectedCity != null) {
@@ -125,8 +143,7 @@ public class ListFragment extends Fragment {
         Call<List<SportFacility>> call = apiService.filterSportsFacilities(
                 selectedTypes == null || selectedTypes.isEmpty() ? null : selectedTypes,
                 addressFilter,
-                minPrice,
-                maxPrice
+                minRating
         );
 
         call.enqueue(new Callback<List<SportFacility>>() {
@@ -134,7 +151,6 @@ public class ListFragment extends Fragment {
             public void onResponse(Call<List<SportFacility>> call, Response<List<SportFacility>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<SportFacility> filteredFacilities = response.body();
-                    Log.d("Test API Filter:", filteredFacilities.toString());
                     sportFacilityAdapter.updateList(filteredFacilities);
 
                     if (filteredFacilities.isEmpty()) {
@@ -200,9 +216,9 @@ public class ListFragment extends Fragment {
         recyclerView.setVisibility(View.GONE);
     }
 
-    void GetSportFacilities() {
+    void getNearbyFacilities(double lat, double lng) {
         apiService = RetrofitClient.getClient().create(ServiceAPI.class);
-        apiService.getAllSportFacility().enqueue(new Callback<List<SportFacility>>() {
+        apiService.getSportFacilityNearMe(lat, lng).enqueue(new Callback<List<SportFacility>>() {
             @Override
             public void onResponse(Call<List<SportFacility>> call, Response<List<SportFacility>> response) {
                 if (response.isSuccessful() && response.body() != null) {

@@ -20,6 +20,7 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -86,6 +87,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private EditText searchBar;
 
     private FusedLocationProviderClient fusedLocationClient;
+    private LocationCallback locationCallback;
+    private LocationRequest locationRequest;
+
     private Location currentLocation;
 
     public static HomeFragment newInstance(String param1, String param2) {
@@ -209,25 +213,40 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         });
 
 
+        // Khởi tạo fusedLocationClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
         }
 
-        fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
+// Tạo yêu cầu vị trí
+        locationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(10000)
+                .setFastestInterval(5000);
+
+// Tạo callback để xử lý khi có vị trí mới
+        locationCallback = new LocationCallback() {
             @Override
-            public void onSuccess(Location location) {
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) return;
+
+                Location location = locationResult.getLastLocation();
                 if (location != null) {
                     currentLocation = location;
-                    Log.d("Location", "Lat: " + location.getLatitude() + ", Lng: " + location.getLongitude());
-                    // GỌI API LẤY SÂN GẦN
+                    Log.d("DEBUG", "Location from update: " + location.getLatitude() + ", " + location.getLongitude());
+
+                    // GỌI API LẤY SÂN GẦN nếu chưa gọi
                     getNearbyFacilities(location.getLatitude(), location.getLongitude());
-                } else {
-                    Log.d("Location", "Không thể lấy được vị trí hiện tại");
                 }
             }
-        });
+        };
+
+// Yêu cầu cập nhật vị trí
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+
     }
 
 
@@ -250,6 +269,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         // Lấy tọa độ của người dùng
         double userLatitude = currentLocation.getLatitude();
         double userLongitude = currentLocation.getLongitude();
+
+        Log.d("Loadmap", "userLatitude: " + userLatitude);
+        Log.d("Loadmap", "userLongitude: " + userLongitude);
 
         // Tính khoảng cách
         double distance = calculateDistance(userLatitude, userLongitude, sportFacility.getLatitude(), sportFacility.getLongitude());
@@ -351,5 +373,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         });
         dialog.show();
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (fusedLocationClient != null && locationCallback != null) {
+            fusedLocationClient.removeLocationUpdates(locationCallback);
+        }
+    }
+
 
 }

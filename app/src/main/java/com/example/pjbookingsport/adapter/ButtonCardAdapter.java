@@ -68,10 +68,6 @@ public class ButtonCardAdapter extends RecyclerView.Adapter<ButtonCardAdapter.Vi
         return items.size();
     }
 
-    public Set<Integer> getSelectedPositions() {
-        return selectedPositions;
-    }
-
     public void clearSelection() {
         selectedPositions.clear();
         notifyDataSetChanged();

@@ -121,7 +121,6 @@ public class ListFragment extends Fragment {
 
         requireActivity().getSupportFragmentManager().setFragmentResultListener("resetFilters", this, (requestKey, bundle) -> {
             if (bundle.getBoolean("resetFilters", false)) {
-                // Xử lý hiển thị danh sách mặc định (không filter)
                 getNearbyFacilities(lat, lng);
             }
         });

@@ -153,7 +153,7 @@ public class FilterFragment extends Fragment {
 
         Bundle result = new Bundle();
         result.putBoolean("resetFilters", true);
-        getParentFragmentManager().setFragmentResult("resetFilters", result);
+        requireActivity().getSupportFragmentManager().setFragmentResult("resetFilters", result);
 
     }
 

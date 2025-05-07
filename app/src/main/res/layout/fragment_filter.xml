@@ -94,23 +94,18 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"/>
 
-            <com.google.android.material.textfield.TextInputLayout
+
+            <TextView
+                android:id="@+id/province_picker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="0dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-
-                <AutoCompleteTextView
-                    android:id="@+id/province_picker"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="14dp"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:inputType="none"
-                    android:drawableEnd="@drawable/ic_arrow_drop_down_24"
-                    android:background="@drawable/border_textview" />
-            </com.google.android.material.textfield.TextInputLayout>
+                android:hint="Chọn tỉnh/thành phố"
+                android:padding="14dp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:background="@drawable/border_textview"
+                android:gravity="center_vertical"
+                app:drawableEndCompat="@drawable/ic_arrow_drop_down_24" />
 
             <TextView
                 android:id="@+id/district_label"
@@ -122,26 +117,18 @@
                 android:visibility="gone"
                 android:textSize="18sp"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/district_layout"
+            <TextView
+                android:id="@+id/district_picker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="0dp"
+                android:hint="Chọn quận/huyện"
                 android:visibility="gone"
-                android:background="@color/white"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-
-                <AutoCompleteTextView
-                    android:id="@+id/district_picker"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="14dp"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:inputType="none"
-                    android:background="@drawable/border_textview"
-                    android:drawableEnd="@drawable/ic_arrow_drop_down_24" />
-            </com.google.android.material.textfield.TextInputLayout>
+                android:padding="14dp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:background="@drawable/border_textview"
+                android:gravity="center_vertical"
+                app:drawableEndCompat="@drawable/ic_arrow_drop_down_24" />
             <!-- Lọc theo mức giá -->
             <TextView
                 android:id="@+id/price_label"

@@ -1,18 +1,23 @@
 package com.example.pjbookingsport.frag;
 
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
@@ -32,12 +37,14 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,21 +53,18 @@ import retrofit2.Response;
 public class FilterFragment extends Fragment {
 
     private ImageButton btnBack;
-    private AutoCompleteTextView provincePicker, districtPicker;
+    private TextView provincePicker, districtPicker;
     private TextView districtLabel, ratingText;
-    private TextInputLayout districtLayout;
-    private List<Province> provinces = new ArrayList<>();
-    private List<District> districts = new ArrayList<>();
-    private List<String> provinceNames = new ArrayList<>();
-    private List<String> districtNames = new ArrayList<>();
+    List<Province> provinces;
+    List<String> provinceNames = new ArrayList<>();
+    List<District> districts;
+    List<String> ditrictNames = new ArrayList<>();
     private RatingBar ratingBar;
     private String idProvince;
     private RecyclerView recyclerView;
     private ButtonCardAdapter adapter;
     private AddressAPI addressAPI;
     private AppCompatButton resetButton, applyButton;
-
-    boolean[] selectedStates;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,7 +86,6 @@ public class FilterFragment extends Fragment {
         provincePicker = view.findViewById(R.id.province_picker);
         districtPicker = view.findViewById(R.id.district_picker);
         districtLabel = view.findViewById(R.id.district_label);
-        districtLayout = view.findViewById(R.id.district_layout);
         recyclerView = view.findViewById(R.id.rvBoMon);
         resetButton = view.findViewById(R.id.reset_button);
         applyButton = view.findViewById(R.id.apply_button);
@@ -102,53 +105,22 @@ public class FilterFragment extends Fragment {
         // nút back
         btnBack.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
 
-        // datetimepicker
-//        datetimepicker.setOnClickListener(v -> {
-//            DialogFragment newFragment = new DateTimePickerFragment(datetimepicker);
-//            newFragment.show(getParentFragmentManager(), "dateTimePicker");
-//        });
-
-        // citypicker
-        getProvinces();
-
-        provincePicker.setOnClickListener(v -> provincePicker.showDropDown());
-        districtPicker.setOnClickListener(v -> districtPicker.showDropDown());
-
-        provincePicker.setOnItemClickListener((parent, view1, position, id) -> {
-            String selectedProvince = provinceNames.get(position);
-            provincePicker.setText(selectedProvince, false);
-
-            if ("Tất cả".equals(selectedProvince)) {
-                idProvince = null;
-                districtLabel.setVisibility(View.GONE);
-                districtLayout.setVisibility(View.GONE);
-                districtNames.clear();
-                districtNames.add("Tất cả");
-                districtPicker.setText("Tất cả", false);
-
-                ArrayAdapter<String> districtAdapter = new ArrayAdapter<>(requireContext(),
-                        android.R.layout.simple_dropdown_item_1line, districtNames);
-                districtPicker.setAdapter(districtAdapter);
-                return;
+        provincePicker.setOnClickListener(v -> {
+            if (provinces != null && !provinces.isEmpty()) {
+                showCityPickerDialog();
+            } else {
+                // Gọi API ngay khi tạo Fragment
+                getProvinces();
             }
-
-            // Nếu không chọn "Tất cả", tìm ID tỉnh
-            for (Province province : provinces) {
-                if (province.getProvince_name().equals(selectedProvince)) {
-                    idProvince = province.getProvince_id();
-                    break;
-                }
-            }
-
-            districtLabel.setVisibility(View.VISIBLE);
-            districtLayout.setVisibility(View.VISIBLE);
-            districtPicker.setText("Tất cả", false);
-            getDistricts();
         });
 
-        districtPicker.setOnItemClickListener((parent, view12, position, id) -> {
-            String selectedDistrict = districtNames.get(position);
-            districtPicker.setText(selectedDistrict, false);
+        districtPicker.setOnClickListener(v -> {
+            if (districts != null && !districts.isEmpty()) {
+                showDistrictPickerDialog();
+            } else {
+                // Gọi API ngay khi tạo Fragment
+                getDistrict();
+            }
         });
 
         // recyclerview type
@@ -175,7 +147,7 @@ public class FilterFragment extends Fragment {
         provincePicker.setText("Tất cả");
         districtPicker.setText("Tất cả");
         districtLabel.setVisibility(View.GONE);
-        districtLayout.setVisibility(View.GONE);
+        districtPicker.setVisibility(View.GONE);
         ratingBar.setRating(0);
         ratingText.setText("Tất cả đánh giá");
 
@@ -203,57 +175,92 @@ public class FilterFragment extends Fragment {
         requireActivity().getSupportFragmentManager().popBackStack();
     }
 
-    private void getProvinces() {
+    private void showCityPickerDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Chọn tỉnh/thành phố");
+
+        String[] provinceArray = provinceNames.toArray(new String[0]);
+
+        builder.setItems(provinceArray, (dialog, which) -> {
+            String selectedProvince = provinceArray[which];
+            provincePicker.setText(selectedProvince);
+
+            if ("Tất cả".equals(selectedProvince)) {
+                idProvince = null;
+                districtLabel.setVisibility(View.GONE);
+                districtPicker.setVisibility(View.GONE);
+                districtPicker.setText("Tất cả");
+            } else {
+                for (Province province : provinces) {
+                    if (province.getProvince_name().equals(selectedProvince)) {
+                        idProvince = province.getProvince_id();
+                        break;
+                    }
+                }
+                districtLabel.setVisibility(View.VISIBLE);
+                districtPicker.setVisibility(View.VISIBLE);
+            }
+        });
+
+        builder.show();
+    }
+
+    private void showDistrictPickerDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Chọn quận/huyện");
+
+        // Chuyển List<String> sang String[]
+        String[] districtArray = ditrictNames.toArray(new String[0]);
+
+        builder.setItems(districtArray, (dialog, which) -> {
+            districtPicker.setText(districtArray[which]);
+        });
+        builder.show();
+    }
+
+    private  void getProvinces(){
         addressAPI.getProvinces().enqueue(new Callback<ProvinceResponse>() {
             @Override
             public void onResponse(Call<ProvinceResponse> call, Response<ProvinceResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
+                if (response.isSuccessful() && response.body() != null){
                     provinces = response.body().getResults();
                     provinceNames.clear();
                     provinceNames.add("Tất cả");
-
                     for (Province province : provinces) {
                         provinceNames.add(province.getProvince_name());
                     }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
-                            android.R.layout.simple_dropdown_item_1line, provinceNames);
-                    provincePicker.setAdapter(adapter);
+                    showCityPickerDialog();
                 }
             }
 
             @Override
             public void onFailure(Call<ProvinceResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Không thể tải tỉnh/thành phố", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
-
-    private void getDistricts() {
-        if (idProvince == null) return;
-
-        addressAPI.getDistricts(idProvince).enqueue(new Callback<DistrictResponse>() {
-            @Override
-            public void onResponse(Call<DistrictResponse> call, Response<DistrictResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    districts = response.body().getResults();
-                    districtNames.clear();
-                    districtNames.add("Tất cả");
-                    for (District district : districts) {
-                        districtNames.add(district.getDistrict_name());
+    private void getDistrict(){
+        if(idProvince!=null){
+            addressAPI.getDistricts(idProvince).enqueue(new Callback<DistrictResponse>() {
+                @Override
+                public void onResponse(Call<DistrictResponse> call, Response<DistrictResponse> response) {
+                    if(response.isSuccessful() && response.body() !=null){
+                        districts = response.body().getResults();
+                        ditrictNames.clear();
+                        ditrictNames.add("Tất cả");
+                        for(District district : districts){
+                            ditrictNames.add(district.getDistrict_name());
+                        }
+                        showDistrictPickerDialog();
                     }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
-                            android.R.layout.simple_dropdown_item_1line, districtNames);
-                    districtPicker.setAdapter(adapter);
                 }
-            }
 
-            @Override
-            public void onFailure(Call<DistrictResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Không thể tải quận/huyện", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<DistrictResponse> call, Throwable t) {
+
+                }
+            });
+        }
     }
 
 }

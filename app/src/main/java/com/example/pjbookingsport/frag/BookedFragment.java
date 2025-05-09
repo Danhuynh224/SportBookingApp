@@ -21,6 +21,7 @@ import com.example.pjbookingsport.model.User;
 import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -74,6 +75,7 @@ public class BookedFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     bookingList.clear();
                     bookingList.addAll(response.body());
+                    Collections.reverse(bookingList);
                     adapter.notifyDataSetChanged();
                 } else {
                     Log.e("API ERROR", "Không thể lấy danh sách đã đặt");

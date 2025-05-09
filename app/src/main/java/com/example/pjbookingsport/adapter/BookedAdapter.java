@@ -58,31 +58,30 @@ public class BookedAdapter extends RecyclerView.Adapter<BookedAdapter.BookingVie
         List<Price> prices = subFacility.getSportsFacility().getPrices();
         List<String> types= new ArrayList<>();
         if (prices != null && !prices.isEmpty()) {
-            for(Price price : prices){
-                types.add(price.getFacilityType().getName());
+            for(BookingInfo bookingInfo : bookingInfos){
+                types.add(bookingInfo.getSubFacility().getFacilityType().getName());
             }
         }
         // Danh sách icon phù hợp với loại sân thể thao
-        List<Integer> iconList = new ArrayList<>();
+            Integer icon ;
 
-        for (String type: types) {
-            if (type.equals("Cầu lông")) {
-                iconList.add(R.drawable.badminton);
-            } else if (type.equals("Bóng đá")) {
-                iconList.add(R.drawable.football);
-            } else if (type.equals("Tennis")) {
-                iconList.add(R.drawable.tennis);
-            } else if (type.equals("Pickleball")) {
-                iconList.add(R.drawable.pickle);
-            } else if (type.equals("Bóng rổ")) {
-                iconList.add(R.drawable.basketball);
+            if (types.get(0).equals("Cầu lông")) {
+                icon = R.drawable.badminton;
+            } else if (types.get(0).equals("Bóng đá")) {
+                icon = R.drawable.football;
+            } else if (types.get(0).equals("Tennis")) {
+                icon= R.drawable.tennis;
+            } else if (types.get(0).equals("Pickleball")) {
+                icon= (R.drawable.pickle);
+            } else if (types.get(0).equals("Bóng rổ")) {
+                icon= (R.drawable.basketball);
             } else {
-                iconList.add(R.drawable.volleyball);
+                icon= (R.drawable.volleyball);
             }
-        }
+
 
         // Thêm icon vào LinearLayout
-        for (int iconRes : iconList) {
+
             ImageView iconView = new ImageView(holder.itemView.getContext());
             int sizeInDp = 24;
             int marginTopInDp = 6;
@@ -94,14 +93,14 @@ public class BookedAdapter extends RecyclerView.Adapter<BookedAdapter.BookingVie
             params.setMargins(0, marginTopInPx, 0, 0);
             iconView.setLayoutParams(params);
             iconView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            iconView.setImageResource(iconRes);
+            iconView.setImageResource(icon);
 
             // Căn giữa ngang giống layout XML
             iconView.setLayoutParams(params);
             iconView.setAdjustViewBounds(true);
             params.gravity = Gravity.CENTER_HORIZONTAL;
             holder.layoutIcon.addView(iconView);
-        }
+
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         holder.tvDate.setText(booking.getBookingDate().format(formatter));

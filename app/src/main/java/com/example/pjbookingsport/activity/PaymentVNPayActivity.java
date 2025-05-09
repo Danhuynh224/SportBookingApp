@@ -95,7 +95,6 @@ public class PaymentVNPayActivity extends AppCompatActivity {
 
                 if ("00".equals(transactionStatus)) {
                     Log.d("PaymentStatus", "Thanh toán thành công");
-                    Toast.makeText(this, "Thanh toán thành công", Toast.LENGTH_SHORT).show();
                     completeBooking();
                     // gửi object
                     Intent successIntent = new Intent(this, SuccessActivity.class);

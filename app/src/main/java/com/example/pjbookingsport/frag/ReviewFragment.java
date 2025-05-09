@@ -168,7 +168,6 @@ public class ReviewFragment extends Fragment {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(getContext(), "Gửi đánh giá thành công!", Toast.LENGTH_SHORT).show();
                     requireActivity().getSupportFragmentManager().popBackStack();
                 } else {
                     Toast.makeText(getContext(), "Gửi đánh giá thất bại!", Toast.LENGTH_SHORT).show();

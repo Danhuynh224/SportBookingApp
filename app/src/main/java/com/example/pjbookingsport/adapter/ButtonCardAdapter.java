@@ -81,6 +81,20 @@ public class ButtonCardAdapter extends RecyclerView.Adapter<ButtonCardAdapter.Vi
         return selectedItems;
     }
 
+    public void setSelectedItems(List<String> selectedItemsList) {
+        selectedPositions.clear();
+
+        for (String selectedItem : selectedItemsList) {
+            for (int i = 0; i < items.size(); i++) {
+                if (items.get(i).equals(selectedItem)) {
+                    selectedPositions.add(i);
+                    break;
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         MaterialCardView cardView;
         TextView textView;

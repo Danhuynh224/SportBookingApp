@@ -66,9 +66,22 @@ public class FilterFragment extends Fragment {
     private AddressAPI addressAPI;
     private AppCompatButton resetButton, applyButton;
 
+    private ArrayList<String> savedSelectedTypes;
+    private String savedProvince = "Tất cả";
+    private String savedDistrict = "Tất cả";
+    private float savedRating = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle args = getArguments();
+        if (args != null) {
+            savedSelectedTypes = args.getStringArrayList("selectedTypes");
+            savedProvince = args.getString("selectedProvince", "Tất cả");
+            savedDistrict = args.getString("selectedDistrict", "Tất cả");
+            savedRating = args.getFloat("selectedRating", 0);
+        }
     }
 
     @Override
@@ -93,6 +106,28 @@ public class FilterFragment extends Fragment {
         ratingBar = view.findViewById(R.id.rating_filter_bar);
         ratingText = view.findViewById(R.id.rating_text);
 
+        if (savedProvince != null && !savedProvince.equals("Tất cả")) {
+            provincePicker.setText(savedProvince);
+            districtLabel.setVisibility(View.VISIBLE);
+            districtPicker.setVisibility(View.VISIBLE);
+        } else {
+            districtLabel.setVisibility(View.GONE);
+            districtPicker.setVisibility(View.GONE);
+        }
+
+        // Always set the district text, regardless of visibility
+        if (savedDistrict != null) {
+            districtPicker.setText(savedDistrict);
+        } else {
+            districtPicker.setText("Tất cả");
+        }
+
+        if (savedRating > 0) {
+            ratingBar.setRating(savedRating);
+            int star = (int) savedRating;
+            ratingText.setText(star + " sao trở lên");
+        }
+
         ratingBar.setOnRatingBarChangeListener((ratingBar1, rating, fromUser) -> {
             int star = (int) rating;
             if (star == 0) {
@@ -115,13 +150,21 @@ public class FilterFragment extends Fragment {
         });
 
         districtPicker.setOnClickListener(v -> {
-            if (districts != null && !districts.isEmpty()) {
-                showDistrictPickerDialog();
+            if (idProvince != null) {
+                if (districts != null && !districts.isEmpty()) {
+                    showDistrictPickerDialog();
+                } else {
+                    // Gọi API lấy danh sách quận/huyện
+                    getDistrict();
+                }
             } else {
-                // Gọi API ngay khi tạo Fragment
-                getDistrict();
+                Toast.makeText(getContext(), "Vui lòng chọn tỉnh/thành phố trước", Toast.LENGTH_SHORT).show();
             }
         });
+
+        if (savedProvince != null && !savedProvince.equals("Tất cả")) {
+            loadInitialProvinceData();
+        }
 
         // recyclerview type
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getContext());
@@ -140,6 +183,14 @@ public class FilterFragment extends Fragment {
         applyButton.setOnClickListener(v ->
                 applyFilters()
         );
+
+
+        // Thiết lập lại các lựa chọn thể loại
+        if (savedSelectedTypes != null && !savedSelectedTypes.isEmpty()) {
+            adapter.setSelectedItems(savedSelectedTypes);
+        }
+
+
     }
 
     private void resetFilters() {
@@ -152,22 +203,44 @@ public class FilterFragment extends Fragment {
         ratingText.setText("Tất cả đánh giá");
 
         Bundle result = new Bundle();
-        result.putBoolean("resetFilters", true);
-        requireActivity().getSupportFragmentManager().setFragmentResult("resetFilters", result);
+        result.putStringArrayList("selectedTypes", new ArrayList<>());
+        result.putString("selectedCity", null);
+        result.putString("selectedDistrict", null);
+        result.putInt("selectedRating", 0);
+        result.putFloat("savedRating", 0);
+
+        getParentFragmentManager().setFragmentResult("filterRequest", result);
+
+        // Quay lại ListFragment
+        requireActivity().getSupportFragmentManager().popBackStack();
 
     }
 
     private void applyFilters() {
         List<String> selectedTypes = adapter.getSelectedItems();
         String selectedCity = provincePicker.getText().toString();
-        String selectedDistrict = districtPicker.getText().toString();
         int selectedRating = (int) ratingBar.getRating();
+
+        String selectedDistrict = districtPicker.getText().toString().trim();
+        String[] prefixes = {"Quận", "Huyện", "Thị xã", "Thành phố"};
+        // Bỏ tiền tố của quận, huyện
+        for (String prefix : prefixes) {
+            if (selectedDistrict.startsWith(prefix + " ")) {
+                selectedDistrict = selectedDistrict.substring(prefix.length()).trim();
+                break;
+            }
+        }
 
         Bundle result = new Bundle();
         result.putStringArrayList("selectedTypes", new ArrayList<>(selectedTypes));
         result.putString("selectedCity", selectedCity.equals("Tất cả") ? null : selectedCity);
         result.putString("selectedDistrict", selectedDistrict.equals("Tất cả") ? null : selectedDistrict);
         result.putInt("selectedRating", selectedRating);
+
+        result.putStringArrayList("savedSelectedTypes", new ArrayList<>(selectedTypes));
+        result.putString("savedProvince", selectedCity);
+        result.putString("savedDistrict", selectedDistrict);
+        result.putFloat("savedRating", ratingBar.getRating());
 
         getParentFragmentManager().setFragmentResult("filterRequest", result);
 
@@ -192,11 +265,16 @@ public class FilterFragment extends Fragment {
                 districtPicker.setText("Tất cả");
             } else {
                 for (Province province : provinces) {
-                    if (province.getProvince_name().equals(selectedProvince)) {
-                        idProvince = province.getProvince_id();
+                    if (province.getFull_name().equals(selectedProvince)) {
+                        idProvince = province.getId();
                         break;
                     }
                 }
+
+                districts = null;
+                ditrictNames.clear();
+                districtPicker.setText("Tất cả");
+
                 districtLabel.setVisibility(View.VISIBLE);
                 districtPicker.setVisibility(View.VISIBLE);
             }
@@ -223,11 +301,11 @@ public class FilterFragment extends Fragment {
             @Override
             public void onResponse(Call<ProvinceResponse> call, Response<ProvinceResponse> response) {
                 if (response.isSuccessful() && response.body() != null){
-                    provinces = response.body().getResults();
+                    provinces = response.body().getData();
                     provinceNames.clear();
                     provinceNames.add("Tất cả");
                     for (Province province : provinces) {
-                        provinceNames.add(province.getProvince_name());
+                        provinceNames.add(province.getFull_name());
                     }
                     showCityPickerDialog();
                 }
@@ -245,11 +323,11 @@ public class FilterFragment extends Fragment {
                 @Override
                 public void onResponse(Call<DistrictResponse> call, Response<DistrictResponse> response) {
                     if(response.isSuccessful() && response.body() !=null){
-                        districts = response.body().getResults();
+                        districts = response.body().getData();
                         ditrictNames.clear();
                         ditrictNames.add("Tất cả");
                         for(District district : districts){
-                            ditrictNames.add(district.getDistrict_name());
+                            ditrictNames.add(district.getFull_name());
                         }
                         showDistrictPickerDialog();
                     }
@@ -258,6 +336,61 @@ public class FilterFragment extends Fragment {
                 @Override
                 public void onFailure(Call<DistrictResponse> call, Throwable t) {
 
+                }
+            });
+        }
+    }
+
+    private void loadInitialProvinceData() {
+        addressAPI.getProvinces().enqueue(new Callback<ProvinceResponse>() {
+            @Override
+            public void onResponse(Call<ProvinceResponse> call, Response<ProvinceResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    provinces = response.body().getData();
+                    provinceNames.clear();
+                    provinceNames.add("Tất cả");
+
+                    for (Province province : provinces) {
+                        provinceNames.add(province.getFull_name());
+
+                        if (province.getFull_name().equals(savedProvince)) {
+                            idProvince = province.getId();
+
+                            // Nếu có quận/huyện đã chọn và không phải "Tất cả", cần lấy danh sách quận/huyện
+                            if (savedDistrict != null && !savedDistrict.equals("Tất cả")) {
+                                loadInitialDistrictData();
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProvinceResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Không thể tải danh sách tỉnh/thành phố", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadInitialDistrictData() {
+        if (idProvince != null) {
+            addressAPI.getDistricts(idProvince).enqueue(new Callback<DistrictResponse>() {
+                @Override
+                public void onResponse(Call<DistrictResponse> call, Response<DistrictResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        districts = response.body().getData();
+                        ditrictNames.clear();
+                        ditrictNames.add("Tất cả");
+
+                        for (District district : districts) {
+                            ditrictNames.add(district.getFull_name());
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DistrictResponse> call, Throwable t) {
+                    Toast.makeText(getContext(), "Không thể tải danh sách quận/huyện", Toast.LENGTH_SHORT).show();
                 }
             });
         }

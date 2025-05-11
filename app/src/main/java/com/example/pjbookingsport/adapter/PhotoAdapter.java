@@ -47,6 +47,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         this.listener = listener;
     }
 
+    public void updateData(List<SportFacility> newData) {
+        this.mListFacility = newData;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public PhotoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

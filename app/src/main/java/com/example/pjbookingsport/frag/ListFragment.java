@@ -40,6 +40,11 @@ public class ListFragment extends Fragment {
     private LocationViewModel locationViewModel;
     private double lat, lng;
 
+    private ArrayList<String> savedSelectedTypes = new ArrayList<>();
+    private String savedProvince = "Tất cả";
+    private String savedDistrict = "Tất cả";
+    private float savedRating = 0;
+
     public ListFragment() {
         // Required empty public constructor
     }
@@ -103,6 +108,15 @@ public class ListFragment extends Fragment {
 
         btnFilter.setOnClickListener(v -> {
             FilterFragment filterFragment = new FilterFragment();
+
+            // Truyền trạng thái bộ lọc hiện tại vào FilterFragment
+            Bundle args = new Bundle();
+            args.putStringArrayList("selectedTypes", savedSelectedTypes);
+            args.putString("selectedProvince", savedProvince);
+            args.putString("selectedDistrict", savedDistrict);
+            args.putFloat("selectedRating", savedRating);
+            filterFragment.setArguments(args);
+
             requireActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, filterFragment)
                     .addToBackStack(null)
@@ -116,19 +130,30 @@ public class ListFragment extends Fragment {
             String selectedDistrict = bundle.getString("selectedDistrict");
             int selectedRating = bundle.getInt("selectedRating");
 
-            applyFilters(selectedTypes, selectedCity, selectedDistrict, selectedRating);
-        });
+            // Lưu trạng thái bộ lọc
+            savedSelectedTypes = bundle.getStringArrayList("savedSelectedTypes");
+            if (savedSelectedTypes == null) savedSelectedTypes = new ArrayList<>();
+            savedProvince = bundle.getString("savedProvince", "Tất cả");
+            savedDistrict = bundle.getString("savedDistrict", "Tất cả");
+            savedRating = bundle.getFloat("savedRating", 0);
 
-        requireActivity().getSupportFragmentManager().setFragmentResultListener("resetFilters", this, (requestKey, bundle) -> {
-            if (bundle.getBoolean("resetFilters", false)) {
-                getNearbyFacilities(lat, lng);
-            }
+            applyFilters(selectedTypes, selectedCity, selectedDistrict, selectedRating);
         });
 
         return view;
     }
 
     private void applyFilters(List<String> selectedTypes, String selectedCity, String selectedDistrict, int minRating) {
+
+        if ((selectedTypes == null || selectedTypes.isEmpty()) &&
+                selectedCity == null &&
+                selectedDistrict == null &&
+                minRating == 0) {
+            getNearbyFacilities(lat, lng);
+            tvNoResult.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            return;
+        }
 
         String addressFilter = null;
         if (selectedDistrict != null && selectedCity != null) {

@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/comment_background"
     android:layout_marginBottom="8dp">
     <ImageView
         android:id="@+id/iconUser"
@@ -61,17 +60,14 @@
         android:layout_marginHorizontal="6dp"
         android:textSize="16sp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"/>
-<!--    <TextView-->
-<!--        android:id="@+id/tv_xemthem"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Xem thêm"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/tv_content_review"-->
-<!--        app:layout_constraintEnd_toEndOf="@id/ratingValue"-->
-<!--        android:textSize="14sp"-->
-<!--        android:textStyle="bold"-->
-<!--        android:layout_marginBottom="10dp"/>-->
+        android:layout_marginBottom="20dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ccc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

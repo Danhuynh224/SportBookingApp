@@ -1,20 +1,32 @@
 package com.example.pjbookingsport.frag;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Typeface;
-import android.media.Image;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,11 +40,12 @@ import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Booking;
 import com.example.pjbookingsport.model.BookingInfo;
-import com.example.pjbookingsport.model.Review;
 import com.example.pjbookingsport.model.ReviewRequest;
 import com.example.pjbookingsport.model.SubFacility;
 import com.example.pjbookingsport.model.User;
 import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
+import com.google.android.material.shape.MaterialShapeDrawable;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -162,13 +175,20 @@ public class ReviewFragment extends Fragment {
 
 
     private void saveFeedback(ReviewRequest request) {
+        AlertDialog loadingDialog = new AlertDialog.Builder(requireContext())
+                .setView(R.layout.dialog_loading)
+                .setCancelable(false)
+                .create();
+        loadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        loadingDialog.show();
 
         ServiceAPI serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
         serviceAPI.saveReview(request).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                loadingDialog.dismiss();
                 if (response.isSuccessful() && response.body() != null) {
-                    requireActivity().getSupportFragmentManager().popBackStack();
+                    showSuccessDialog();
                 } else {
                     Toast.makeText(getContext(), "Gửi đánh giá thất bại!", Toast.LENGTH_SHORT).show();
                 }
@@ -181,4 +201,46 @@ public class ReviewFragment extends Fragment {
         });
 
     }
+
+    private void showSuccessDialog() {
+        // Tạo dialog tùy chỉnh
+        Dialog successDialog = new Dialog(requireContext());
+        successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        successDialog.setContentView(R.layout.dialog_success_feedback);
+
+        // Thiết lập các thuộc tính cho cửa sổ dialog
+        Window window = successDialog.getWindow();
+        if (window != null) {
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.gravity = Gravity.CENTER;
+            window.setAttributes(params);
+        }
+
+        // Tìm các view trong dialog
+        ImageView imgSuccess = successDialog.findViewById(R.id.img_success);
+        TextView tvSuccess = successDialog.findViewById(R.id.tv_success_message);
+        Button btnOk = successDialog.findViewById(R.id.btn_ok);
+
+        // Thiết lập animation cho hình ảnh thành công
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.success_animation);
+        imgSuccess.startAnimation(animation);
+
+        // Thiết lập nội dung và sự kiện click cho nút OK
+        tvSuccess.setText("Cảm ơn bạn đã đánh giá!");
+        btnOk.setOnClickListener(v -> {
+            successDialog.dismiss();
+            requireActivity().getSupportFragmentManager().popBackStack();
+        });
+
+        // Hiển thị dialog
+        successDialog.setCancelable(false);
+        successDialog.show();
+    }
+
+
+
+
+
 }

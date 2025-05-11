@@ -1,20 +1,40 @@
 package com.example.pjbookingsport.model;
 
 public class Province {
-    private String province_id;
-    private String province_name;
-    private String province_type;
+    private String id;
+    private String name;
+    private String name_en;
+    private String full_name;
+    private String full_name_en;
+    private String latitude;
+    private String longitude;
 
-    public String getProvince_id() {
-        return province_id;
+    public String getId() {
+        return id;
     }
 
-    public String getProvince_name() {
-        return province_name;
+    public String getName() {
+        return name;
     }
 
-    public String getProvince_type() {
-        return province_type;
+    public String getName_en() {
+        return name_en;
+    }
+
+    public String getFull_name() {
+        return full_name;
+    }
+
+    public String getFull_name_en() {
+        return full_name_en;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
     }
 }
 

@@ -203,8 +203,8 @@ public class PersonalInfoFragment extends Fragment {
         builder.setItems(provinceArray, (dialog, which) -> {
             cityPicker.setText(provinceArray[which]);
             for(Province province : provinces ){
-                if(Objects.equals(province.getProvince_name(), provinceArray[which])){
-                    idProvince = province.getProvince_id();
+                if(Objects.equals(province.getFull_name(), provinceArray[which])){
+                    idProvince = province.getId();
                 }
             }
         });
@@ -229,11 +229,11 @@ public class PersonalInfoFragment extends Fragment {
             @Override
             public void onResponse(Call<ProvinceResponse> call, Response<ProvinceResponse> response) {
                 if (response.isSuccessful() && response.body() != null){
-                    provinces = response.body().getResults();
+                    provinces = response.body().getData();
                     Log.d("Test Province:", provinces.toString());
                     provinceNames.clear();
                     for (Province province : provinces) {
-                        provinceNames.add(province.getProvince_name());
+                        provinceNames.add(province.getFull_name());
                     }
                     showCityPickerDialog();
                 }
@@ -251,10 +251,10 @@ public class PersonalInfoFragment extends Fragment {
                 @Override
                 public void onResponse(Call<DistrictResponse> call, Response<DistrictResponse> response) {
                     if(response.isSuccessful() && response.body() !=null){
-                        districts = response.body().getResults();
+                        districts = response.body().getData();
                         ditrictNames.clear();
                         for(District district : districts){
-                            ditrictNames.add(district.getDistrict_name());
+                            ditrictNames.add(district.getFull_name());
                         }
                         showDistrictPickerDialog();
                     }

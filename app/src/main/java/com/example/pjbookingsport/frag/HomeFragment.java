@@ -21,8 +21,12 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,8 +35,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
@@ -57,6 +64,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -79,18 +87,26 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     public HomeFragment() {
         // Required empty public constructor
     }
+
     private GoogleMap mMap;
     private ViewPager2 viewPager2;
-    private int vitri=0;
-    private ServiceAPI apiService;
-    private List<SportFacility> sportFacilities;
-    String imgUrl;
     private ImageButton btnSearchIcon, btnUser;
     private EditText searchBar;
+    private ProgressBar searchProgressBar;
 
+    private int vitri = 0;
+    private ServiceAPI apiService;
+    private List<SportFacility> sportFacilities;
+    private List<SportFacility> filteredFacilities;
+    private PhotoAdapter photoAdapter;
+    private String imgUrl;
     private LocationViewModel locationViewModel;
-
     private Location currentLocation;
+
+    private Handler searchHandler;
+    private static final long SEARCH_DELAY_MS = 300;
+    private Call<List<SportFacility>> currentSearchCall;
+
 
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
@@ -109,6 +125,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         imgUrl = getString(R.string.img_url);
+        searchHandler = new Handler(Looper.getMainLooper());
+        apiService = RetrofitClient.getClient().create(ServiceAPI.class);
     }
 
     @Override
@@ -136,6 +154,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         btnSearchIcon = view.findViewById(R.id.btnSearchIcon);
         searchBar = view.findViewById(R.id.search_bar);
         btnUser = view.findViewById(R.id.btnUser);
+        searchProgressBar = view.findViewById(R.id.searchProgressBar);
+
+        if (searchProgressBar == null) {
+            // If searchProgressBar doesn't exist in layout, log a warning
+            Log.w("HomeFragment", "searchProgressBar not found in layout");
+        } else {
+            searchProgressBar.setVisibility(View.GONE);
+        }
 
         // Load animation
         Animation fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
@@ -144,30 +170,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         searchBar.setVisibility(View.GONE);
         btnSearchIcon.setVisibility(View.VISIBLE);
 
-        //Setting viewpager2
-        viewPager2.setOffscreenPageLimit(3);
-        viewPager2.setClipToPadding(false);
-        viewPager2.setClipChildren(false);
-
-        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
-        compositePageTransformer.addTransformer(new MarginPageTransformer(40));
-        compositePageTransformer.addTransformer(new ViewPager2.PageTransformer() {
-            @Override
-            public void transformPage(@NonNull View page, float position) {
-                float r =1 - Math.abs(position);
-                page.setScaleY(0.85f + r * 0.15f);
-            }
-        });
-        viewPager2.setPageTransformer(compositePageTransformer);
-        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                vitri = position;  // Cập nhật vị trí mới khi kéo
-                LoadingMap(vitri); // Load lại map tương ứng với vị trí mới
-            }
-        });
-
+        setupViewPager();
 
         // Sự kiện nhấn vào icon tìm kiếm
         btnSearchIcon.setOnClickListener(v -> {
@@ -179,22 +182,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             searchBar.requestFocus();
         });
 
-        searchBar.setOnTouchListener((v, event) -> {
-            final int DRAWABLE_RIGHT = 2;
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                if (event.getRawX() >= (searchBar.getRight() - searchBar.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                    // Ẩn EditText, hiện lại icon search
-
-                    searchBar.startAnimation(fadeOut);
-                    searchBar.setVisibility(View.GONE);
-                    searchBar.setText("");
-                    btnSearchIcon.setVisibility(View.VISIBLE);
-                    btnSearchIcon.startAnimation(fadeIn);
-                    return true;
-                }
-            }
-            return false;
-        });
+        setupSearchBarInteractions(fadeIn, fadeOut);
 
         // Xu ly su kien nut User
         btnUser.setOnClickListener(v -> {
@@ -214,7 +202,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
 
         locationViewModel = new ViewModelProvider(requireActivity()).get(LocationViewModel.class);
-
         locationViewModel.getLocation().observe(getViewLifecycleOwner(), location -> {
             if (location != null) {
                 double lat = location.getLatitude();
@@ -226,6 +213,115 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
+
+    private void setupViewPager() {
+        viewPager2.setOffscreenPageLimit(3);
+        viewPager2.setClipToPadding(false);
+        viewPager2.setClipChildren(false);
+
+        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+        compositePageTransformer.addTransformer(new MarginPageTransformer(40));
+        compositePageTransformer.addTransformer((page, position) -> {
+            float r = 1 - Math.abs(position);
+            page.setScaleY(0.85f + r * 0.15f);
+        });
+
+        viewPager2.setPageTransformer(compositePageTransformer);
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                vitri = position;
+                LoadingMap(vitri);
+            }
+        });
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void setupSearchBarInteractions(Animation fadeIn, Animation fadeOut) {
+        // Clear button (X) handling
+        searchBar.setOnTouchListener((v, event) -> {
+            final int DRAWABLE_RIGHT = 2;
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (event.getRawX() >= (searchBar.getRight() - searchBar.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                    // Hide EditText, show search icon again
+                    searchBar.startAnimation(fadeOut);
+                    searchBar.setVisibility(View.GONE);
+                    searchBar.setText("");
+                    btnSearchIcon.setVisibility(View.VISIBLE);
+                    btnSearchIcon.startAnimation(fadeIn);
+
+                    // Cancel any ongoing search
+                    cancelOngoingSearch();
+
+                    // Restore original facilities list
+                    if (sportFacilities != null) {
+                        updateFacilitiesList(sportFacilities);
+                    }
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        // Text change listener for search
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Not needed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Reset search handler to avoid calling API continuously
+                searchHandler.removeCallbacksAndMessages(null);
+
+                // Cancel any ongoing search request
+                cancelOngoingSearch();
+
+                // Add delay to search
+                searchHandler.postDelayed(() -> {
+                    String query = s.toString().trim();
+                    if (query.isEmpty()) {
+                        // If empty, restore original list
+                        if (searchProgressBar != null) {
+                            searchProgressBar.setVisibility(View.GONE);
+                        }
+                        if (sportFacilities != null) {
+                            updateFacilitiesList(sportFacilities);
+                        }
+                    } else {
+                        // Perform search
+                        if (searchProgressBar != null) {
+                            searchProgressBar.setVisibility(View.VISIBLE);
+                        }
+                        performSearch(query);
+                    }
+                }, SEARCH_DELAY_MS);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Not needed
+            }
+        });
+
+        // Handle search action
+        searchBar.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                String query = searchBar.getText().toString().trim();
+                if (!query.isEmpty()) {
+                    if (searchProgressBar != null) {
+                        searchProgressBar.setVisibility(View.VISIBLE);
+                    }
+                    performSearch(query);
+                }
+                return true;
+            }
+            return false;
+        });
+    }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
@@ -286,41 +382,130 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             public void onResponse(Call<List<SportFacility>> call, Response<List<SportFacility>> response) {
                 if (response.isSuccessful()) {
                     sportFacilities = response.body();
-                    if (!sportFacilities.isEmpty()) {
-                        LoadingMap(0);
-                    }
-                    PhotoAdapter photoAdapter = new PhotoAdapter(HomeFragment.this, sportFacilities, new PhotoAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(SportFacility facility) {
-                            FacilityDetailFragment detailFragment = FacilityDetailFragment.newInstance(facility);
-
-                            requireActivity().getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.fragMain, detailFragment)
-                                    .addToBackStack(null)
-                                    .commit();
-                        }
-
-                        @Override
-                        public void onBookClick(SportFacility facility) {
-                            BookFragment bookFragment = BookFragment.newInstance(facility);
-
-                            requireActivity().getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.fragMain, bookFragment)
-                                    .addToBackStack(null)
-                                    .commit();
-                        }
-                    });
-                    viewPager2.setAdapter(photoAdapter);
+                    updateFacilitiesList(sportFacilities);
                 } else {
                     Log.d("API ERROR", "Không thể lấy danh sách sân gần bạn");
+                    Toast.makeText(getContext(), "Không thể tải danh sách sân gần bạn", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<SportFacility>> call, Throwable t) {
                 Log.d("API ERROR", "Không thể lấy danh sách sân gần bạn: " + t.getMessage());
+                Toast.makeText(getContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void updateFacilitiesList(List<SportFacility> facilities) {
+        if (facilities == null || facilities.isEmpty()) {
+            // Handle empty results
+            Log.d("HomeFragment", "No facilities to display");
+            if (photoAdapter != null) {
+                filteredFacilities = new ArrayList<>();
+                photoAdapter.updateData(filteredFacilities);
+                viewPager2.setAdapter(photoAdapter);
+            }
+            return;
+        }
+
+        filteredFacilities = facilities;
+
+        if (!filteredFacilities.isEmpty() && mMap != null) {
+            LoadingMap(0);
+        }
+
+        if (photoAdapter == null) {
+            // Create adapter if it doesn't exist
+            photoAdapter = new PhotoAdapter(HomeFragment.this, filteredFacilities, new PhotoAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(SportFacility facility) {
+                    FacilityDetailFragment detailFragment = FacilityDetailFragment.newInstance(facility);
+                    requireActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragMain, detailFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+
+                @Override
+                public void onBookClick(SportFacility facility) {
+                    BookFragment bookFragment = BookFragment.newInstance(facility);
+                    requireActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragMain, bookFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });
+            viewPager2.setAdapter(photoAdapter);
+        } else {
+            // Update existing adapter
+            photoAdapter.updateData(filteredFacilities);
+        }
+
+        vitri = 0;
+        viewPager2.setCurrentItem(0, false);
+    }
+
+    private void performSearch(String query) {
+        if (query.isEmpty()) {
+            return;
+        }
+
+        // Cancel any ongoing search
+        cancelOngoingSearch();
+
+        // Execute new search
+        currentSearchCall = apiService.getSportsFacilities(query);
+        currentSearchCall.enqueue(new Callback<List<SportFacility>>() {
+            @Override
+            public void onResponse(Call<List<SportFacility>> call, Response<List<SportFacility>> response) {
+                if (searchProgressBar != null) {
+                    searchProgressBar.setVisibility(View.GONE);
+                }
+
+                if (call.isCanceled()) {
+                    return;
+                }
+
+                if (response.isSuccessful()) {
+                    List<SportFacility> searchResults = response.body();
+                    if (searchResults != null && !searchResults.isEmpty()) {
+                        updateFacilitiesList(searchResults);
+                    } else {
+                        // Handle empty results
+                        Toast.makeText(getContext(), "Không tìm thấy kết quả nào cho: " + query, Toast.LENGTH_SHORT).show();
+                        updateFacilitiesList(new ArrayList<>());
+                    }
+                } else {
+                    // Handle error response
+                    Toast.makeText(getContext(), "Lỗi tìm kiếm: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Log.e("Search API", "Error code: " + response.code());
+                }
+
+                currentSearchCall = null;
+            }
+
+            @Override
+            public void onFailure(Call<List<SportFacility>> call, Throwable t) {
+                if (searchProgressBar != null) {
+                    searchProgressBar.setVisibility(View.GONE);
+                }
+
+                if (!call.isCanceled()) {
+                    Toast.makeText(getContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("Search API", "Failure: " + t.getMessage());
+                }
+
+                currentSearchCall = null;
+            }
+        });
+    }
+
+    private void cancelOngoingSearch() {
+        if (currentSearchCall != null && !currentSearchCall.isCanceled()) {
+            currentSearchCall.cancel();
+            currentSearchCall = null;
+        }
     }
     private void showLogoutDialog() {
         Dialog dialog = new Dialog(requireContext(), R.style.CustomDialog);
@@ -349,6 +534,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             dialog.dismiss();
         });
         dialog.show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        searchHandler.removeCallbacksAndMessages(null);
+        cancelOngoingSearch();
+        super.onDestroyView();
     }
 
 

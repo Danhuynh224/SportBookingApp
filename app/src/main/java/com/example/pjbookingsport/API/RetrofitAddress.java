@@ -30,7 +30,7 @@ public class RetrofitAddress {
                     .setDateFormat("yyyy-MM-dd'T'HH:mm:ss") // dùng cho java.util.Date
                     .create();
             retrofit = new Retrofit.Builder()
-                    .baseUrl("https://api.vnappmob.com/")
+                    .baseUrl("https://esgoo.net/api-tinhthanh/")
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(client) // Thêm OkHttpClient vào Retrofit
                     .build();

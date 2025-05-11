@@ -40,36 +40,34 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <EditText
-                android:id="@+id/search_bar"
+            <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/search_box"
-                android:drawableEnd="@android:drawable/ic_menu_close_clear_cancel"
-                android:hint="Tìm kiếm sân..."
-                android:visibility="gone"
-                android:inputType="text"
-                android:maxLines="1"
-                android:padding="10dp"
-                android:singleLine="true" />
+                android:layout_weight="1">
 
+                <EditText
+                    android:id="@+id/search_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/search_box"
+                    android:drawableEnd="@android:drawable/ic_menu_close_clear_cancel"
+                    android:hint="Tìm kiếm sân..."
+                    android:visibility="gone"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:padding="10dp"
+                    android:singleLine="true" />
+
+                <ProgressBar
+                    android:id="@+id/searchProgressBar"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="36dp"
+                    android:visibility="gone"
+                    android:layout_gravity="end|center_vertical"
+                    android:indeterminate="true" />
+            </FrameLayout>
         </LinearLayout>
-
-        <!-- Notification button -->
-<!--        <ImageButton-->
-<!--            android:id="@+id/btnNotification"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="8dp"-->
-<!--            android:layout_marginEnd="4dp"-->
-<!--            android:alpha="0.8"-->
-<!--            android:background="@android:color/transparent"-->
-<!--            android:src="@drawable/ic_notification"-->
-<!--            android:contentDescription="Notification"-->
-<!--            app:layout_constraintEnd_toStartOf="@id/btnUser"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent" />-->
 
         <!-- User button -->
         <ImageButton
@@ -85,8 +83,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
+    
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"

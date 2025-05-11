@@ -15,6 +15,8 @@ import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Booking;
+import com.example.pjbookingsport.model.JWT;
+import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 
 import java.io.IOException;
 
@@ -29,13 +31,14 @@ public class PaymentVNPayActivity extends AppCompatActivity {
     private WebView webView;
     Booking booking;
     ServiceAPI serviceAPI;
+    JWT jwt;
     private static final String BASE_URL = "http://10.0.2.2:8080/"; // Nếu dùng Emulator
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_vnpay);
-
+        jwt = SharedPreferencesHelper.getJWT(PaymentVNPayActivity.this);
         booking  = (Booking) getIntent().getSerializableExtra("booking");
 
 
@@ -61,7 +64,7 @@ public class PaymentVNPayActivity extends AppCompatActivity {
 
         ServiceAPI paymentService = retrofit.create(ServiceAPI.class);
 
-        Call<String> call = paymentService.createPayment(booking.getTotalPrice().longValue());
+        Call<String> call = paymentService.createPayment(jwt.getToken(), booking.getTotalPrice().longValue());
         call.enqueue(new retrofit2.Callback<String>() {
             @Override
             public void onResponse(Call<String> call, retrofit2.Response<String> response) {
@@ -103,7 +106,7 @@ public class PaymentVNPayActivity extends AppCompatActivity {
                     finish();
                 } else {
                     serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
-                    serviceAPI.deleteBooking(booking.getBookingId()).enqueue(new Callback<Void>() {
+                    serviceAPI.deleteBooking(jwt.getToken(), booking.getBookingId()).enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             if (response.isSuccessful()) {
@@ -160,7 +163,7 @@ public class PaymentVNPayActivity extends AppCompatActivity {
 
     private void completeBooking() {
         serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
-        serviceAPI.updateBookingStatus(booking.getBookingId()).enqueue(new Callback<Booking>() {
+        serviceAPI.updateBookingStatus(jwt.getToken(),booking.getBookingId()).enqueue(new Callback<Booking>() {
             @Override
             public void onResponse(Call<Booking> call, Response<Booking> response) {
                 if(response.isSuccessful()){

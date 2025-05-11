@@ -40,6 +40,7 @@ import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Booking;
 import com.example.pjbookingsport.model.BookingInfo;
+import com.example.pjbookingsport.model.JWT;
 import com.example.pjbookingsport.model.ReviewRequest;
 import com.example.pjbookingsport.model.SubFacility;
 import com.example.pjbookingsport.model.User;
@@ -47,7 +48,6 @@ import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 import com.google.android.material.shape.MaterialShapeDrawable;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -65,6 +65,7 @@ public class ReviewFragment extends Fragment {
     private ImageView imgFacility;
     private TextView tvName, tvRating, tvTotalRating;
     private LinearLayout layoutSlot;
+    private JWT jwt;
     private static final String ARG_BOOKING = "BOOKING";
 
     public ReviewFragment() {
@@ -100,7 +101,7 @@ public class ReviewFragment extends Fragment {
         editTextComment = view.findViewById(R.id.editTextComment);
         btnSend = view.findViewById(R.id.btnSend);
         btnBack = view.findViewById(R.id.btn_back);
-
+        jwt = SharedPreferencesHelper.getJWT(getContext());
         String imgUrl = getString(R.string.img_url);
 
 
@@ -183,7 +184,7 @@ public class ReviewFragment extends Fragment {
         loadingDialog.show();
 
         ServiceAPI serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
-        serviceAPI.saveReview(request).enqueue(new Callback<ResponseBody>() {
+        serviceAPI.saveReview(jwt.getToken(), request).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 loadingDialog.dismiss();

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.example.pjbookingsport.API.LocalDateAdapter;
 import com.example.pjbookingsport.model.Account;
+import com.example.pjbookingsport.model.JWT;
 import com.example.pjbookingsport.model.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -71,6 +72,34 @@ public class SharedPreferencesHelper {
 
         return null;
     }
+    private static final String KEY_JWT = "jwt";
+
+    // Lưu Account vào SharedPreferences
+    public static void saveJWT(Context context, JWT jwt) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        Gson gson = new Gson();
+        String jwtValue = "Bearer " + jwt.getToken();
+        jwt.setToken(jwtValue);
+        String jwtJson = gson.toJson(jwt);
+
+        editor.putString(KEY_JWT, jwtJson);
+        editor.apply();
+    }
+
+    // Lấy Account từ SharedPreferences
+    public static JWT getJWT(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        String jwtJson = sharedPreferences.getString(KEY_JWT, null);
+
+        if (jwtJson != null) {
+            Gson gson = new Gson();
+            return gson.fromJson(jwtJson, JWT.class);
+        }
+
+        return null;
+    }
 
     // Xóa User khỏi SharedPreferences
     public static void clearUser(Context context) {
@@ -85,6 +114,12 @@ public class SharedPreferencesHelper {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(KEY_ACCOUNT);
+        editor.apply(); // hoặc editor.commit();
+    }
+    public static void clearJWT(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(KEY_JWT);
         editor.apply(); // hoặc editor.commit();
     }
     public static boolean checkUserIsSave(Context context){

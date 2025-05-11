@@ -26,6 +26,7 @@ import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.activity.LoginActivity;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Account;
+import com.example.pjbookingsport.model.JWT;
 import com.example.pjbookingsport.model.User;
 import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 
@@ -55,6 +56,7 @@ public class PersonalAccountFragment extends Fragment {
     private EditText txtLoginName, txtPassword, txtNewPass, txtPassConfirm;
     private Button updateBtn, logOutBtn;
     private ServiceAPI serviceAPI;
+    private JWT jwt;
     Account account;
     public PersonalAccountFragment() {
         // Required empty public constructor
@@ -96,6 +98,7 @@ public class PersonalAccountFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        jwt = SharedPreferencesHelper.getJWT(getContext());
         account = SharedPreferencesHelper.getAccount(getContext());
         txtLoginName = view.findViewById(R.id.txtLoginName);
         txtPassword = view.findViewById(R.id.txtPassword);
@@ -138,7 +141,7 @@ public class PersonalAccountFragment extends Fragment {
                 }
                 if(canUpdate) {
                     serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
-                    serviceAPI.updateAccount(newAccount).enqueue(new Callback<ResponseBody>() {
+                    serviceAPI.updateAccount(jwt.getToken(), newAccount).enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             showResultDialog(response.isSuccessful());
@@ -198,6 +201,7 @@ public class PersonalAccountFragment extends Fragment {
             if(!user.isSave()) {
                 SharedPreferencesHelper.clearAccount(requireContext());
                 SharedPreferencesHelper.clearUser(requireContext());
+                SharedPreferencesHelper.clearJWT(requireContext());
             }
             Intent intent = new Intent(getContext(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

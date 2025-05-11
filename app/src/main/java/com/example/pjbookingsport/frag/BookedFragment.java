@@ -17,6 +17,7 @@ import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.adapter.BookedAdapter;
 import com.example.pjbookingsport.model.Booking;
+import com.example.pjbookingsport.model.JWT;
 import com.example.pjbookingsport.model.User;
 import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 
@@ -35,6 +36,7 @@ public class BookedFragment extends Fragment {
 
     private List<Booking> bookingList = new ArrayList<>();
     private ServiceAPI apiService;
+    private JWT jwt;
 
     public BookedFragment() {
         // Required empty public constructor
@@ -45,6 +47,7 @@ public class BookedFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_booked, container, false);
+        jwt = SharedPreferencesHelper.getJWT(getContext());
         rvBooked = view.findViewById(R.id.rv_bookedList);
         adapter = new BookedAdapter(bookingList, booking -> {
             BookedDetailFragment detailFragment = BookedDetailFragment.newInstance(booking);
@@ -68,7 +71,7 @@ public class BookedFragment extends Fragment {
 
     private void getBookingsByUserId(Long userId) {
         apiService = RetrofitClient.getClient().create(ServiceAPI.class);
-        apiService.getBookingsByUserId(userId).enqueue(new Callback<List<Booking>>() {
+        apiService.getBookingsByUserId(jwt.getToken(), userId).enqueue(new Callback<List<Booking>>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(Call<List<Booking>> call, Response<List<Booking>> response) {

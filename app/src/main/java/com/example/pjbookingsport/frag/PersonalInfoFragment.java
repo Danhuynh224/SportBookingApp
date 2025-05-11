@@ -31,6 +31,7 @@ import com.example.pjbookingsport.activity.LoginActivity;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.District;
 import com.example.pjbookingsport.model.DistrictResponse;
+import com.example.pjbookingsport.model.JWT;
 import com.example.pjbookingsport.model.Province;
 import com.example.pjbookingsport.model.ProvinceResponse;
 import com.example.pjbookingsport.model.User;
@@ -74,6 +75,7 @@ public class PersonalInfoFragment extends Fragment {
     User user ;
     private AddressAPI addressAPI;
     private ServiceAPI serviceAPI;
+    private JWT jwt;
     String[] genders = { "Nam", "Nữ", "LGBT"};
 
 
@@ -121,6 +123,7 @@ public class PersonalInfoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        jwt = SharedPreferencesHelper.getJWT(getContext());
         addressAPI = RetrofitAddress.getClient().create(AddressAPI.class);
         sexPicker = view.findViewById(R.id.sex_picker);
         edtBirthday = view.findViewById(R.id.edtBirthday);
@@ -309,7 +312,7 @@ public class PersonalInfoFragment extends Fragment {
         user.setBirthday(birthday);
         SharedPreferencesHelper.saveUser(getContext(),user);
         serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
-        serviceAPI.updateUser(user).enqueue(new Callback<ResponseBody>() {
+        serviceAPI.updateUser(jwt.getToken(), user).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     showResultDialog(response.isSuccessful());
@@ -366,6 +369,7 @@ public class PersonalInfoFragment extends Fragment {
             if(!user.isSave()) {
                 SharedPreferencesHelper.clearAccount(requireContext());
                 SharedPreferencesHelper.clearUser(requireContext());
+                SharedPreferencesHelper.clearJWT(requireContext());
             }
             Intent intent = new Intent(getContext(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

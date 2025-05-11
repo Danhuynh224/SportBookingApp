@@ -2,7 +2,6 @@ package com.example.pjbookingsport.frag;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.icu.util.LocaleData;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
@@ -33,10 +31,10 @@ import com.example.pjbookingsport.adapter.SlotAdapter;
 import com.example.pjbookingsport.adapter.SubFaAdapter;
 import com.example.pjbookingsport.adapter.TypeBookAdapter;
 import com.example.pjbookingsport.enums.BookingStatus;
-import com.example.pjbookingsport.enums.Role;
 import com.example.pjbookingsport.model.Booking;
 import com.example.pjbookingsport.model.BookingInfo;
 import com.example.pjbookingsport.model.FacilityType;
+import com.example.pjbookingsport.model.JWT;
 import com.example.pjbookingsport.model.Price;
 import com.example.pjbookingsport.model.SportFacility;
 import com.example.pjbookingsport.model.SubFacility;
@@ -46,18 +44,14 @@ import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -99,6 +93,7 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
     FacilityType prefacilityType;
 
     User user ;
+    JWT jwt;
 
     private ServiceAPI serviceAPI;
     private static final String ARG_FACILITY = "FACILITY";
@@ -132,6 +127,7 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        jwt = SharedPreferencesHelper.getJWT(getContext());
         user = SharedPreferencesHelper.getUser(getContext());
         tvThu =view.findViewById(R.id.tvThu);
         tvDayMonthYear = view.findViewById(R.id.tvDayMonthYear);
@@ -340,7 +336,7 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
     private void addNewBooking() {
         serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
         booking.setStatus(BookingStatus.PENDING);
-        serviceAPI.addBooking(booking).enqueue(new Callback<Booking>() {
+        serviceAPI.addBooking(jwt.getToken(), booking).enqueue(new Callback<Booking>() {
             @Override
             public void onResponse(Call<Booking> call, Response<Booking> response) {
                 if(response.isSuccessful()){

@@ -24,6 +24,7 @@ import com.example.pjbookingsport.activity.PaymentVNPayActivity;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.adapter.BookInforPayAdapter;
 import com.example.pjbookingsport.model.Booking;
+import com.example.pjbookingsport.model.JWT;
 import com.example.pjbookingsport.model.SportFacility;
 import com.example.pjbookingsport.model.User;
 import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
@@ -58,6 +59,7 @@ public class PaymentFragment extends Fragment {
     private ImageButton btnBack;
     BookInforPayAdapter bookInForAdapter;
     User user;
+    JWT jwt;
 
     private ServiceAPI serviceAPI;
     public PaymentFragment() {
@@ -105,13 +107,14 @@ public class PaymentFragment extends Fragment {
         bookBtn = view.findViewById(R.id.bookBtn);
 
         user = SharedPreferencesHelper.getUser(getContext());
+        jwt = SharedPreferencesHelper.getJWT(getContext());
         LoadBookingInfo();
 
         huyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
-                serviceAPI.deleteBooking(booking.getBookingId()).enqueue(new Callback<Void>() {
+                serviceAPI.deleteBooking(jwt.getToken(), booking.getBookingId()).enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
@@ -175,7 +178,7 @@ public class PaymentFragment extends Fragment {
         user.setPhone(txtPhone.getText().toString());
         SharedPreferencesHelper.saveUser(getContext(),user);
         serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
-        serviceAPI.updateUser(user).enqueue(new Callback<ResponseBody>() {
+        serviceAPI.updateUser(jwt.getToken(), user).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 

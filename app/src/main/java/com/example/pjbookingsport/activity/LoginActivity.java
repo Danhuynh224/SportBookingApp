@@ -21,9 +21,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.pjbookingsport.API.AuthAPI;
 import com.example.pjbookingsport.API.RetrofitClient;
+import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Account;
 import com.example.pjbookingsport.model.AuthRequest;
+import com.example.pjbookingsport.model.JWT;
 import com.example.pjbookingsport.model.User;
 import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 
@@ -41,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
     User saveUser;
 
     AuthAPI authAPI;
+    ServiceAPI apiService;
+    JWT jwt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,28 +84,33 @@ public class LoginActivity extends AppCompatActivity {
                 else{
                     AuthRequest authRequest = new AuthRequest(username, password);
                     authAPI = RetrofitClient.getClient().create(AuthAPI.class);
-                    authAPI.login(authRequest).enqueue(new Callback<User>() {
+                    authAPI.login(authRequest).enqueue(new Callback<JWT>() {
                         @Override
-                        public void onResponse(Call<User> call, Response<User> response) {
+                        public void onResponse(Call<JWT> call, Response<JWT> response) {
                             if(response.isSuccessful()){
-                                User user = response.body();
-                                Log.d("Test ngày sinh: ", user.getBirthday().toString());
-                                if(checkRemember.isChecked()){
-                                    user.setSave(true);
-                                }
-                                SharedPreferencesHelper.saveUser(LoginActivity.this, user);
+                                jwt = response.body();
+//                                Log.d("Test ngày sinh: ", user.getBirthday().toString());
+//                                if(){
+//                                    user.setSave(true);
+//                                }
+//                                SharedPreferencesHelper.saveUser(LoginActivity.this, user);
+                                SharedPreferencesHelper.saveJWT(LoginActivity.this, jwt);
+                                JWT jwt1 = SharedPreferencesHelper.getJWT(LoginActivity.this);
                                 SharedPreferencesHelper.saveAccount(LoginActivity.this,new Account(username,password));
+                                getInfoUser(checkRemember.isChecked());
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);
-                                Log.d("LOGIN SUCCESS", "Đăng nhập thành công");
+                                Log.d("LOGIN SUCCESS", jwt1.getToken());
                             }
                             else{
                                 showResultDialog("Tài khoản hoặc mật khẩu không đúng");
                             }
                         }
 
+
+
                         @Override
-                        public void onFailure(Call<User> call, Throwable t) {
+                        public void onFailure(Call<JWT> call, Throwable t) {
                             Log.d("API ERROR", "Không kết nối API");
                         }
                     });
@@ -156,6 +165,22 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    private void getInfoUser(boolean checked) {
+        apiService = RetrofitClient.getClient().create(ServiceAPI.class);
+        apiService.getUserByMail(jwt.getToken(), jwt.getEmail()).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                User user = response.body();
+                user.setSave(checked);
+                SharedPreferencesHelper.saveUser(LoginActivity.this,user);
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.d("Không lấy đc mail", "onFailure: lỗi k lấy được user");
+            }
+        });
+    }
     private void showResultDialog(String string) {
         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
         builder.setMessage(string);

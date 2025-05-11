@@ -1,5 +1,6 @@
 package com.example.pjbookingsport.adapter;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +15,12 @@ import com.example.pjbookingsport.API.RetrofitClient;
 import com.example.pjbookingsport.API.ServiceAPI;
 import com.example.pjbookingsport.R;
 import com.example.pjbookingsport.model.Booking;
-import com.example.pjbookingsport.model.FacilityType;
+import com.example.pjbookingsport.model.JWT;
 import com.example.pjbookingsport.model.SubFacility;
+import com.example.pjbookingsport.sharedPreferences.SharedPreferencesHelper;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -33,12 +34,14 @@ public class SubFaAdapter extends RecyclerView.Adapter<SubFaAdapter.SubFaViewHol
     private SlotAdapter.OnSlotClickListener listener;
     private LocalDate dateBook;
     private ServiceAPI serviceAPI;
+    private JWT jwt;
 
     public SubFaAdapter(List<SubFacility> subFacilities, List<LocalTime> hours, LocalDate dateBook, SlotAdapter.OnSlotClickListener listener) {
         this.subFacilities = subFacilities;
         this.hours = hours;
         this.listener = listener;
         this.dateBook = dateBook;
+
 
     }
 
@@ -69,11 +72,14 @@ public class SubFaAdapter extends RecyclerView.Adapter<SubFaAdapter.SubFaViewHol
             super(itemView);
             txtSub = itemView.findViewById(R.id.txtSubfa);
             rvSlots = itemView.findViewById(R.id.rv_slots);
+
         }
     }
     public void getBookedList(LocalDate bookingDate, SubFacility subFacility, @NonNull SubFaViewHolder holder){
+        Context context = holder.itemView.getContext();
+        JWT jwtToken = SharedPreferencesHelper.getJWT(context);
         serviceAPI = RetrofitClient.getClient().create(ServiceAPI.class);
-        serviceAPI.getByDateAndTypeAndSubFa(bookingDate,subFacility.getFacilityType().getFacilityTypeId(),subFacility.getSubFacilityId()).enqueue(new Callback<List<Booking>>() {
+        serviceAPI.getByDateAndTypeAndSubFa(jwtToken.getToken(), bookingDate,subFacility.getFacilityType().getFacilityTypeId(),subFacility.getSubFacilityId()).enqueue(new Callback<List<Booking>>() {
             @Override
             public void onResponse(Call<List<Booking>> call, Response<List<Booking>> response) {
                 List<Booking> bookedList ;

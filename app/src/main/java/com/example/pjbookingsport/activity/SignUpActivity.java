@@ -52,6 +52,13 @@ public class SignUpActivity extends AppCompatActivity {
         textErrorPass = findViewById(R.id.textErrorPass);
         textErrorPassConfirm = findViewById(R.id.textErrorPassConfirm);
         textErrorName = findViewById(R.id.textErrorName);
+        textViewSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

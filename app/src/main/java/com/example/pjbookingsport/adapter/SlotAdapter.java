@@ -77,7 +77,6 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotViewHolder
                     if((hourSlots.get(position).equals(bookingInfo.getStartTime()) || (hourSlots.get(position).isAfter(bookingInfo.getStartTime()) && hourSlots.get(position).isBefore(bookingInfo.getEndTime())))
                             && subFacility.getSubFacilityId().equals(bookingInfo.getSubFacility().getSubFacilityId()))
                     {
-                        Log.d("Test", hourSlots.get(position).toString());
                         holder.cardSlot.setCardBackgroundColor(Color.parseColor("#858585"));
                         holder.imgSlot.setImageResource(R.drawable.baseline_lock_24);
                         holder.cardSlot.setClickable(false);

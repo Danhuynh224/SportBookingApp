@@ -41,14 +41,6 @@ public class FacilityPriceFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_facility_price, container, false);
-//        tvPriceList = view.findViewById(R.id.tv_price_list);
-//
-//        if (getArguments() != null) {
-//            facility = (SportFacility) getArguments().getSerializable(ARG_FACILITY);
-//            if (facility != null) {
-//                tvPriceList.setText(facility.getPriceList());
-//            }
-//        }
 
         return view;
     }

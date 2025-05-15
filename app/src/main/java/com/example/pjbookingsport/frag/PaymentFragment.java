@@ -190,24 +190,4 @@ public class PaymentFragment extends Fragment {
             }
         });
     }
-
-
-//    private void showResultDialog(boolean isSuccess) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//
-//        if (isSuccess && !booking.isEmpty()) {
-//            builder.setTitle("Đã đặt sân 🎉");
-//            builder.setMessage("Bạn đã đặt sân thành công");
-//        } else {
-//            builder.setTitle("Thất bại ❌");
-//            builder.setMessage("Vui lòng điền đầy đủ thông tin");
-//        }
-//
-//        builder.setPositiveButton("OK", (dialog, which) -> {
-//            dialog.dismiss(); // Đóng dialog
-//        });
-//
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
-//    }
 }

@@ -201,7 +201,6 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 }
-//                addNewBooking();
                 else {
                     addNewBooking();
 
@@ -210,9 +209,6 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
         });
 
         huyBtn = view.findViewById(R.id.huyBtn);
-
-
-
         booking.setUser(user);
 
     }

@@ -36,12 +36,11 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     EditText textUsername, textPassword;
-    TextView textForget, textViewSignUp;
+    TextView  textViewSignUp;
     CheckBox checkRemember;
     Button btnSignIn;
     String username, password;
     User saveUser;
-
     AuthAPI authAPI;
     ServiceAPI apiService;
     JWT jwt;
@@ -60,7 +59,6 @@ public class LoginActivity extends AppCompatActivity {
 
         textUsername = findViewById(R.id.textUsername);
         textPassword = findViewById(R.id.textPassword);
-        textForget = findViewById(R.id.textForget);
         textViewSignUp = findViewById(R.id.textViewSignUp);
         checkRemember = findViewById(R.id.checkRemember);
         btnSignIn = findViewById(R.id.btnSignIn);
@@ -89,25 +87,16 @@ public class LoginActivity extends AppCompatActivity {
                         public void onResponse(Call<JWT> call, Response<JWT> response) {
                             if(response.isSuccessful()){
                                 jwt = response.body();
-//                                Log.d("Test ngày sinh: ", user.getBirthday().toString());
-//                                if(){
-//                                    user.setSave(true);
-//                                }
-//                                SharedPreferencesHelper.saveUser(LoginActivity.this, user);
                                 SharedPreferencesHelper.saveJWT(LoginActivity.this, jwt);
-                                JWT jwt1 = SharedPreferencesHelper.getJWT(LoginActivity.this);
                                 SharedPreferencesHelper.saveAccount(LoginActivity.this,new Account(username,password));
                                 getInfoUser(checkRemember.isChecked());
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);
-                                Log.d("LOGIN SUCCESS", jwt1.getToken());
                             }
-                            else{
+                            else {
                                 showResultDialog("Tài khoản hoặc mật khẩu không đúng");
                             }
                         }
-
-
 
                         @Override
                         public void onFailure(Call<JWT> call, Throwable t) {

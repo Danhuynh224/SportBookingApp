@@ -337,6 +337,11 @@ public class BookFragment extends Fragment implements DayAdapter.OnDayClickListe
             public void onResponse(Call<Booking> call, Response<Booking> response) {
                 if(response.isSuccessful()){
                     booking = response.body();
+                    if(booking==null){
+                        showResultDialog(false);
+                        return;
+                    }
+
                     for(BookingInfo bookingInfo : bookingInfos){
                         SubFacility subFacility = bookingInfo.getSubFacility();
                         subFacility.setSportsFacility(facility);

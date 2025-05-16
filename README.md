@@ -2,11 +2,11 @@
 
 Ứng dụng di động Android giúp kết nối người chơi thể thao với các sân, sân vận động và cơ sở thể thao. Mục tiêu của ứng dụng là tạo ra một nền tảng thuận tiện cho việc tìm kiếm, đặt sân và quản lý hoạt động thể thao.
 
-# Thành viên nhóm
+## 👥 Thành viên nhóm
 - Huỳnh Việt Đan - 22110306
 - Nguyễn Phan Minh Trí - 22110443
 
-## Tính năng chính
+## 🛠 Tính năng chính
 - 📝 Danh sách các sân
 - 🔍 Tìm kiếm sân thể thao theo vị trí
 - 📝 Xem thông tin chi tiết sân thể thao

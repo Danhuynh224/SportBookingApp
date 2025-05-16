@@ -61,7 +61,8 @@ public class ListFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         String imgUrl = getString(R.string.img_url);
-        sportFacilityAdapter = new SportFacilityAdapter(getContext(), sportFacilityList, imgUrl, new SportFacilityAdapter.OnItemClickListener() {
+        sportFacilityAdapter = new SportFacilityAdapter(getContext(), sportFacilityList, imgUrl,
+                new SportFacilityAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(SportFacility facility) {
                 FacilityDetailFragment detailFragment = FacilityDetailFragment.newInstance(facility);
@@ -124,7 +125,8 @@ public class ListFragment extends Fragment {
         });
 
         // Nhận dữ liệu lọc từ Bundle nếu có
-        requireActivity().getSupportFragmentManager().setFragmentResultListener("filterRequest", this, (requestKey, bundle) -> {
+        requireActivity().getSupportFragmentManager().setFragmentResultListener("filterRequest",
+                this, (requestKey, bundle) -> {
             List<String> selectedTypes = bundle.getStringArrayList("selectedTypes");
             String selectedCity = bundle.getString("selectedCity");
             String selectedDistrict = bundle.getString("selectedDistrict");
@@ -214,8 +216,7 @@ public class ListFragment extends Fragment {
                     sportFacilityAdapter.updateList(filteredList);
 
                     if (filteredList.isEmpty()) {
-                        tvNoResult.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
+                        showNoResults();
                     } else {
                         tvNoResult.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);

@@ -57,7 +57,6 @@ import retrofit2.Response;
 
 public class ReviewFragment extends Fragment {
     private Booking booking;
-
     private RatingBar ratingBar;
     private EditText editTextComment;
     private Button btnSend;

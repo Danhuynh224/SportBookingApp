@@ -36,8 +36,6 @@ public class PostFragment extends Fragment {
     private RecyclerView rvPosts;
     private PostAdapter postAdapter;
     private List<Post> postList = new ArrayList<>();
-    private ViewPager2 viewPager2;
-    private CircleIndicator3 circleIndicator3;
     private ServiceAPI apiService;
 
     public PostFragment() {

@@ -75,18 +75,18 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Bằng cách sử dụng ứng dụng Sports Booking, bạn đồng ý tuân thủ các điều khoản và điều kiện sau đây. Nếu bạn không đồng ý với bất kỳ điều khoản nào, vui lòng không sử dụng ứng dụng."
                 android:textSize="18sp"
+                android:text="Bằng cách sử dụng ứng dụng Sports Booking, bạn đồng ý tuân thủ các điều khoản và điều kiện sau đây. Nếu bạn không đồng ý với bất kỳ điều khoản nào, vui lòng không sử dụng ứng dụng."
                 android:layout_marginTop="20dp"
                 android:lineSpacingExtra="6dp"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="1. Người dùng có trách nhiệm cung cấp thông tin chính xác khi đăng ký tài khoản và đặt sân.\n2. Việc hủy đặt sân phải tuân theo quy định của từng cơ sở thể thao được hiển thị trong ứng dụng.\n3. Chúng tôi không chịu trách nhiệm với các vấn đề phát sinh giữa người chơi và chủ sân ngoài ứng dụng."
                 android:textSize="18sp"
                 android:layout_marginTop="20dp"
-                android:lineSpacingExtra="6dp"/>
+                android:lineSpacingExtra="6dp"
+                android:text="1. Người dùng có trách nhiệm cung cấp thông tin chính xác khi đăng ký tài khoản và đặt sân.\n2. Việc hủy đặt sân phải tuân theo quy định của từng cơ sở thể thao được hiển thị trong ứng dụng.\n3. Chúng tôi không chịu trách nhiệm với các vấn đề phát sinh giữa người chơi và chủ sân ngoài ứng dụng."/>
 
             <TextView
                 android:layout_width="match_parent"

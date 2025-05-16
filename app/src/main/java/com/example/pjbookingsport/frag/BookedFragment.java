@@ -33,7 +33,6 @@ public class BookedFragment extends Fragment {
 
     private RecyclerView rvBooked;
     private BookedAdapter adapter;
-
     private List<Booking> bookingList = new ArrayList<>();
     private ServiceAPI apiService;
     private JWT jwt;
